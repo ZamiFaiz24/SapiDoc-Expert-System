@@ -89,7 +89,7 @@ const STEP_META = [
 function StepIndicator({ currentStep }: { currentStep: number }) {
   return (
     <div className="mb-10 rounded-2xl border border-white/70 bg-white/80 p-4 shadow-lg backdrop-blur md:p-6">
-      <div className="flex items-start justify-between gap-2 md:gap-6">
+      <div className="flex items-start justify-center gap-4 md:gap-8">
         {STEP_META.map((step, idx) => (
           <div key={step.id} className="flex flex-1 items-center gap-3">
             <div className="flex flex-col items-center gap-2 text-center">
@@ -409,7 +409,7 @@ function Step3({ formData, selectedGejala, result, onBack, onReset }: Step3Props
 }
 
 export default function DiagnosisPage() {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
     nama: '',
     noHp: '',
@@ -430,6 +430,10 @@ export default function DiagnosisPage() {
     setFormData({ nama: '', noHp: '', lokasi: '' });
     setSelectedGejala([]);
     setResult(PENYAKIT_RESULTS[0]);
+  };
+
+  const handleStartDiagnosis = () => {
+    setCurrentStep(1);
   };
 
   return (
@@ -463,7 +467,69 @@ export default function DiagnosisPage() {
           </div>
         </div>
 
-        <StepIndicator currentStep={currentStep} />
+        {currentStep === 0 && (
+          <div className="mx-auto w-full max-w-2xl">
+            <div className="rounded-3xl border border-white/70 bg-white p-8 shadow-xl md:p-10">
+              <div className="mb-6 flex justify-center">
+                <div className="rounded-full bg-gradient-to-br from-emerald-100 to-teal-100 p-4">
+                  <ClipboardCheck className="h-16 w-16 text-emerald-600" />
+                </div>
+              </div>
+
+              <div className="mb-8 text-center">
+                <h1 className="text-3xl font-bold text-gray-900 md:text-4xl">
+                  Selamat Datang! 👋
+                </h1>
+                <p className="mt-2 text-lg text-gray-600">
+                  Diagnosis Awal Penyakit Sapi
+                </p>
+              </div>
+
+              <div className="mb-8 space-y-4">
+                <p className="text-gray-700">
+                  Sistem pakar ini dirancang untuk membantu Anda mengidentifikasi penyakit pada sapi ternak dengan lebih cepat dan akurat.
+                </p>
+
+                <div className="space-y-3 rounded-2xl bg-emerald-50 p-5">
+                  <h3 className="font-semibold text-gray-900">Bagaimana cara kerjanya?</h3>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li className="flex gap-3">
+                      <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-semibold text-white">
+                        1
+                      </span>
+                      <span>Isi data diri peternak (nama, nomor HP, lokasi)</span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-semibold text-white">
+                        2
+                      </span>
+                      <span>Pilih gejala yang terlihat pada sapi Anda beserta tingkat keparahannya</span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-semibold text-white">
+                        3
+                      </span>
+                      <span>Dapatkan hasil diagnosis dengan saran penanganan dari ahli</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+                  💡 <span className="font-medium">Tips:</span> Pastikan Anda telah mengamati sapi dengan teliti sebelum mengisi gejala.
+                </div>
+              </div>
+
+              <button
+                onClick={handleStartDiagnosis}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 px-6 py-4 text-lg font-semibold text-white shadow-lg transition hover:shadow-xl hover:from-emerald-700 hover:to-teal-600"
+              >
+                Mulai Diagnosis Sekarang <ChevronRight size={20} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {currentStep > 0 && <StepIndicator currentStep={currentStep} />}
 
         <div className="flex justify-center">
           {currentStep === 1 && (
