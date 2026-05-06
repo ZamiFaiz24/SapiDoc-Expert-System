@@ -176,6 +176,25 @@ class DiagnosisController extends Controller
     }
 
     /**
+     * Get suggested gejala berdasarkan gejala yang dipilih (FC partial)
+     */
+    public function suggestGejala(Request $request)
+    {
+        $validated = $request->validate([
+            'gejala' => 'required|array|min:1',
+            'gejala.*.gejala_id' => 'required|integer|exists:gejalas,id',
+            'gejala.*.cf_user' => 'required|numeric|min:0|max:1',
+        ]);
+
+        // Run FC partial untuk get suggested gejala
+        $suggestedGejala = $this->inferensiService->suggestGejala($validated['gejala']);
+
+        return response()->json([
+            'suggestions' => $suggestedGejala,
+        ]);
+    }
+
+    /**
      * Riwayat diagnosis
      */
     public function index()

@@ -240,4 +240,50 @@ class InferensiService
             })
             ->toArray();
     }
+
+    /**
+     * Sugesti gejala berdasarkan gejala yang sudah dipilih (FC partial)
+     * Digunakan untuk guided diagnosis - suggest gejala spesifik yang kemungkinan besar cocok
+     */
+    public function suggestGejala(array $gejalaDenganCf): array
+    {
+        // Run FC partial dengan gejala yang dipilih
+        $diagnosisPartial = $this->inferensi($gejalaDenganCf);
+
+        if (empty($diagnosisPartial)) {
+            return [];
+        }
+
+        // Ambil top 3 penyakit berdasarkan CF
+        $topPenyakitIds = array_map(fn($d) => $d['penyakit_id'], array_slice($diagnosisPartial, 0, 3));
+        $selectedGejalaIds = array_column($gejalaDenganCf, 'gejala_id');
+
+        // Dapatkan semua gejala yang linked ke top penyakit, exclude yang sudah dipilih
+        $suggestedGejalas = Aturan::whereIn('penyakit_id', $topPenyakitIds)
+            ->whereNotIn('gejala_id', $selectedGejalaIds)
+            ->where('kategori', 'Gejala Spesifik') // Suggest gejala spesifik
+            ->with(['gejala'])
+            ->get()
+            ->groupBy('gejala_id')
+            ->map(function ($aturanGroup) {
+                // Hitung rata-rata CF expert untuk gejala ini
+                $avgMb = $aturanGroup->avg('nilai_mb');
+                $avgMd = $aturanGroup->avg('nilai_md');
+                $cfExpert = round($avgMb - $avgMd, 4);
+
+                return [
+                    'id' => $aturanGroup->first()->gejala_id,
+                    'kode_gejala' => $aturanGroup->first()->gejala->kode_gejala,
+                    'nama_gejala' => $aturanGroup->first()->gejala->nama_gejala,
+                    'kategori' => $aturanGroup->first()->gejala->kategori,
+                    'cf_score' => $cfExpert, // Expert confidence (MB - MD)
+                ];
+            })
+            ->sortByDesc('cf_score')
+            ->values()
+            ->take(5) // Max 5 suggestions
+            ->toArray();
+
+        return $suggestedGejalas;
+    }
 }

@@ -14,6 +14,7 @@ Route::get('/diagnosis', function () {
 })->name('diagnosis.index');
 
 Route::resource('diagnosis', DiagnosisController::class)->only(['create', 'store', 'show']);
+Route::post('/diagnosis/suggest-gejala', [DiagnosisController::class, 'suggestGejala']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
