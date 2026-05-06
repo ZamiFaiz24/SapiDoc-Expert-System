@@ -1,0 +1,239 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Gejala;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class GejalaSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $gejalas = [
+            [
+                'kode_gejala' => 'G01',
+                'nama_gejala' => 'Demam tinggi (39,8° – 41°)',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Peningkatan suhu tubuh sapi melebihi normal (38-39°C)',
+            ],
+            [
+                'kode_gejala' => 'G02',
+                'nama_gejala' => 'Nafsu makan berkurang',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Sapi menunjukkan penurunan minat untuk makan',
+            ],
+            [
+                'kode_gejala' => 'G03',
+                'nama_gejala' => 'Keluar air liur berlebih',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Pengeluaran air liur yang abnormal dari mulut sapi',
+            ],
+            [
+                'kode_gejala' => 'G04',
+                'nama_gejala' => 'Luka pada kuku kaki dan bisa sampai lepas',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Luka parah pada kuku kaki hingga dapat menyebabkan kuku lepas',
+            ],
+            [
+                'kode_gejala' => 'G05',
+                'nama_gejala' => 'Lepuh/luka pada gusi, mukosa mulut, dan lidah',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Terdapat lepuh atau luka pada bagian dalam mulut sapi',
+            ],
+            [
+                'kode_gejala' => 'G06',
+                'nama_gejala' => 'Diare atau BAB diikuti bau menyengat',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Feses yang lunak dengan bau yang sangat menyengat',
+            ],
+            [
+                'kode_gejala' => 'G07',
+                'nama_gejala' => 'Mata berlendir atau berair',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Pengeluaran lendir atau air mata yang berlebihan dari mata',
+            ],
+            [
+                'kode_gejala' => 'G08',
+                'nama_gejala' => 'Sapi kurus (Penurunan berat badan)',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Penurunan berat badan atau kondisi tubuh yang kurus',
+            ],
+            [
+                'kode_gejala' => 'G09',
+                'nama_gejala' => 'Bulu kusam dan berdiri',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Kondisi bulu sapi terlihat kusam dan berdiri tegak',
+            ],
+            [
+                'kode_gejala' => 'G10',
+                'nama_gejala' => 'Bulu rontok',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Bulu sapi mengalami kerontokan',
+            ],
+            [
+                'kode_gejala' => 'G11',
+                'nama_gejala' => 'Perut terlihat buncit',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Perut sapi membengkak dan terlihat buncit',
+            ],
+            [
+                'kode_gejala' => 'G12',
+                'nama_gejala' => 'Terlihat lemas dan lesu',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Sapi menunjukkan tanda-tanda kelelahan dan kelemahan',
+            ],
+            [
+                'kode_gejala' => 'G13',
+                'nama_gejala' => 'Produksi susu berkurang',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Penurunan jumlah produksi susu pada sapi betina',
+            ],
+            [
+                'kode_gejala' => 'G14',
+                'nama_gejala' => 'Pembengkakan kelenjar susu atau ambing susu',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Ambing atau kelenjar susu mengalami pembengkakan',
+            ],
+            [
+                'kode_gejala' => 'G15',
+                'nama_gejala' => 'Air susu menggumpal (bentuk tidak normal)',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Susu yang dihasilkan memiliki bentuk tidak normal dan menggumpal',
+            ],
+            [
+                'kode_gejala' => 'G16',
+                'nama_gejala' => 'Air susu bercampur nanah atau darah',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Susu yang dihasilkan mengandung nanah atau darah',
+            ],
+            [
+                'kode_gejala' => 'G17',
+                'nama_gejala' => 'Sapi tidak gayemi (memamah biak)',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Sapi tidak melakukan aktivitas memamah biak (mengunyah kembali)',
+            ],
+            [
+                'kode_gejala' => 'G18',
+                'nama_gejala' => 'Sapi lebih banyak berbaring',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Sapi lebih sering berbaring dan jarang berdiri',
+            ],
+            [
+                'kode_gejala' => 'G19',
+                'nama_gejala' => 'Sapi mengalami kepincangan',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Sapi berjalan dengan tidak normal atau pincang',
+            ],
+            [
+                'kode_gejala' => 'G20',
+                'nama_gejala' => 'Keluar lendir dari hidung/mulut',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Pengeluaran lendir dari hidung atau mulut sapi',
+            ],
+            [
+                'kode_gejala' => 'G21',
+                'nama_gejala' => 'Kulit menebal dan tumbuhnya keropeng (di bagian telinga, wajah dan punggung)',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Kulit mengalami penebalan dan tumbuh keropeng di area tertentu',
+            ],
+            [
+                'kode_gejala' => 'G22',
+                'nama_gejala' => 'Sering menggaruk/gatal-gatal',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Sapi sering menggaruk bagian tubuhnya karena gatal',
+            ],
+            [
+                'kode_gejala' => 'G23',
+                'nama_gejala' => 'Muncul benjol pada kulit',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Terdapat benjol atau lesi pada permukaan kulit sapi',
+            ],
+            [
+                'kode_gejala' => 'G24',
+                'nama_gejala' => 'Pembengkakan pada kaki dan limfoglandula',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Terjadi pembengkakan pada kaki dan kelenjar getah bening',
+            ],
+            [
+                'kode_gejala' => 'G25',
+                'nama_gejala' => 'Sapi tidak gayemi (memamah biak)',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Sapi tidak melakukan aktivitas memamah biak (mengunyah kembali)',
+            ],
+            [
+                'kode_gejala' => 'G26',
+                'nama_gejala' => 'Tidak bisa BAB / fases keras',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Sapi mengalami sembelit atau fases yang keras',
+            ],
+            [
+                'kode_gejala' => 'G27',
+                'nama_gejala' => 'Pembesaran perut sebelah kiri',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Perut sebelah kiri mengalami pembesaran yang signifikan',
+            ],
+            [
+                'kode_gejala' => 'G28',
+                'nama_gejala' => 'Keluar nanah dari alat kelamin betina/Vulva',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Keluarnya nanah dari organ reproduksi betina',
+            ],
+            [
+                'kode_gejala' => 'G29',
+                'nama_gejala' => 'Penurunan produksi susu',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Terjadi penurunan jumlah susu yang diproduksi',
+            ],
+            [
+                'kode_gejala' => 'G30',
+                'nama_gejala' => 'Keluar lendir putih kekuningan dari alat kelamin betina/Vulva',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Keluarnya lendir berwarna putih kekuningan dari organ reproduksi betina',
+            ],
+            [
+                'kode_gejala' => 'G31',
+                'nama_gejala' => 'Terlihat lemas dan lesu',
+                'kategori' => 'Gejala Umum',
+                'keterangan' => 'Sapi menunjukkan tanda-tanda kelelahan dan kelemahan',
+            ],
+            [
+                'kode_gejala' => 'G32',
+                'nama_gejala' => 'Sapi ambruk (tidak mampu berdiri)',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Sapi jatuh dan tidak mampu berdiri',
+            ],
+            [
+                'kode_gejala' => 'G33',
+                'nama_gejala' => 'Dalam masa bunting / menyusui',
+                'kategori' => 'Kondisi',
+                'keterangan' => 'Sapi betina dalam kondisi bunting atau menyusui',
+            ],
+            [
+                'kode_gejala' => 'G34',
+                'nama_gejala' => 'Sapi sudah beberapa kali melahirkan',
+                'kategori' => 'Kondisi',
+                'keterangan' => 'Sapi betina sudah mengalami beberapa kali proses melahirkan',
+            ],
+            [
+                'kode_gejala' => 'G35',
+                'nama_gejala' => 'Bengkak pada area pusar',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Terdapat pembengkakan pada area pusar anak sapi',
+            ],
+            [
+                'kode_gejala' => 'G36',
+                'nama_gejala' => 'Bagian pusar bernanah',
+                'kategori' => 'Gejala Spesifik',
+                'keterangan' => 'Area pusar mengalami infeksi dan mengeluarkan nanah',
+            ],
+        ];
+
+        foreach ($gejalas as $gejala) {
+            Gejala::create($gejala);
+        }
+    }
+}
