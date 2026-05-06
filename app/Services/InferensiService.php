@@ -25,38 +25,38 @@ class InferensiService
      * ]
      * Atau untuk backward compatibility: [1, 2, 3] (default CF_user = 1.0)
      */
-    public function inferensi(array $gejala_dengan_cf): array
+    public function inferensi(array $gejalaDenganCf): array
     {
         // Normalize input: jika array gejala_id biasa, convert ke format baru
-        $gejalas_normalized = $this->normalizeGejalaInput($gejala_dengan_cf);
+        $gejalaNormalized = $this->normalizeGejalaInput($gejalaDenganCf);
 
         // Array untuk menyimpan CF setiap penyakit
-        $cf_penyakits = [];
+        $cfPenyakit = [];
 
         // Step 1: Ambil semua aturan yang sesuai dengan gejala yang diamati
-        $gejala_ids = array_column($gejalas_normalized, 'gejala_id');
-        $aturans = Aturan::whereIn('gejala_id', $gejala_ids)
+        $gejalanIds = array_column($gejalaNormalized, 'gejala_id');
+        $aturanGrouped = Aturan::whereIn('gejala_id', $gejalanIds)
             ->with(['penyakit', 'gejala'])
             ->get()
             ->groupBy('penyakit_id');
 
         // Step 2: Hitung CF untuk setiap penyakit
-        foreach ($aturans as $penyakit_id => $rules) {
-            $cf_penyakits[$penyakit_id] = $this->hitungCFPenyakit($rules, $gejalas_normalized);
+        foreach ($aturanGrouped as $penyakitId => $aturanPenyakit) {
+            $cfPenyakit[$penyakitId] = $this->hitungCFPenyakit($aturanPenyakit, $gejalaNormalized);
         }
 
         // Step 3: Urutkan berdasarkan CF tertinggi
-        arsort($cf_penyakits);
+        arsort($cfPenyakit);
 
         // Step 4: Format hasil dengan detail penyakit
         $hasil = [];
-        foreach ($cf_penyakits as $penyakit_id => $cf) {
-            $penyakits = Penyakit::whereIn('id', array_keys($cf_penyakits))
+        foreach ($cfPenyakit as $penyakitId => $cf) {
+            $penyakits = Penyakit::whereIn('id', array_keys($cfPenyakit))
                 ->get()
                 ->keyBy('id');
-            $penyakit = $penyakits[$penyakit_id];
+            $penyakit = $penyakits[$penyakitId];
             $hasil[] = [
-                'penyakit_id' => $penyakit_id,
+                'penyakit_id' => $penyakitId,
                 'nama_penyakit' => $penyakit->nama_penyakit,
                 'kode_penyakit' => $penyakit->kode_penyakit,
                 'cf' => round($cf, 4),
@@ -105,21 +105,21 @@ class InferensiService
      * @param $rules Koleksi aturan untuk penyakit
      * @param array $gejalas_normalized Gejala dengan CF dari user
      */
-    private function hitungCFPenyakit($rules, array $gejalas_normalized): float
+    private function hitungCFPenyakit($aturanPenyakit, array $gejalaNormalized): float
     {
         // Mapping CF user: [gejala_id => cf_user]
-        $cfUserMap = collect($gejalas_normalized)
+        $cfUserMap = collect($gejalaNormalized)
             ->pluck('cf_user', 'gejala_id')
             ->toArray();
 
         $cfCombined = 0.0;
 
-        foreach ($rules as $rule) {
+        foreach ($aturanPenyakit as $aturanItem) {
             // CF dari pakar (MB - MD)
-            $cfExpert = $rule->nilai_mb - $rule->nilai_md;
+            $cfExpert = $aturanItem->nilai_mb - $aturanItem->nilai_md;
 
             // Ambil CF dari user (default 0 jika tidak ada)
-            $cfUser = $cfUserMap[$rule->gejala_id] ?? 0.0;
+            $cfUser = $cfUserMap[$aturanItem->gejala_id] ?? 0.0;
 
             // CF untuk gejala ini
             $cfGejala = $cfExpert * $cfUser;
@@ -163,60 +163,60 @@ class InferensiService
      *     ['gejala_id' => 2, 'cf_user' => 0.6],
      * ]
      */
-    public function detailDiagnosis(array $gejala_dengan_cf, int $penyakit_id): array
+    public function detailDiagnosis(array $gejalaDenganCf, int $penyakitId): array
     {
         // Normalize input
-        $gejalas_normalized = $this->normalizeGejalaInput($gejala_dengan_cf);
+        $gejalaNormalized = $this->normalizeGejalaInput($gejalaDenganCf);
 
         // Buat map CF user per gejala
-        $cf_user_map = [];
-        foreach ($gejalas_normalized as $item) {
-            $cf_user_map[$item['gejala_id']] = $item['cf_user'];
+        $cfUserMap = [];
+        foreach ($gejalaNormalized as $item) {
+            $cfUserMap[$item['gejala_id']] = $item['cf_user'];
         }
 
         // Ambil aturan untuk penyakit ini
-        $gejala_ids = array_column($gejalas_normalized, 'gejala_id');
-        $aturans = Aturan::where('penyakit_id', $penyakit_id)
-            ->whereIn('gejala_id', $gejala_ids)
+        $gejalanIds = array_column($gejalaNormalized, 'gejala_id');
+        $aturanList = Aturan::where('penyakit_id', $penyakitId)
+            ->whereIn('gejala_id', $gejalanIds)
             ->with(['gejala'])
             ->get();
 
         $detail = [];
-        $cf_combined = 0;
+        $cfCombined = 0;
 
-        foreach ($aturans as $aturan) {
+        foreach ($aturanList as $aturanItem) {
             // CF expert
-            $cf_expert = $aturan->nilai_mb - $aturan->nilai_md;
+            $cfExpert = $aturanItem->nilai_mb - $aturanItem->nilai_md;
 
             // CF user
-            $cf_user = $cf_user_map[$aturan->gejala_id] ?? 0;
+            $cfUser = $cfUserMap[$aturanItem->gejala_id] ?? 0;
 
             // CF combined (expert × user)
-            $cf_gejala = $cf_expert * $cf_user;
+            $cfGejala = $cfExpert * $cfUser;
 
             // Update combined CF
-            if ($cf_combined == 0) {
-                $cf_combined = $cf_gejala;
+            if ($cfCombined == 0) {
+                $cfCombined = $cfGejala;
             } else {
-                $cf_combined = $cf_combined + $cf_gejala * (1 - $cf_combined);
+                $cfCombined = $cfCombined + $cfGejala * (1 - $cfCombined);
             }
 
             $detail[] = [
-                'gejala' => $aturan->gejala->nama_gejala,
-                'kode_gejala' => $aturan->gejala->kode_gejala,
-                'nilai_mb' => $aturan->nilai_mb,
-                'nilai_md' => $aturan->nilai_md,
-                'cf_expert' => round($cf_expert, 4),
-                'cf_user' => round($cf_user, 4),
-                'cf_gejala' => round($cf_gejala, 4),
-                'cf_combined' => round($cf_combined, 4),
-                'catatan_pakar' => $aturan->catatan_pakar,
+                'gejala' => $aturanItem->gejala->nama_gejala,
+                'kode_gejala' => $aturanItem->gejala->kode_gejala,
+                'nilai_mb' => $aturanItem->nilai_mb,
+                'nilai_md' => $aturanItem->nilai_md,
+                'cf_expert' => round($cfExpert, 4),
+                'cf_user' => round($cfUser, 4),
+                'cf_gejala' => round($cfGejala, 4),
+                'cf_combined' => round($cfCombined, 4),
+                'catatan_pakar' => $aturanItem->catatan_pakar,
             ];
         }
 
         return [
             'total_gejala_cocok' => count($detail),
-            'cf_final' => round($cf_combined, 4),
+            'cf_final' => round($cfCombined, 4),
             'detail_gejala' => $detail,
         ];
     }
@@ -224,9 +224,9 @@ class InferensiService
     /**
      * Dapatkan semua gejala untuk penyakit tertentu
      */
-    public function getGejalaUntuPenyakit(int $penyakit_id): array
+    public function getGejalaUntuPenyakit(int $penyakitId): array
     {
-        return Aturan::where('penyakit_id', $penyakit_id)
+        return Aturan::where('penyakit_id', $penyakitId)
             ->with(['gejala'])
             ->get()
             ->map(function ($aturan) {

@@ -2,14 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\DiagnosisController;
 
 Route::get('/', function () {
     return Inertia::render('pengguna/LandingPage');
 })->name('home');
 
+// Diagnosis routes
 Route::get('/diagnosis', function () {
-    return Inertia::render('pengguna/diagnosis/page');
-})->name('pengguna.diagnosis');
+    return redirect('/diagnosis/create');
+})->name('diagnosis.index');
+
+Route::resource('diagnosis', DiagnosisController::class)->only(['create', 'store', 'show']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {

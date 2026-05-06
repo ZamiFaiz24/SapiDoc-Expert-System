@@ -17,14 +17,17 @@ class DiagnosisController extends Controller
     }
 
     /**
-     * Tampilkan form diagnosa - pilih gejala
+     * Tampilkan form diagnosa - pilih gejala & data sapi
      */
     public function create()
     {
         $gejalas = Gejala::orderBy('kode_gejala')->get();
 
-        return inertia('Diagnosis/Create', [
+        return inertia('pengguna/diagnosis/page', [
             'gejalas' => $gejalas,
+            'jenisSapi' => Diagnosis::getJenisSapi(),
+            'jenisKelamin' => Diagnosis::getJenisKelamin(),
+            'umurKategori' => Diagnosis::getUmurKategori(),
         ]);
     }
 
@@ -34,50 +37,75 @@ class DiagnosisController extends Controller
      * Request body format:
      * {
      *     "gejala": [
-     *         { "gejala_id": 1, "cf_user": 0.8 },   // Gejala jelas (80%)
-     *         { "gejala_id": 2, "cf_user": 0.5 },   // Gejala kurang jelas (50%)
-     *         { "gejala_id": 4, "cf_user": 0.9 }    // Gejala sangat jelas (90%)
+     *         { "gejala_id": 1, "cf_user": 0.8 },
+     *         { "gejala_id": 2, "cf_user": 0.5 }
      *     ],
      *     "nama_user": "Petani Budi",
      *     "alamat_user": "Jl. Raya No. 123",
-     *     "no_hp_user": "08123456789"
+     *     "no_hp_user": "08123456789",
+     *     "jenis_sapi": "sapi_potong",
+     *     "jenis_kelamin": "betina",
+     *     "umur_kategori": "produktif"
      * }
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
+            // Data Peternak
+            'nama_user' => 'required|string|max:100',
+            'alamat_user' => 'required|string|max:255',
+            'no_hp_user' => 'required|string|max:20',
+            
+            // Data Sapi
+            'jenis_sapi' => 'required|string|in:' . implode(',', array_keys(Diagnosis::getJenisSapi())),
+            'jenis_kelamin' => 'required|string|in:' . implode(',', array_keys(Diagnosis::getJenisKelamin())),
+            'umur_kategori' => 'required|string|in:' . implode(',', array_keys(Diagnosis::getUmurKategori())),
+            
+            // Data Gejala
             'gejala' => 'required|array|min:1',
             'gejala.*.gejala_id' => 'required|integer|exists:gejalas,id',
             'gejala.*.cf_user' => 'required|numeric|min:0|max:1',
-            'nama_user' => 'required|string',
-            'alamat_user' => 'required|string',
-            'no_hp_user' => 'required|string',
         ]);
 
         // STEP 1: Jalankan inferensi Forward Chaining dengan CF user
-        $hasil_inferensi = $this->inferensiService->inferensi($validated['gejala']);
+        $hasilInferensi = $this->inferensiService->inferensi($validated['gejala']);
+
+        if (empty($hasilInferensi)) {
+            return back()->with('error', 'Tidak ada penyakit yang cocok');
+        }
 
         // STEP 2: Ambil diagnosis utama (CF tertinggi)
-        $diagnosis_utama = $hasil_inferensi[0] ?? null;
+        $diagnosisUtama = $hasilInferensi[0];
 
-        if (!$diagnosis_utama) {
+        if (!$diagnosisUtama) {
             return back()->with('error', 'Tidak ada penyakit yang cocok dengan gejala yang dipilih');
         }
 
         // STEP 3: Ambil diagnosis banding (saran lainnya)
-        $diagnosis_banding = array_slice($hasil_inferensi, 1, 5); // Max 5 saran
+        $diagnosisBanding = array_slice($hasilInferensi, 1, 5); // Max 5 saran
 
         // STEP 4: Simpan hasil diagnosis ke database
         $diagnosis = Diagnosis::create([
             'nama_user' => $validated['nama_user'],
             'alamat_user' => $validated['alamat_user'],
             'no_hp_user' => $validated['no_hp_user'],
-            'penyakit_id' => $diagnosis_utama['penyakit_id'],
-            'nama_penyakit_snap' => $diagnosis_utama['nama_penyakit'],
-            'cf_final' => $diagnosis_utama['cf'],
-            'diagnosis_banding' => $diagnosis_banding,
+            'jenis_sapi' => $validated['jenis_sapi'],
+            'jenis_kelamin' => $validated['jenis_kelamin'],
+            'umur_kategori' => $validated['umur_kategori'],
+            'penyakit_id' => $diagnosisUtama['penyakit_id'],
+            'nama_penyakit_snap' => $diagnosisUtama['nama_penyakit'],
+            'cf_final' => $diagnosisUtama['cf'],
+            'diagnosis_banding' => $diagnosisBanding,
             'gejala_input' => $validated['gejala'], 
         ]);
+
+        // Return JSON for API calls, redirect for form submissions
+        if ($request->expectsJson()) {
+            return response()->json([
+                'diagnosis_id' => $diagnosis->id,
+                'message' => 'Diagnosis berhasil disimpan',
+            ]);
+        }
 
         return redirect()->route('diagnosis.show', $diagnosis->id);
     }
@@ -88,25 +116,25 @@ class DiagnosisController extends Controller
     public function show(Diagnosis $diagnosis)
     {
         $penyakit = $diagnosis->penyakit;
-        $diagnosis_banding = $diagnosis->diagnosis_banding;
+        $diagnosisBanding = $diagnosis->diagnosis_banding;
 
         // Ambil gejala dengan CF user dari session jika ada
-        $gejala_dengan_cf = $diagnosis->gejala_input ?? [];
-        
+        $gejalaDenganCf = $diagnosis->gejala_input ?? [];
+
         // Detail diagnosis - jika ada gejala yang dipilih
-        $detail_diagnosis = null;
-        if (!empty($gejala_dengan_cf)) {
-            $detail_diagnosis = $this->inferensiService->detailDiagnosis(
-                $gejala_dengan_cf,
+        $detailDiagnosis = null;
+        if (!empty($gejalaDenganCf)) {
+            $detailDiagnosis = $this->inferensiService->detailDiagnosis(
+                $gejalaDenganCf,
                 $diagnosis->penyakit_id
             );
         }
 
-        return inertia('Diagnosis/Show', [
+        return inertia('pengguna/diagnosis/example-show', [
             'diagnosis' => $diagnosis,
             'penyakit' => $penyakit,
-            'diagnosis_banding' => $diagnosis_banding,
-            'detail_diagnosis' => $detail_diagnosis,
+            'diagnosis_banding' => $diagnosisBanding,
+            'detail_diagnosis' => $detailDiagnosis,
             'interpretasi' => $this->getInterpretasi($diagnosis->cf_final),
         ]);
     }
@@ -156,7 +184,7 @@ class DiagnosisController extends Controller
             ->latest()
             ->paginate(10);
 
-        return inertia('Diagnosis/Index', [
+        return inertia('pengguna/diagnosis/example-create', [
             'diagnoses' => $diagnoses,
         ]);
     }

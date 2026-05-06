@@ -13,71 +13,43 @@ import {
   ShieldCheck,
   UserRound,
 } from 'lucide-react';
+import { useFormSubmission } from '../../../hooks/use-form-submission';
+
+interface Gejala {
+  id: number;
+  kode_gejala: string;
+  nama_gejala: string;
+}
+
+interface PageProps {
+  gejalas: Gejala[];
+  jenisSapi: Record<string, string>;
+  jenisKelamin: Record<string, string>;
+  umurKategori: Record<string, string>;
+}
 
 interface FormData {
-  nama: string;
-  noHp: string;
-  lokasi: string;
+  nama_user: string;
+  alamat_user: string;
+  no_hp_user: string;
+  jenis_sapi: string;
+  jenis_kelamin: string;
+  umur_kategori: string;
 }
 
 interface SelectedGejala {
-  id: string;
-  nama: string;
-  cf: number;
+  id: number;
+  nama_gejala: string;
+  cf_user: number;
 }
-
-interface PenyakitResult {
-  id: string;
-  nama: string;
-  cf: number;
-  deskripsi: string;
-  saran: string;
-}
-
-const GEJALA_LIST = [
-  { id: '1', nama: 'Nafsu makan menurun' },
-  { id: '2', nama: 'Demam' },
-  { id: '3', nama: 'Produksi susu menurun' },
-  { id: '4', nama: 'Pembengkakan ambing' },
-  { id: '5', nama: 'Lesu' },
-  { id: '6', nama: 'Diare' },
-  { id: '7', nama: 'Kepincangan' },
-  { id: '8', nama: 'Batuk' },
-];
 
 const CF_OPTIONS = [
-  { value: 0, label: 'Tidak' },
-  { value: 0.25, label: 'Ringan' },
-  { value: 0.5, label: 'Sedang' },
-  { value: 0.75, label: 'Parah' },
-  { value: 1, label: 'Sangat Parah' },
-];
-
-const PENYAKIT_RESULTS: PenyakitResult[] = [
-  {
-    id: '1',
-    nama: 'Mastitis',
-    cf: 0.87,
-    deskripsi: 'Peradangan pada ambing ternak yang disebabkan oleh infeksi bakteri.',
-    saran:
-      'Segera konsultasi dengan dokter hewan. Lakukan pembersihan area ambing dan berikan antibiotik sesuai resep.',
-  },
-  {
-    id: '2',
-    nama: 'Diare Menular',
-    cf: 0.72,
-    deskripsi: 'Penyakit pencernaan yang disebabkan oleh virus atau bakteri patogen.',
-    saran:
-      'Isolasi ternak yang sakit. Berikan cairan elektrolit untuk mencegah dehidrasi dan obat antidiare.',
-  },
-  {
-    id: '3',
-    nama: 'Demam Berdarah Ternak',
-    cf: 0.65,
-    deskripsi: 'Penyakit infeksi yang ditularkan melalui nyamuk dan vektor lainnya.',
-    saran:
-      'Tingkatkan kebersihan kandang dan sekitarnya. Konsultasikan dengan dokter hewan untuk pengobatan spesifik.',
-  },
+  { value: 0, label: 'Tidak Ada' },
+  { value: 0.2, label: 'Sangat Ringan' },
+  { value: 0.4, label: 'Ringan' },
+  { value: 0.6, label: 'Sedang' },
+  { value: 0.8, label: 'Berat' },
+  { value: 1, label: 'Sangat Berat' },
 ];
 
 const STEP_META = [
@@ -131,9 +103,12 @@ interface Step1Props {
   onNext: () => void;
   formData: FormData;
   setFormData: Dispatch<SetStateAction<FormData>>;
+  jenisSapi: Record<string, string>;
+  jenisKelamin: Record<string, string>;
+  umurKategori: Record<string, string>;
 }
 
-function Step1({ onNext, formData, setFormData }: Step1Props) {
+function Step1({ onNext, formData, setFormData, jenisSapi, jenisKelamin, umurKategori }: Step1Props) {
   const [error, setError] = useState('');
 
   const handleChange = (field: keyof FormData, value: string) => {
@@ -141,8 +116,28 @@ function Step1({ onNext, formData, setFormData }: Step1Props) {
   };
 
   const handleNext = () => {
-    if (!formData.nama.trim()) {
+    if (!formData.nama_user.trim()) {
       setError('Nama wajib diisi');
+      return;
+    }
+    if (!formData.alamat_user.trim()) {
+      setError('Alamat wajib diisi');
+      return;
+    }
+    if (!formData.no_hp_user.trim()) {
+      setError('No HP wajib diisi');
+      return;
+    }
+    if (!formData.jenis_sapi) {
+      setError('Jenis sapi wajib dipilih');
+      return;
+    }
+    if (!formData.jenis_kelamin) {
+      setError('Jenis kelamin wajib dipilih');
+      return;
+    }
+    if (!formData.umur_kategori) {
+      setError('Umur kategori wajib dipilih');
       return;
     }
     setError('');
@@ -152,61 +147,130 @@ function Step1({ onNext, formData, setFormData }: Step1Props) {
   return (
     <div className="w-full max-w-2xl rounded-3xl border border-white/70 bg-white p-6 shadow-xl md:p-8">
       <div className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Langkah 1</p>
-        <h2 className="mt-2 text-2xl font-bold text-gray-900">Data Diri Peternak</h2>
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Langkah 1 & 2</p>
+        <h2 className="mt-2 text-2xl font-bold text-gray-900">Data Peternak & Sapi</h2>
         <p className="mt-1 text-sm text-gray-500">
-          Lengkapi data berikut untuk menyimpan riwayat hasil diagnosis.
+          Lengkapi data berikut untuk memulai diagnosis.
         </p>
       </div>
 
       <div className="space-y-5">
-        <div>
-          <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
-            <UserRound size={16} className="text-emerald-600" />
-            Nama <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            value={formData.nama}
-            onChange={(e) => handleChange('nama', e.target.value)}
-            placeholder="Masukkan nama Anda"
-            className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
-          />
-          {error && (
-            <p className="mt-2 flex items-center gap-1 text-sm text-red-500">
-              <AlertCircle size={16} /> {error}
-            </p>
-          )}
+        {/* Data Peternak */}
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+          <h3 className="mb-4 font-semibold text-gray-900">📋 Data Peternak</h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+                <UserRound size={16} className="text-emerald-600" />
+                Nama <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={formData.nama_user}
+                onChange={(e) => handleChange('nama_user', e.target.value)}
+                placeholder="Masukkan nama Anda"
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+                <Phone size={16} className="text-emerald-600" />
+                No HP <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="tel"
+                value={formData.no_hp_user}
+                onChange={(e) => handleChange('no_hp_user', e.target.value)}
+                placeholder="08xx xxxx xxxx"
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+                <MapPin size={16} className="text-emerald-600" />
+                Alamat <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={formData.alamat_user}
+                onChange={(e) => handleChange('alamat_user', e.target.value)}
+                placeholder="Masukkan alamat Anda"
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
+              />
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
-            <Phone size={16} className="text-emerald-600" />
-            No HP
-          </label>
-          <input
-            type="tel"
-            value={formData.noHp}
-            onChange={(e) => handleChange('noHp', e.target.value)}
-            placeholder="08xx xxxx xxxx"
-            className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
-          />
-        </div>
+        {/* Data Sapi */}
+        <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
+          <h3 className="mb-4 font-semibold text-gray-900">🐄 Data Sapi</h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                Jenis Sapi <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={formData.jenis_sapi}
+                onChange={(e) => handleChange('jenis_sapi', e.target.value)}
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              >
+                <option value="">-- Pilih Jenis Sapi --</option>
+                {Object.entries(jenisSapi).map(([key, label]) => (
+                  <option key={key} value={key}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <div>
-          <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
-            <MapPin size={16} className="text-emerald-600" />
-            Lokasi
-          </label>
-          <input
-            type="text"
-            value={formData.lokasi}
-            onChange={(e) => handleChange('lokasi', e.target.value)}
-            placeholder="Masukkan lokasi atau alamat"
-            className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
-          />
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                Jenis Kelamin <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={formData.jenis_kelamin}
+                onChange={(e) => handleChange('jenis_kelamin', e.target.value)}
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              >
+                <option value="">-- Pilih Jenis Kelamin --</option>
+                {Object.entries(jenisKelamin).map(([key, label]) => (
+                  <option key={key} value={key}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                Kategori Umur <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={formData.umur_kategori}
+                onChange={(e) => handleChange('umur_kategori', e.target.value)}
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              >
+                <option value="">-- Pilih Kategori Umur --</option>
+                {Object.entries(umurKategori).map(([key, label]) => (
+                  <option key={key} value={key}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
       </div>
+
+      {error && (
+        <div className="mt-4 flex items-center gap-2 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+          <AlertCircle size={16} /> {error}
+        </div>
+      )}
 
       <button
         onClick={handleNext}
@@ -223,22 +287,22 @@ interface Step2Props {
   onBack: () => void;
   selectedGejala: SelectedGejala[];
   setSelectedGejala: Dispatch<SetStateAction<SelectedGejala[]>>;
+  gejalas: Gejala[];
 }
 
-function Step2({ onNext, onBack, selectedGejala, setSelectedGejala }: Step2Props) {
-  const toggleGejala = (id: string) => {
+function Step2({ onNext, onBack, selectedGejala, setSelectedGejala, gejalas }: Step2Props) {
+  const toggleGejala = (gejala: Gejala) => {
     setSelectedGejala((prev) => {
-      const exists = prev.find((g) => g.id === id);
+      const exists = prev.find((g) => g.id === gejala.id);
       if (exists) {
-        return prev.filter((g) => g.id !== id);
+        return prev.filter((g) => g.id !== gejala.id);
       }
-      const gejala = GEJALA_LIST.find((g) => g.id === id);
-      return gejala ? [...prev, { ...gejala, cf: 0 }] : prev;
+      return [...prev, { id: gejala.id, nama_gejala: gejala.nama_gejala, cf_user: 0 }];
     });
   };
 
-  const updateCF = (id: string, cf: number) => {
-    setSelectedGejala((prev) => prev.map((g) => (g.id === id ? { ...g, cf } : g)));
+  const updateCF = (id: number, cf_user: number) => {
+    setSelectedGejala((prev) => prev.map((g) => (g.id === id ? { ...g, cf_user } : g)));
   };
 
   return (
@@ -257,7 +321,7 @@ function Step2({ onNext, onBack, selectedGejala, setSelectedGejala }: Step2Props
       </div>
 
       <div className="max-h-[420px] space-y-3 overflow-y-auto pr-1">
-        {GEJALA_LIST.map((gejala) => {
+        {gejalas.map((gejala) => {
           const selectedItem = selectedGejala.find((g) => g.id === gejala.id);
           const isSelected = Boolean(selectedItem);
 
@@ -275,14 +339,14 @@ function Step2({ onNext, onBack, selectedGejala, setSelectedGejala }: Step2Props
                   type="checkbox"
                   id={`gejala-${gejala.id}`}
                   checked={isSelected}
-                  onChange={() => toggleGejala(gejala.id)}
+                  onChange={() => toggleGejala(gejala)}
                   className="h-5 w-5 cursor-pointer rounded text-emerald-600 focus:ring-emerald-500"
                 />
                 <label
                   htmlFor={`gejala-${gejala.id}`}
                   className="flex-1 cursor-pointer font-medium text-gray-800"
                 >
-                  {gejala.nama}
+                  <span className="text-xs text-gray-500">{gejala.kode_gejala}</span> {gejala.nama_gejala}
                 </label>
               </div>
 
@@ -293,7 +357,7 @@ function Step2({ onNext, onBack, selectedGejala, setSelectedGejala }: Step2Props
                       key={option.value}
                       onClick={() => updateCF(gejala.id, option.value)}
                       className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
-                        selectedItem?.cf === option.value
+                        selectedItem?.cf_user === option.value
                           ? 'bg-emerald-600 text-white shadow'
                           : 'border border-gray-200 bg-white text-gray-700 hover:border-emerald-300'
                       }`}
@@ -330,106 +394,100 @@ function Step2({ onNext, onBack, selectedGejala, setSelectedGejala }: Step2Props
 interface Step3Props {
   formData: FormData;
   selectedGejala: SelectedGejala[];
-  result: PenyakitResult;
+  isLoading: boolean;
+  error: string | null;
   onBack: () => void;
-  onReset: () => void;
 }
 
-function Step3({ formData, selectedGejala, result, onBack, onReset }: Step3Props) {
-  const cfPercentage = Math.round(result.cf * 100);
-
+function Step3({ formData, selectedGejala, isLoading, error, onBack }: Step3Props) {
   return (
     <div className="w-full max-w-3xl rounded-3xl border border-white/70 bg-white p-6 shadow-xl md:p-8">
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Langkah 3</p>
-          <h2 className="mt-2 text-2xl font-bold text-gray-900">Hasil Diagnosa</h2>
+          <h2 className="mt-2 text-2xl font-bold text-gray-900">Memproses Diagnosis</h2>
           <p className="mt-1 text-sm text-gray-500">
-            Berikut estimasi penyakit berdasarkan gejala yang Anda pilih.
+            Silahkan tunggu sistem memproses data Anda...
           </p>
         </div>
         <ShieldCheck className="h-8 w-8 text-emerald-600" />
       </div>
 
-      <div className="mb-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-500 p-6 text-white">
-        <p className="text-sm uppercase tracking-[0.2em] text-emerald-100">Kemungkinan Tertinggi</p>
-        <h3 className="mt-1 text-2xl font-bold">{result.nama}</h3>
-        <div className="mt-4 flex items-end gap-2">
-          <span className="text-5xl font-extrabold leading-none">{cfPercentage}%</span>
-          <span className="mb-1 text-emerald-100">Tingkat Keyakinan (CF)</span>
-        </div>
-        <p className="mt-4 text-emerald-50">{result.deskripsi}</p>
-      </div>
-
-      <div className="mb-6 rounded-2xl border border-blue-200 bg-blue-50 p-5">
-        <h4 className="mb-2 font-semibold text-blue-900">Saran Penanganan</h4>
-        <p className="text-blue-800">{result.saran}</p>
-      </div>
-
-      <div className="mb-6 rounded-2xl border border-gray-200 bg-gray-50 p-5">
-        <h4 className="mb-3 font-semibold text-gray-900">Ringkasan Diagnosis</h4>
-        <div className="grid gap-2 text-sm text-gray-700 md:grid-cols-2">
-          <p>
-            <span className="font-semibold">Nama Peternak:</span> {formData.nama || '-'}
-          </p>
-          <p>
-            <span className="font-semibold">No HP:</span> {formData.noHp || '-'}
-          </p>
-          <p className="md:col-span-2">
-            <span className="font-semibold">Lokasi:</span> {formData.lokasi || '-'}
-          </p>
-        </div>
-
-        <div className="mt-4 border-t border-gray-200 pt-4">
-          <p className="font-semibold text-gray-900">Gejala Terpilih ({selectedGejala.length})</p>
-          <div className="mt-2 space-y-1 text-sm text-gray-700">
-            {selectedGejala.map((gejala) => (
-              <p key={gejala.id}>- {gejala.nama} (CF: {gejala.cf})</p>
-            ))}
+      <div className="mb-6 rounded-2xl border border-gray-200 bg-gray-50 p-8">
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center gap-4">
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-emerald-600" />
+            <p className="text-center text-gray-700">
+              Menganalisis gejala dan mencari diagnosis terbaik...
+            </p>
           </div>
-        </div>
+        ) : error ? (
+          <div className="rounded-xl border border-red-200 bg-red-50 p-4">
+            <p className="text-center font-semibold text-red-700">⚠️ Terjadi Kesalahan</p>
+            <p className="mt-2 text-center text-red-600">{error}</p>
+          </div>
+        ) : null}
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
-        <button
-          onClick={onBack}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 px-4 py-3 font-semibold text-gray-700 transition hover:bg-gray-50"
-        >
-          <ChevronLeft size={18} /> Kembali
-        </button>
-        <button
-          onClick={onReset}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white transition hover:bg-emerald-700"
-        >
-          <RefreshCcw size={18} /> Ulangi Diagnosa
-        </button>
-      </div>
+      {error && (
+        <div className="flex flex-col gap-3">
+          <button
+            onClick={onBack}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 px-4 py-3 font-semibold text-gray-700 transition hover:bg-gray-50"
+          >
+            <ChevronLeft size={18} /> Kembali
+          </button>
+        </div>
+      )}
     </div>
   );
 }
 
-export default function DiagnosisPage() {
+export default function DiagnosisPage({ gejalas, jenisSapi, jenisKelamin, umurKategori }: PageProps) {
   const [currentStep, setCurrentStep] = useState(0);
+  const { submitDiagnosis, isLoading, error } = useFormSubmission();
+
   const [formData, setFormData] = useState<FormData>({
-    nama: '',
-    noHp: '',
-    lokasi: '',
+    nama_user: '',
+    alamat_user: '',
+    no_hp_user: '',
+    jenis_sapi: '',
+    jenis_kelamin: '',
+    umur_kategori: '',
   });
   const [selectedGejala, setSelectedGejala] = useState<SelectedGejala[]>([]);
-  const [result, setResult] = useState<PenyakitResult>(PENYAKIT_RESULTS[0]);
 
-  const handleNextFromStep2 = () => {
-    const randomResult =
-      PENYAKIT_RESULTS[Math.floor(Math.random() * PENYAKIT_RESULTS.length)];
-    setResult(randomResult);
+  const handleNextFromStep2 = async () => {
     setCurrentStep(3);
+    
+    // Prepare data for submission
+    const submissionData = {
+      nama_user: formData.nama_user,
+      alamat_user: formData.alamat_user,
+      no_hp_user: formData.no_hp_user,
+      jenis_sapi: formData.jenis_sapi,
+      jenis_kelamin: formData.jenis_kelamin,
+      umur_kategori: formData.umur_kategori,
+      gejala: selectedGejala.map((g) => ({
+        gejala_id: g.id,
+        cf_user: g.cf_user,
+      })),
+    };
+
+    await submitDiagnosis(submissionData);
   };
 
   const handleReset = () => {
     setCurrentStep(1);
-    setFormData({ nama: '', noHp: '', lokasi: '' });
+    setFormData({
+      nama_user: '',
+      alamat_user: '',
+      no_hp_user: '',
+      jenis_sapi: '',
+      jenis_kelamin: '',
+      umur_kategori: '',
+    });
     setSelectedGejala([]);
-    setResult(PENYAKIT_RESULTS[0]);
   };
 
   const handleStartDiagnosis = () => {
@@ -537,6 +595,9 @@ export default function DiagnosisPage() {
               onNext={() => setCurrentStep(2)}
               formData={formData}
               setFormData={setFormData}
+              jenisSapi={jenisSapi}
+              jenisKelamin={jenisKelamin}
+              umurKategori={umurKategori}
             />
           )}
           {currentStep === 2 && (
@@ -545,15 +606,18 @@ export default function DiagnosisPage() {
               onBack={() => setCurrentStep(1)}
               selectedGejala={selectedGejala}
               setSelectedGejala={setSelectedGejala}
+              gejalas={gejalas}
             />
           )}
           {currentStep === 3 && (
             <Step3
               formData={formData}
               selectedGejala={selectedGejala}
-              result={result}
-              onBack={() => setCurrentStep(2)}
-              onReset={handleReset}
+              isLoading={isLoading}
+              error={error}
+              onBack={() => {
+                setCurrentStep(2);
+              }}
             />
           )}
         </div>
