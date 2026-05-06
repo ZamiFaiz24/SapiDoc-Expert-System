@@ -29,20 +29,33 @@ class DiagnosisController extends Controller
     }
 
     /**
-     * Proses diagnosis - hitung CF dan cari penyakit
+     * Proses diagnosis - hitung CF dengan user confidence dan cari penyakit
+     * 
+     * Request body format:
+     * {
+     *     "gejala": [
+     *         { "gejala_id": 1, "cf_user": 0.8 },   // Gejala jelas (80%)
+     *         { "gejala_id": 2, "cf_user": 0.5 },   // Gejala kurang jelas (50%)
+     *         { "gejala_id": 4, "cf_user": 0.9 }    // Gejala sangat jelas (90%)
+     *     ],
+     *     "nama_user": "Petani Budi",
+     *     "alamat_user": "Jl. Raya No. 123",
+     *     "no_hp_user": "08123456789"
+     * }
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'gejala_ids' => 'required|array|min:1',
-            'gejala_ids.*' => 'integer|exists:gejalas,id',
+            'gejala' => 'required|array|min:1',
+            'gejala.*.gejala_id' => 'required|integer|exists:gejalas,id',
+            'gejala.*.cf_user' => 'required|numeric|min:0|max:1',
             'nama_user' => 'required|string',
             'alamat_user' => 'required|string',
             'no_hp_user' => 'required|string',
         ]);
 
-        // STEP 1: Jalankan inferensi Forward Chaining
-        $hasil_inferensi = $this->inferensiService->inferensi($validated['gejala_ids']);
+        // STEP 1: Jalankan inferensi Forward Chaining dengan CF user
+        $hasil_inferensi = $this->inferensiService->inferensi($validated['gejala']);
 
         // STEP 2: Ambil diagnosis utama (CF tertinggi)
         $diagnosis_utama = $hasil_inferensi[0] ?? null;
@@ -62,28 +75,29 @@ class DiagnosisController extends Controller
             'penyakit_id' => $diagnosis_utama['penyakit_id'],
             'nama_penyakit_snap' => $diagnosis_utama['nama_penyakit'],
             'cf_final' => $diagnosis_utama['cf'],
-            'diagnosis_banding' => json_encode($diagnosis_banding),
+            'diagnosis_banding' => $diagnosis_banding,
+            'gejala_input' => $validated['gejala'], 
         ]);
 
         return redirect()->route('diagnosis.show', $diagnosis->id);
     }
 
     /**
-     * Tampilkan hasil diagnosis
+     * Tampilkan hasil diagnosis dengan detail breakdown CF
      */
     public function show(Diagnosis $diagnosis)
     {
-        // Ambil gejala yang diamati dari user
-        $gejala_ids = request()->query('gejala_ids', []); // Jika ada query param
-
         $penyakit = $diagnosis->penyakit;
-        $diagnosis_banding = json_decode($diagnosis->diagnosis_banding, true);
+        $diagnosis_banding = $diagnosis->diagnosis_banding;
 
-        // Jika ada gejala yang dipilih, tampilkan detail
+        // Ambil gejala dengan CF user dari session jika ada
+        $gejala_dengan_cf = $diagnosis->gejala_input ?? [];
+        
+        // Detail diagnosis - jika ada gejala yang dipilih
         $detail_diagnosis = null;
-        if (!empty($gejala_ids)) {
+        if (!empty($gejala_dengan_cf)) {
             $detail_diagnosis = $this->inferensiService->detailDiagnosis(
-                is_array($gejala_ids) ? $gejala_ids : [$gejala_ids],
+                $gejala_dengan_cf,
                 $diagnosis->penyakit_id
             );
         }

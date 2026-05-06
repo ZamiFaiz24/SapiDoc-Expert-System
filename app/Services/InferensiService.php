@@ -9,20 +9,32 @@ use App\Models\Penyakit;
 class InferensiService
 {
     /**
-     * Forward Chaining - dari gejala yang diamati, cari penyakit yang mungkin
+     * Forward Chaining - dari gejala yang diamati + tingkat keparahan, cari penyakit
      * 
      * Proses:
-     * 1. User input gejala yang diamati
+     * 1. User input gejala yang diamati + CF_user (tingkat keparahan 0-1)
      * 2. Cari semua aturan (basis pengetahuan) yang match dengan gejala tersebut
      * 3. Hitung Certainty Factor (CF) untuk setiap penyakit
-     * 4. Urutkan berdasarkan CF tertinggi
+     *    CF = (MB - MD) × CF_user
+     * 4. Kombinasi CF dari multiple gejala
+     * 5. Urutkan berdasarkan CF tertinggi
+     * 
+     * @param array $gejala_dengan_cf Format: [
+     *     ['gejala_id' => 1, 'cf_user' => 0.8],
+     *     ['gejala_id' => 2, 'cf_user' => 0.6],
+     * ]
+     * Atau untuk backward compatibility: [1, 2, 3] (default CF_user = 1.0)
      */
-    public function inferensi(array $gejala_ids): array
+    public function inferensi(array $gejala_dengan_cf): array
     {
+        // Normalize input: jika array gejala_id biasa, convert ke format baru
+        $gejalas_normalized = $this->normalizeGejalaInput($gejala_dengan_cf);
+
         // Array untuk menyimpan CF setiap penyakit
         $cf_penyakits = [];
 
         // Step 1: Ambil semua aturan yang sesuai dengan gejala yang diamati
+        $gejala_ids = array_column($gejalas_normalized, 'gejala_id');
         $aturans = Aturan::whereIn('gejala_id', $gejala_ids)
             ->with(['penyakit', 'gejala'])
             ->get()
@@ -30,7 +42,7 @@ class InferensiService
 
         // Step 2: Hitung CF untuk setiap penyakit
         foreach ($aturans as $penyakit_id => $rules) {
-            $cf_penyakits[$penyakit_id] = $this->hitungCFPenyakit($rules);
+            $cf_penyakits[$penyakit_id] = $this->hitungCFPenyakit($rules, $gejalas_normalized);
         }
 
         // Step 3: Urutkan berdasarkan CF tertinggi
@@ -39,7 +51,10 @@ class InferensiService
         // Step 4: Format hasil dengan detail penyakit
         $hasil = [];
         foreach ($cf_penyakits as $penyakit_id => $cf) {
-            $penyakit = Penyakit::find($penyakit_id);
+            $penyakits = Penyakit::whereIn('id', array_keys($cf_penyakits))
+                ->get()
+                ->keyBy('id');
+            $penyakit = $penyakits[$penyakit_id];
             $hasil[] = [
                 'penyakit_id' => $penyakit_id,
                 'nama_penyakit' => $penyakit->nama_penyakit,
@@ -54,29 +69,74 @@ class InferensiService
     }
 
     /**
-     * Hitung CF untuk satu penyakit dari multiple gejala
-     * Formula Certainty Factor:
-     * - CF(A|B) = MB(A|B) - MD(A|B)
-     * - Jika multiple gejala: CF_baru = CF_lama + CF_gejala × (1 - CF_lama)
+     * Normalize input gejala untuk memastikan format konsisten
      */
-    private function hitungCFPenyakit($rules): float
+    private function normalizeGejalaInput(array $input): array
     {
-        $cf_combined = 0;
+        $normalized = [];
 
-        foreach ($rules as $rule) {
-            // CF untuk rule ini
-            $cf_rule = $rule->nilai_mb - $rule->nilai_md;
-
-            // Kombinasi dengan CF sebelumnya
-            if ($cf_combined == 0) {
-                $cf_combined = $cf_rule;
+        foreach ($input as $item) {
+            if (is_array($item)) {
+                // Format baru: ['gejala_id' => 1, 'cf_user' => 0.8]
+                $normalized[] = [
+                    'gejala_id' => $item['gejala_id'],
+                    'cf_user' => $item['cf_user'] ?? 1.0,
+                ];
             } else {
-                // Formula: CF_baru = CF_lama + CF_gejala × (1 - CF_lama)
-                $cf_combined = $cf_combined + $cf_rule * (1 - $cf_combined);
+                // Format lama: hanya gejala_id (backward compatibility)
+                $normalized[] = [
+                    'gejala_id' => $item,
+                    'cf_user' => 1.0, // Default maksimal confidence
+                ];
             }
         }
 
-        return max(0, min(1, $cf_combined)); // Pastikan hasil antara 0-1
+        return $normalized;
+    }
+
+    /**
+     * Hitung CF untuk satu penyakit dari multiple gejala
+     * 
+     * Formula Certainty Factor dengan User Confidence:
+     * - CF_expert = MB(A|B) - MD(A|B)
+     * - CF_combined = CF_expert × CF_user
+     * - Jika multiple gejala: CF_final = CF_lama + CF_gejala × (1 - CF_lama)
+     * 
+     * @param $rules Koleksi aturan untuk penyakit
+     * @param array $gejalas_normalized Gejala dengan CF dari user
+     */
+    private function hitungCFPenyakit($rules, array $gejalas_normalized): float
+    {
+        // Mapping CF user: [gejala_id => cf_user]
+        $cfUserMap = collect($gejalas_normalized)
+            ->pluck('cf_user', 'gejala_id')
+            ->toArray();
+
+        $cfCombined = 0.0;
+
+        foreach ($rules as $rule) {
+            // CF dari pakar (MB - MD)
+            $cfExpert = $rule->nilai_mb - $rule->nilai_md;
+
+            // Ambil CF dari user (default 0 jika tidak ada)
+            $cfUser = $cfUserMap[$rule->gejala_id] ?? 0.0;
+
+            // CF untuk gejala ini
+            $cfGejala = $cfExpert * $cfUser;
+
+            // Skip kalau tidak ada kontribusi
+            if ($cfGejala == 0) {
+                continue;
+            }
+
+            // Kombinasi CF (incremental)
+            $cfCombined = ($cfCombined == 0)
+                ? $cfGejala
+                : $cfCombined + ($cfGejala * (1 - $cfCombined));
+        }
+
+        // Clamp hasil antara 0 - 1
+        return max(0.0, min(1.0, $cfCombined));
     }
 
     /**
@@ -96,10 +156,26 @@ class InferensiService
     }
 
     /**
-     * Detail diagnosis - lihat gejala mana saja yang cocok
+     * Detail diagnosis - lihat gejala mana saja yang cocok dengan CF breakdown
+     * 
+     * @param array $gejala_dengan_cf Format: [
+     *     ['gejala_id' => 1, 'cf_user' => 0.8],
+     *     ['gejala_id' => 2, 'cf_user' => 0.6],
+     * ]
      */
-    public function detailDiagnosis(array $gejala_ids, int $penyakit_id): array
+    public function detailDiagnosis(array $gejala_dengan_cf, int $penyakit_id): array
     {
+        // Normalize input
+        $gejalas_normalized = $this->normalizeGejalaInput($gejala_dengan_cf);
+
+        // Buat map CF user per gejala
+        $cf_user_map = [];
+        foreach ($gejalas_normalized as $item) {
+            $cf_user_map[$item['gejala_id']] = $item['cf_user'];
+        }
+
+        // Ambil aturan untuk penyakit ini
+        $gejala_ids = array_column($gejalas_normalized, 'gejala_id');
         $aturans = Aturan::where('penyakit_id', $penyakit_id)
             ->whereIn('gejala_id', $gejala_ids)
             ->with(['gejala'])
@@ -109,19 +185,30 @@ class InferensiService
         $cf_combined = 0;
 
         foreach ($aturans as $aturan) {
-            $cf_rule = $aturan->nilai_mb - $aturan->nilai_md;
+            // CF expert
+            $cf_expert = $aturan->nilai_mb - $aturan->nilai_md;
 
+            // CF user
+            $cf_user = $cf_user_map[$aturan->gejala_id] ?? 0;
+
+            // CF combined (expert × user)
+            $cf_gejala = $cf_expert * $cf_user;
+
+            // Update combined CF
             if ($cf_combined == 0) {
-                $cf_combined = $cf_rule;
+                $cf_combined = $cf_gejala;
             } else {
-                $cf_combined = $cf_combined + $cf_rule * (1 - $cf_combined);
+                $cf_combined = $cf_combined + $cf_gejala * (1 - $cf_combined);
             }
 
             $detail[] = [
                 'gejala' => $aturan->gejala->nama_gejala,
+                'kode_gejala' => $aturan->gejala->kode_gejala,
                 'nilai_mb' => $aturan->nilai_mb,
                 'nilai_md' => $aturan->nilai_md,
-                'cf_rule' => round($cf_rule, 4),
+                'cf_expert' => round($cf_expert, 4),
+                'cf_user' => round($cf_user, 4),
+                'cf_gejala' => round($cf_gejala, 4),
                 'cf_combined' => round($cf_combined, 4),
                 'catatan_pakar' => $aturan->catatan_pakar,
             ];

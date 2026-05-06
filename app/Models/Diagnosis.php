@@ -24,6 +24,7 @@ class Diagnosis extends Model
     protected $casts = [
         'cf_final' => 'float',
         'diagnosis_banding' => 'array',
+        'gejala_input' => 'array',
     ];
 
     public function penyakit(): BelongsTo
