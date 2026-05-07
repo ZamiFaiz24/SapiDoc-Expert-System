@@ -31,7 +31,6 @@ class Diagnosis extends Model
         'gejala_input' => 'array',
     ];
 
-    // Opsi untuk validasi
     public static function getJenisSapi(): array
     {
         return [

@@ -261,24 +261,30 @@ class InferensiService
         // Dapatkan semua gejala yang linked ke top penyakit, exclude yang sudah dipilih
         $suggestedGejalas = Aturan::whereIn('penyakit_id', $topPenyakitIds)
             ->whereNotIn('gejala_id', $selectedGejalaIds)
-            ->where('kategori', 'Gejala Spesifik') // Suggest gejala spesifik
             ->with(['gejala'])
             ->get()
             ->groupBy('gejala_id')
             ->map(function ($aturanGroup) {
+                // Filter hanya gejala spesifik
+                $gejala = $aturanGroup->first()->gejala;
+                if ($gejala->kategori !== 'Gejala Spesifik') {
+                    return null;
+                }
+
                 // Hitung rata-rata CF expert untuk gejala ini
                 $avgMb = $aturanGroup->avg('nilai_mb');
                 $avgMd = $aturanGroup->avg('nilai_md');
                 $cfExpert = round($avgMb - $avgMd, 4);
 
                 return [
-                    'id' => $aturanGroup->first()->gejala_id,
-                    'kode_gejala' => $aturanGroup->first()->gejala->kode_gejala,
-                    'nama_gejala' => $aturanGroup->first()->gejala->nama_gejala,
-                    'kategori' => $aturanGroup->first()->gejala->kategori,
+                    'id' => $gejala->id,
+                    'kode_gejala' => $gejala->kode_gejala,
+                    'nama_gejala' => $gejala->nama_gejala,
+                    'kategori' => $gejala->kategori,
                     'cf_score' => $cfExpert, // Expert confidence (MB - MD)
                 ];
             })
+            ->filter() // Remove null values
             ->sortByDesc('cf_score')
             ->values()
             ->take(5) // Max 5 suggestions

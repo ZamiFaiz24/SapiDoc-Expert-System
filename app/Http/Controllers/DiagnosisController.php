@@ -55,12 +55,12 @@ class DiagnosisController extends Controller
             'nama_user' => 'required|string|max:100',
             'alamat_user' => 'required|string|max:255',
             'no_hp_user' => 'required|string|max:20',
-            
+
             // Data Sapi
             'jenis_sapi' => 'required|string|in:' . implode(',', array_keys(Diagnosis::getJenisSapi())),
             'jenis_kelamin' => 'required|string|in:' . implode(',', array_keys(Diagnosis::getJenisKelamin())),
             'umur_kategori' => 'required|string|in:' . implode(',', array_keys(Diagnosis::getUmurKategori())),
-            
+
             // Data Gejala
             'gejala' => 'required|array|min:1',
             'gejala.*.gejala_id' => 'required|integer|exists:gejalas,id',
@@ -96,7 +96,7 @@ class DiagnosisController extends Controller
             'nama_penyakit_snap' => $diagnosisUtama['nama_penyakit'],
             'cf_final' => $diagnosisUtama['cf'],
             'diagnosis_banding' => $diagnosisBanding,
-            'gejala_input' => $validated['gejala'], 
+            'gejala_input' => $validated['gejala'],
         ]);
 
         // Return JSON for API calls, redirect for form submissions
@@ -135,7 +135,7 @@ class DiagnosisController extends Controller
             'penyakit' => $penyakit,
             'diagnosis_banding' => $diagnosisBanding,
             'detail_diagnosis' => $detailDiagnosis,
-            'interpretasi' => $this->getInterpretasi($diagnosis->cf_final),
+            'interpretasi' => $this->getInterpretasi($diagnosis->cf_final ?? 0),
         ]);
     }
 

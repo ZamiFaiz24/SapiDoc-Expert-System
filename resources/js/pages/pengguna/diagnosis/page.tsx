@@ -22,6 +22,8 @@ interface Gejala {
   kode_gejala: string;
   nama_gejala: string;
   kategori: string;
+  jenis_kelamin?: string;
+  umur_kategori?: string;
 }
 
 interface PageProps {
@@ -55,20 +57,18 @@ interface SuggestedGejala {
 }
 
 const CF_OPTIONS = [
-  { value: 0, label: 'Tidak Ada' },
-  { value: 0.2, label: 'Sangat Ringan' },
-  { value: 0.4, label: 'Ringan' },
-  { value: 0.6, label: 'Sedang' },
-  { value: 0.8, label: 'Berat' },
-  { value: 1, label: 'Sangat Berat' },
+  { value: 0, label: 'Tidak Tahu / Tidak Ada' },
+  { value: 0.4, label: 'Mungkin' },
+  { value: 0.6, label: 'Cukup Yakin' },
+  { value: 0.8, label: 'Yakin' },
+  { value: 1, label: 'Sangat Yakin' },
 ];
 
 const STEP_META = [
   { id: 1, title: 'Data', subtitle: 'Peternak & Sapi' },
-  { id: 2, title: 'Kondisi', subtitle: 'Kondisi sapi' },
-  { id: 3, title: 'Umum', subtitle: 'Gejala umum' },
-  { id: 4, title: 'Spesifik', subtitle: 'Gejala spesifik' },
-  { id: 5, title: 'Hasil', subtitle: 'Analisis diagnosis' },
+  { id: 2, title: 'Umum', subtitle: 'Gejala umum' },
+  { id: 3, title: 'Spesifik', subtitle: 'Gejala spesifik' },
+  { id: 4, title: 'Hasil', subtitle: 'Analisis diagnosis' },
 ];
 
 function StepIndicator({ currentStep }: { currentStep: number }) {
@@ -92,7 +92,6 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
                 <p className="text-[10px] text-gray-500">{step.subtitle}</p>
               </div>
             </div>
-
             {idx < STEP_META.length - 1 && (
               <div
                 className={`mt-2 h-1 flex-1 rounded-full transition-all md:mt-0 ${
@@ -461,22 +460,26 @@ function Step3({ onNext, onBack, selectedGejala, setSelectedGejala, gejalas }: S
   );
 }
 
-// Step 4: Gejala Spesifik + Suggested
 interface Step4Props {
   onNext: () => void;
   onBack: () => void;
   selectedGejala: SelectedGejala[];
   setSelectedGejala: Dispatch<SetStateAction<SelectedGejala[]>>;
   gejalas: Gejala[];
+  formData: FormData;
 }
 
-function Step4({ onNext, onBack, selectedGejala, setSelectedGejala, gejalas }: Step4Props) {
+function Step4({ onNext, onBack, selectedGejala, setSelectedGejala, gejalas, formData }: Step4Props) {
   const { getSuggestedGejala, suggestions, isLoading: suggestLoading } = useFcSuggestion();
   const [loaded, setLoaded] = useState(false);
 
-  const spesifikGejalas = gejalas.filter((g) => g.kategori === 'Gejala Spesifik');
+  const spesifikGejalas = gejalas.filter((g) => {
+    if (g.kategori !== 'Gejala Spesifik') return false;
+    if (g.jenis_kelamin && g.jenis_kelamin !== 'all' && g.jenis_kelamin !== formData.jenis_kelamin) return false;
+    if (g.umur_kategori && g.umur_kategori !== 'all' && g.umur_kategori !== formData.umur_kategori) return false;
+    return true;
+  });
 
-  // Load suggestions on mount
   if (!loaded && selectedGejala.length > 0) {
     setLoaded(true);
     const gejalaDenganCf = selectedGejala.map((g) => ({
@@ -627,7 +630,6 @@ function Step4({ onNext, onBack, selectedGejala, setSelectedGejala, gejalas }: S
   );
 }
 
-// Step 5: Loading/Result
 interface Step5Props {
   formData: FormData;
   selectedGejala: SelectedGejala[];
@@ -690,7 +692,7 @@ export default function DiagnosisPage({ gejalas, jenisSapi, jenisKelamin, umurKa
   const [selectedGejala, setSelectedGejala] = useState<SelectedGejala[]>([]);
 
   const handleSubmit = async () => {
-    setCurrentStep(5);
+    setCurrentStep(4);
 
     const submissionData = {
       nama_user: formData.nama_user,
@@ -802,7 +804,7 @@ export default function DiagnosisPage({ gejalas, jenisSapi, jenisKelamin, umurKa
                 />
               )}
               {currentStep === 2 && (
-                <Step2
+                <Step3
                   onNext={() => setCurrentStep(3)}
                   onBack={() => setCurrentStep(1)}
                   selectedGejala={selectedGejala}
@@ -811,30 +813,22 @@ export default function DiagnosisPage({ gejalas, jenisSapi, jenisKelamin, umurKa
                 />
               )}
               {currentStep === 3 && (
-                <Step3
-                  onNext={() => setCurrentStep(4)}
+                <Step4
+                  onNext={handleSubmit}
                   onBack={() => setCurrentStep(2)}
                   selectedGejala={selectedGejala}
                   setSelectedGejala={setSelectedGejala}
                   gejalas={gejalas}
+                  formData={formData}
                 />
               )}
               {currentStep === 4 && (
-                <Step4
-                  onNext={handleSubmit}
-                  onBack={() => setCurrentStep(3)}
-                  selectedGejala={selectedGejala}
-                  setSelectedGejala={setSelectedGejala}
-                  gejalas={gejalas}
-                />
-              )}
-              {currentStep === 5 && (
                 <Step5
                   formData={formData}
                   selectedGejala={selectedGejala}
                   isLoading={isLoading}
                   error={error}
-                  onBack={() => setCurrentStep(4)}
+                  onBack={() => setCurrentStep(3)}
                 />
               )}
             </div>
