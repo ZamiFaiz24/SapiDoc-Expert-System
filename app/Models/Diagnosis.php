@@ -58,7 +58,7 @@ class Diagnosis extends Model
 
     public function penyakit(): BelongsTo
     {
-        return $this->belongsTo(Penyakit::class);
+        return $this->belongsTo(Penyakit::class, 'penyakit_id');
     }
 
     public function detailDiagnoses(): HasMany

@@ -14,6 +14,12 @@ Route::get('/diagnosis', function () {
 })->name('diagnosis.index');
 
 Route::resource('diagnosis', DiagnosisController::class)->only(['create', 'store', 'show']);
+
+// 2. Baru taruh route tambahan di bawahnya
+Route::get('/diagnosis', function () {
+    return redirect('/diagnosis/create');
+})->name('diagnosis.index');
+
 Route::post('/diagnosis/suggest-gejala', [DiagnosisController::class, 'suggestGejala']);
 
 Route::middleware(['auth'])->group(function () {

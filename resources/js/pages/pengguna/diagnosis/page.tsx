@@ -467,9 +467,11 @@ interface Step4Props {
   setSelectedGejala: Dispatch<SetStateAction<SelectedGejala[]>>;
   gejalas: Gejala[];
   formData: FormData;
+  isLoading: boolean;
+  error: string | null;
 }
 
-function Step4({ onNext, onBack, selectedGejala, setSelectedGejala, gejalas, formData }: Step4Props) {
+function Step4({ onNext, onBack, selectedGejala, setSelectedGejala, gejalas, formData, isLoading, error }: Step4Props) {
   const { getSuggestedGejala, suggestions, isLoading: suggestLoading } = useFcSuggestion();
   const [loaded, setLoaded] = useState(false);
 
@@ -612,67 +614,37 @@ function Step4({ onNext, onBack, selectedGejala, setSelectedGejala, gejalas, for
         </div>
       </div>
 
+      {error && (
+        <div className="mt-4 flex items-center gap-2 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+          <AlertCircle size={16} /> {error}
+        </div>
+      )}
+
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-between">
         <button
           onClick={onBack}
-          className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+          disabled={isLoading}
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ChevronLeft size={18} /> Kembali
         </button>
         <button
           onClick={onNext}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
+          disabled={isLoading}
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
-          Proses Diagnosis <ChevronRight size={18} />
+          {isLoading ? (
+            <>
+              <Loader size={18} className="animate-spin" />
+              Memproses...
+            </>
+          ) : (
+            <>
+              Proses Diagnosis <ChevronRight size={18} />
+            </>
+          )}
         </button>
       </div>
-    </div>
-  );
-}
-
-interface Step5Props {
-  formData: FormData;
-  selectedGejala: SelectedGejala[];
-  isLoading: boolean;
-  error: string | null;
-  onBack: () => void;
-}
-
-function Step5({ formData, selectedGejala, isLoading, error, onBack }: Step5Props) {
-  return (
-    <div className="w-full max-w-3xl rounded-3xl border border-white/70 bg-white p-6 shadow-xl md:p-8">
-      <div className="mb-6 flex items-start justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Memproses Diagnosis</h2>
-          <p className="mt-1 text-sm text-gray-500">Silahkan tunggu sistem memproses data Anda...</p>
-        </div>
-        <ShieldCheck className="h-8 w-8 text-emerald-600" />
-      </div>
-
-      <div className="mb-6 rounded-2xl border border-gray-200 bg-gray-50 p-8">
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center gap-4">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-emerald-600" />
-            <p className="text-center text-gray-700">Menganalisis {selectedGejala.length} gejala...</p>
-          </div>
-        ) : error ? (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-            <p className="text-center font-semibold text-red-700">⚠️ Terjadi Kesalahan</p>
-            <p className="mt-2 text-center text-sm text-red-600">{error}</p>
-          </div>
-        ) : null}
-      </div>
-
-      {error && (
-        <div className="flex flex-col gap-3">
-          <button
-            onClick={onBack}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
-          >
-            <ChevronLeft size={18} /> Kembali
-          </button>
-        </div>
-      )}
     </div>
   );
 }
@@ -692,8 +664,6 @@ export default function DiagnosisPage({ gejalas, jenisSapi, jenisKelamin, umurKa
   const [selectedGejala, setSelectedGejala] = useState<SelectedGejala[]>([]);
 
   const handleSubmit = async () => {
-    setCurrentStep(4);
-
     const submissionData = {
       nama_user: formData.nama_user,
       alamat_user: formData.alamat_user,
@@ -820,15 +790,8 @@ export default function DiagnosisPage({ gejalas, jenisSapi, jenisKelamin, umurKa
                   setSelectedGejala={setSelectedGejala}
                   gejalas={gejalas}
                   formData={formData}
-                />
-              )}
-              {currentStep === 4 && (
-                <Step5
-                  formData={formData}
-                  selectedGejala={selectedGejala}
                   isLoading={isLoading}
                   error={error}
-                  onBack={() => setCurrentStep(3)}
                 />
               )}
             </div>

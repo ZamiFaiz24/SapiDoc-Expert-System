@@ -81,7 +81,14 @@ class DiagnosisController extends Controller
             return back()->with('error', 'Tidak ada penyakit yang cocok dengan gejala yang dipilih');
         }
 
-        $diagnosisBanding = array_slice($hasilInferensi, 1, 5);
+        // Format diagnosis banding dengan struktur yang jelas
+        $diagnosisBanding = array_map(function ($item) {
+            return [
+                'penyakit_id' => $item['penyakit_id'],
+                'nama_penyakit' => $item['nama_penyakit'],
+                'cf_score' => $item['cf'],
+            ];
+        }, array_slice($hasilInferensi, 1, 5));
 
         $diagnosis = Diagnosis::create([
             'nama_user' => $validated['nama_user'],
@@ -111,65 +118,40 @@ class DiagnosisController extends Controller
     /**
      * Tampilkan hasil diagnosis dengan detail breakdown CF
      */
-    public function show(Diagnosis $diagnosis)
+    public function show($id) // Hapus "Diagnosis" di depan $id
     {
-        $penyakit = $diagnosis->penyakit;
-        $diagnosisBanding = $diagnosis->diagnosis_banding;
+        // Cari data secara manual berdasarkan ID yang ada di URL
+        // Kita gunakan with('penyakit') untuk mengambil detail penyakitnya sekalian
+        $diagnosis = \App\Models\Diagnosis::with('penyakit')->findOrFail($id);
 
-        // Ambil gejala dengan CF user dari session jika ada
-        $gejalaDenganCf = $diagnosis->gejala_input ?? [];
+        // Sekarang kita coba dd lagi, pasti muncul datanya
+        // dd($diagnosis->toArray()); 
 
-        // Detail diagnosis - jika ada gejala yang dipilih
-        $detailDiagnosis = null;
-        if (!empty($gejalaDenganCf)) {
-            $detailDiagnosis = $this->inferensiService->detailDiagnosis(
-                $gejalaDenganCf,
-                $diagnosis->penyakit_id
-            );
-        }
-
-        return inertia('pengguna/diagnosis/example-show', [
+        return inertia('pengguna/diagnosis/show', [
             'diagnosis' => $diagnosis,
-            'penyakit' => $penyakit,
-            'diagnosis_banding' => $diagnosisBanding,
-            'detail_diagnosis' => $detailDiagnosis,
+            'penyakit' => $diagnosis->penyakit ?? [
+                'nama_penyakit' => $diagnosis->nama_penyakit_snap,
+                'deskripsi' => 'Informasi detail tidak tersedia.',
+                'cara_penanganan' => 'Silahkan hubungi dokter hewan terdekat.'
+            ],
+            'diagnosis_banding' => $diagnosis->diagnosis_banding ?? [],
             'interpretasi' => $this->getInterpretasi($diagnosis->cf_final ?? 0),
         ]);
     }
 
     /**
-     * Interpretasi nilai CF
+     * Interpretasi nilai CF - return string untuk display
      */
-    private function getInterpretasi(float $cf): array
+    private function getInterpretasi(float $cf): string
     {
         if ($cf >= 0.8) {
-            return [
-                'level' => 'Sangat Mungkin',
-                'persentase' => round($cf * 100, 1) . '%',
-                'penjelasan' => 'Gejala yang diamati sangat cocok dengan penyakit ini. Disarankan untuk konsultasi dengan dokter hewan.',
-                'color' => 'red',
-            ];
+            return 'Gejala yang diamati sangat cocok dengan penyakit ini. Disarankan untuk konsultasi dengan dokter hewan.';
         } elseif ($cf >= 0.6) {
-            return [
-                'level' => 'Mungkin',
-                'persentase' => round($cf * 100, 1) . '%',
-                'penjelasan' => 'Gejala menunjukkan kemungkinan penyakit ini. Monitoring kondisi sapi dan segera konsultasi dengan dokter hewan.',
-                'color' => 'orange',
-            ];
+            return 'Gejala menunjukkan kemungkinan penyakit ini. Monitoring kondisi sapi dan segera konsultasi dengan dokter hewan.';
         } elseif ($cf >= 0.4) {
-            return [
-                'level' => 'Cukup Mungkin',
-                'persentase' => round($cf * 100, 1) . '%',
-                'penjelasan' => 'Ada indikasi penyakit ini tetapi tidak terlalu kuat. Lakukan observasi lebih lanjut.',
-                'color' => 'yellow',
-            ];
+            return 'Ada indikasi penyakit ini tetapi tidak terlalu kuat. Lakukan observasi lebih lanjut.';
         } else {
-            return [
-                'level' => 'Tidak Pasti',
-                'persentase' => round($cf * 100, 1) . '%',
-                'penjelasan' => 'Gejala tidak menunjukkan penyakit ini dengan jelas. Cek gejala lainnya.',
-                'color' => 'blue',
-            ];
+            return 'Gejala tidak menunjukkan penyakit ini dengan jelas. Cek gejala lainnya.';
         }
     }
 

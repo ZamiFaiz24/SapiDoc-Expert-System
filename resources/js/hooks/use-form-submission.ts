@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { router } from '@inertiajs/react';
 
 interface GejalaSubmission {
   gejala_id: number;
@@ -16,29 +15,45 @@ interface DiagnosisSubmissionData extends Record<string, any> {
   gejala: GejalaSubmission[];
 }
 
+interface SubmissionResponse {
+  diagnosis_id: number;
+  message: string;
+}
+
 export function useFormSubmission() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const submitDiagnosis = (data: DiagnosisSubmissionData) => {
+  const submitDiagnosis = async (data: DiagnosisSubmissionData) => {
     setIsLoading(true);
     setError(null);
 
-    router.post('/diagnosis', data, {
-      onError: (errors) => {
-        console.error(errors);
-        setError('Gagal memproses diagnosis');
-        setIsLoading(false);
-      },
+    try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      
+      const response = await fetch('/diagnosis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken || '',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-      onSuccess: () => {
-        setIsLoading(false);
-      },
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      onFinish: () => {
-        setIsLoading(false);
-      },
-    });
+      const result: SubmissionResponse = await response.json();
+      
+      // Redirect to diagnosis show page
+      window.location.href = `/diagnosis/${result.diagnosis_id}`;
+    } catch (err) {
+      console.error('Submission error:', err);
+      setError(err instanceof Error ? err.message : 'Gagal memproses diagnosis');
+      setIsLoading(false);
+    }
   };
 
   return {
