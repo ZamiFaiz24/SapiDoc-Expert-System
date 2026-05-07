@@ -81,10 +81,8 @@ class DiagnosisController extends Controller
             return back()->with('error', 'Tidak ada penyakit yang cocok dengan gejala yang dipilih');
         }
 
-        // STEP 3: Ambil diagnosis banding (saran lainnya)
-        $diagnosisBanding = array_slice($hasilInferensi, 1, 5); // Max 5 saran
+        $diagnosisBanding = array_slice($hasilInferensi, 1, 5);
 
-        // STEP 4: Simpan hasil diagnosis ke database
         $diagnosis = Diagnosis::create([
             'nama_user' => $validated['nama_user'],
             'alamat_user' => $validated['alamat_user'],

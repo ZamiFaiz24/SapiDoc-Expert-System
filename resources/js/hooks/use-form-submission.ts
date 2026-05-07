@@ -6,7 +6,7 @@ interface GejalaSubmission {
   cf_user: number;
 }
 
-interface DiagnosisSubmissionData {
+interface DiagnosisSubmissionData extends Record<string, any> {
   nama_user: string;
   alamat_user: string;
   no_hp_user: string;
@@ -20,39 +20,30 @@ export function useFormSubmission() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const submitDiagnosis = async (data: DiagnosisSubmissionData) => {
+  const submitDiagnosis = (data: DiagnosisSubmissionData) => {
     setIsLoading(true);
     setError(null);
 
-    try {
-      const response = await fetch('/diagnosis', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-        },
-        body: JSON.stringify(data),
-      });
+    router.post('/diagnosis', data, {
+      onError: (errors) => {
+        console.error(errors);
+        setError('Gagal memproses diagnosis');
+        setIsLoading(false);
+      },
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Gagal memproses diagnosis');
-      }
+      onSuccess: () => {
+        setIsLoading(false);
+      },
 
-      const result = await response.json();
-      
-      // Redirect ke hasil diagnosis
-      if (result.diagnosis_id) {
-        router.visit(`/diagnosis/${result.diagnosis_id}`);
-      }
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Terjadi kesalahan saat memproses diagnosis';
-      setError(message);
-      console.error('Submission error:', err);
-    } finally {
-      setIsLoading(false);
-    }
+      onFinish: () => {
+        setIsLoading(false);
+      },
+    });
   };
 
-  return { submitDiagnosis, isLoading, error };
+  return {
+    submitDiagnosis,
+    isLoading,
+    error,
+  };
 }
