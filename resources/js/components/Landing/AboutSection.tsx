@@ -1,33 +1,156 @@
+import { ShieldCheck, BrainCircuit, Stethoscope } from 'lucide-react';
+
 export default function AboutSection() {
-    return (
-      <section id="about" className="bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
-          <div className="space-y-12">
-            <div className="text-center space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Tentang SapiDoc
+  return (
+    <section id="about" className="bg-gray-50 py-20 md:py-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+          {/* Left Content */}
+          <div className="space-y-6">
+
+            <span className="
+              inline-block
+              px-4
+              py-1.5
+              rounded-full
+              bg-emerald-100
+              text-emerald-700
+              text-sm
+              font-medium
+            ">
+              Tentang Platform
+            </span>
+
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+              Teknologi Diagnosis Awal
+              <span className="text-emerald-600"> untuk Kesehatan Sapi</span>
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              SapiDoc adalah sistem pakar berbasis AI untuk diagnosis awal penyakit pada sapi. Dikembangkan menggunakan metode Certainty Factor, sistem ini membantu peternak melakukan identifikasi masalah kesehatan ternak secara dini, sehingga dapat mengambil tindakan yang tepat. Platform ini dapat diakses oleh peternak di Kecamatan Petanahan, Kabupaten Kebumen, dan sekitarnya.
+
+            <p className="text-lg text-gray-600 leading-relaxed">
+              SapiDoc merupakan sistem pakar berbasis web yang membantu
+              peternak melakukan diagnosis awal penyakit sapi menggunakan
+              metode Certainty Factor.
             </p>
+
+            <p className="text-lg text-gray-600 leading-relaxed">
+              Platform ini dirancang untuk membantu proses identifikasi
+              gejala secara cepat, sehingga peternak dapat mengambil
+              tindakan lebih dini sebelum berkonsultasi dengan dokter hewan.
+            </p>
+
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-emerald-50 p-8 rounded-xl text-center">
-              <p className="text-4xl font-bold text-emerald-600 mb-2">Tinggi</p>
-              <p className="text-gray-700 font-medium">Akurasi Diagnosis</p>
+          {/* Right Cards */}
+          <div className="space-y-6">
+
+            {/* Card 1 */}
+            <div className="
+              bg-white
+              p-6
+              rounded-3xl
+              shadow-sm
+              hover:shadow-xl
+              transition-all
+              duration-300
+              border border-gray-100
+            ">
+              <div className="flex items-start gap-4">
+                <div className="
+                  w-14 h-14
+                  rounded-2xl
+                  bg-emerald-100
+                  flex items-center justify-center
+                ">
+                  <BrainCircuit className="text-emerald-600" size={28} />
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Metode Certainty Factor
+                  </h3>
+
+                  <p className="text-gray-600 leading-relaxed">
+                    Sistem menggunakan metode CF untuk menghitung tingkat
+                    keyakinan diagnosis berdasarkan gejala yang dipilih.
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="bg-blue-50 p-8 rounded-xl text-center">
-              <p className="text-4xl font-bold text-blue-600 mb-2">Metode CF</p>
-              <p className="text-gray-700 font-medium">Certainty Factor</p>
+
+            {/* Card 2 */}
+            <div className="
+              bg-white
+              p-6
+              rounded-3xl
+              shadow-sm
+              hover:shadow-xl
+              transition-all
+              duration-300
+              border border-gray-100
+            ">
+              <div className="flex items-start gap-4">
+                <div className="
+                  w-14 h-14
+                  rounded-2xl
+                  bg-blue-100
+                  flex items-center justify-center
+                ">
+                  <ShieldCheck className="text-blue-600" size={28} />
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Diagnosis Cepat & Praktis
+                  </h3>
+
+                  <p className="text-gray-600 leading-relaxed">
+                    Membantu peternak mengenali kemungkinan penyakit
+                    secara cepat melalui perangkat smartphone maupun desktop.
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="bg-red-50 p-8 rounded-xl text-center">
-              <p className="text-4xl font-bold text-red-500 mb-2">Akses</p>
-              <p className="text-gray-700 font-medium">Mudah & Cepat</p>
+
+            {/* Card 3 */}
+            <div className="
+              bg-white
+              p-6
+              rounded-3xl
+              shadow-sm
+              hover:shadow-xl
+              transition-all
+              duration-300
+              border border-gray-100
+            ">
+              <div className="flex items-start gap-4">
+                <div className="
+                  w-14 h-14
+                  rounded-2xl
+                  bg-red-100
+                  flex items-center justify-center
+                ">
+                  <Stethoscope className="text-red-500" size={28} />
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Pendamping Peternak
+                  </h3>
+
+                  <p className="text-gray-600 leading-relaxed">
+                    SapiDoc dirancang sebagai alat bantu diagnosis awal,
+                    bukan pengganti pemeriksaan dokter hewan profesional.
+                  </p>
+                </div>
+              </div>
             </div>
+
           </div>
+
         </div>
-        </div>
-      </section>
-    );
+      </div>
+    </section>
+  );
 }

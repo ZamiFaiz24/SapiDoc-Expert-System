@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { X, CheckCircle, ArrowRight } from 'lucide-react';
 import { Disease } from '@/types/disease';
 
 interface DiseaseDetailModalProps {
@@ -16,19 +16,19 @@ export default function DiseaseDetailModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="bg-emerald-600 text-white p-6 flex justify-between items-center sticky top-0">
-          <h2 className="text-2xl font-bold">{disease.name}</h2>
+        <div className="border-b bg-white text-white p-6 flex justify-between items-center sticky top-0 z-10 backdrop-blur-sm">
+          <h2 className="text-2xl font-bold text-gray-900">{disease.name}</h2>
           <button
             onClick={onClose}
-            className="text-white hover:text-gray-200 transition"
+            className="text-gray-500 hover:text-gray-900 transition"
           >
             <X size={28} />
           </button>
@@ -42,7 +42,7 @@ export default function DiseaseDetailModal({
               <img
                 src={disease.image}
                 alt={disease.name}
-                className="w-full h-64 object-cover rounded-lg"
+                className="w-full h-64 object-cover rounded-2xl shadow-md"
               />
             </div>
 
@@ -66,9 +66,7 @@ export default function DiseaseDetailModal({
                 <ul className="space-y-2">
                   {disease.symptoms.map((symptom, index) => (
                     <li key={index} className="flex items-start gap-3">
-                      <span className="text-emerald-600 font-bold mt-1">
-                        •
-                      </span>
+                       <CheckCircle className="text-emerald-600 mt-1" size={20} />
                       <span className="text-gray-600">{symptom}</span>
                     </li>
                   ))}
@@ -79,7 +77,21 @@ export default function DiseaseDetailModal({
 
           {/* Tombol Mulai Diagnosa */}
           <div className="mt-8 pt-8 border-t">
-            <button className="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition">
+            <button className="
+              w-full
+              bg-emerald-600
+              hover:bg-emerald-700
+              text-white
+              py-4
+              rounded-2xl
+              font-semibold
+              transition
+              inline-flex
+              items-center
+              justify-center
+              gap-2
+              shadow-lg shadow-emerald-200
+              ">
               Mulai Diagnosa
             </button>
           </div>

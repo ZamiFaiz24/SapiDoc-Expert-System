@@ -1,41 +1,119 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Stethoscope } from 'lucide-react';
 import { Link } from '@inertiajs/react';
-
 
 export default function HeroSection() {
   return (
     <section
-        id="home"
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                Sistem Diagnosis Penyakit{' '}
-                <span className="text-emerald-600">Awal pada Sapi</span>
-              </h1>
-              <p className="text-lg text-gray-600">
-                Platform pendamping untuk membantu peternak melakukan diagnosis awal penyakit pada sapi mereka. Dengan metode Certainty Factor, SapiDoc memberikan hasil diagnosis yang akurat untuk mendukung pengambilan keputusan kesehatan ternak Anda.
-              </p>
-            </div>
+      id="home"
+      className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-cyan-50"
+    >
+      {/* Background Blur */}
+      <div className="absolute -top-24 -left-20 h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl" />
+      <div className="absolute top-1/2 -right-20 h-80 w-80 rounded-full bg-cyan-200/40 blur-3xl" />
 
-            <Link href="/diagnosis" className="bg-emerald-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-emerald-700 transition inline-flex items-center gap-2 text-lg">
+      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-4 py-24 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-32">
+        
+        {/* LEFT CONTENT */}
+        <div className="space-y-8">
+          
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-2 shadow-sm">
+            <ShieldCheck className="h-4 w-4 text-emerald-600" />
+            <span className="text-sm font-medium text-gray-700">
+              Sistem Pakar Diagnosis Sapi
+            </span>
+          </div>
+
+          {/* Heading */}
+          <div className="space-y-6">
+            <h1 className="text-5xl font-black leading-tight text-gray-900 md:text-6xl">
+              Diagnosis Penyakit
+              <span className="block text-emerald-600">
+                Sapi Lebih Cepat
+              </span>
+              dan Akurat
+            </h1>
+
+            <p className="max-w-xl text-lg leading-relaxed text-gray-600">
+              SapiDoc membantu peternak melakukan diagnosis awal penyakit sapi
+              menggunakan metode <span className="font-semibold text-emerald-700">Certainty Factor</span>
+              untuk mendukung pengambilan keputusan kesehatan ternak secara cepat dan efisien.
+            </p>
+          </div>
+
+          {/* CTA */}
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <Link
+              href="/diagnosis"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:-translate-y-1 hover:bg-emerald-700 hover:shadow-xl"
+            >
               Mulai Diagnosis
               <ArrowRight size={20} />
             </Link>
+
+            <button
+              className="rounded-2xl border border-gray-200 bg-white px-8 py-4 text-lg font-medium text-gray-700 transition hover:border-emerald-200 hover:bg-emerald-50"
+            >
+              Pelajari Sistem
+            </button>
           </div>
 
-          {/* Right Image */}
-          <div className="hidden md:flex items-center justify-center">
-            <img 
-              src="/images/ternak sapi.jpg" 
-              alt="Sapi Sehat" 
-              className="w-full h-96 object-cover rounded-2xl shadow-lg"
-            />
+          {/* Stats */}
+          <div className="flex flex-wrap gap-8 pt-4">
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900">10+</h3>
+              <p className="text-sm text-gray-600">Penyakit Terdeteksi</p>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900">CF</h3>
+              <p className="text-sm text-gray-600">Metode Certainty Factor</p>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900">Online</h3>
+              <p className="text-sm text-gray-600">Akses Dimana Saja</p>
+            </div>
           </div>
         </div>
-      </section>
-    );
+
+        {/* RIGHT CONTENT */}
+        <div className="relative hidden lg:flex items-center justify-center">
+          
+          {/* Main Image */}
+          <div className="relative">
+            <img
+              src="/images/ternak sapi.jpg"
+              alt="Sapi Sehat"
+              className="h-[520px] w-[520px] rounded-[32px] object-cover shadow-2xl"
+            />
+
+            {/* Floating Card */}
+            <div className="absolute bottom-6 left-6 rounded-2xl border border-white/70 bg-white/90 p-5 shadow-xl backdrop-blur">
+              <div className="flex items-center gap-3">
+                <div className="rounded-full bg-emerald-100 p-3">
+                  <Stethoscope className="h-6 w-6 text-emerald-600" />
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-500">
+                    Diagnosis Awal
+                  </p>
+                  <h4 className="font-bold text-gray-900">
+                    Cepat & Efisien
+                  </h4>
+                </div>
+              </div>
+            </div>
+
+            {/* Floating Badge */}
+            <div className="absolute right-6 top-6 rounded-2xl bg-emerald-600 px-5 py-4 text-white shadow-xl">
+              <p className="text-sm">Metode</p>
+              <h4 className="text-xl font-bold">Certainty Factor</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

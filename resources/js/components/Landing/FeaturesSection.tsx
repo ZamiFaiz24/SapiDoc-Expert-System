@@ -1,65 +1,99 @@
 import { CheckCircle, Globe, Heart, Zap } from 'lucide-react';
 
+const features = [
+  {
+    icon: Zap,
+    title: 'Diagnosis Cepat',
+    desc: 'Dapatkan hasil diagnosis dalam hitungan menit tanpa perlu menunggu lama.',
+    color: 'emerald',
+  },
+  {
+    icon: CheckCircle,
+    title: 'Hasil Akurat',
+    desc: 'Menggunakan metode Certainty Factor untuk memberikan hasil diagnosis terpercaya.',
+    color: 'blue',
+  },
+  {
+    icon: Heart,
+    title: 'Mudah Digunakan',
+    desc: 'Interface intuitif yang mudah digunakan oleh peternak tanpa keahlian teknis.',
+    color: 'red',
+  },
+  {
+    icon: Globe,
+    title: 'Akses Dimana Saja',
+    desc: 'Bisa diakses melalui smartphone maupun komputer secara fleksibel.',
+    color: 'cyan',
+  },
+];
 
 export default function FeaturesSection() {
   return (
-    <section id="features" className="bg-gray-50 py-20 md:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 space-y-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              Keunggulan SapiDoc
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Diagnosis awal yang akurat dan mudah diakses untuk peternak di Kebumen
-            </p>
+    <section
+      id="features"
+      className="relative overflow-hidden bg-white py-24 md:py-32"
+    >
+      {/* Background Blur */}
+      <div className="absolute left-0 top-20 h-72 w-72 rounded-full bg-emerald-100/40 blur-3xl" />
+      <div className="absolute right-0 bottom-0 h-80 w-80 rounded-full bg-cyan-100/40 blur-3xl" />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        
+        {/* Heading */}
+        <div className="mx-auto mb-20 max-w-3xl text-center">
+          <div className="mb-4 inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
+            Keunggulan Sistem
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-lg transition">
-              <Zap size={40} className="text-emerald-600 mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Diagnosis Cepat
-              </h3>
-              <p className="text-gray-600">
-                Dapatkan hasil diagnosis dalam hitungan menit tanpa perlu menunggu lama.
-              </p>
-            </div>
+          <h2 className="text-4xl font-black text-gray-900 md:text-5xl">
+            Mengapa Memilih
+            <span className="mt-4 block text-emerald-600">
+              SapiDoc?
+            </span>
+          </h2>
 
-            {/* Feature 2 */}
-            <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-lg transition">
-              <CheckCircle size={40} className="text-blue-500 mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Hasil Akurat
-              </h3>
-              <p className="text-gray-600">
-                Menggunakan metode Certainty Factor untuk memberikan hasil diagnosis yang terpercaya.
-              </p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-lg transition">
-              <Heart size={40} className="text-red-500 mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Mudah Digunakan
-              </h3>
-              <p className="text-gray-600">
-                Interface intuitif yang dirancang khusus untuk kemudahan penggunaan tanpa perlu keahlian teknis.
-              </p>
-            </div>
-
-            {/* Feature 4 */}
-            <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-lg transition">
-              <Globe size={40} className="text-emerald-600 mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Akses Dimana Saja
-              </h3>
-              <p className="text-gray-600">
-                Akses diagnosis dari smartphone atau komputer Anda dengan mudah.
-              </p>
-            </div>
-          </div>
+          <p className="mt-6 text-lg leading-relaxed text-gray-600">
+            Solusi diagnosis awal penyakit sapi yang cepat, modern,
+            dan mudah digunakan oleh peternak.
+          </p>
         </div>
-      </section>
-    );
+
+        {/* Cards */}
+        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+
+            return (
+              <div
+                key={index}
+                className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+              >
+                {/* Glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/0 via-transparent to-cyan-50/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+                {/* Icon */}
+                <div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-emerald-50 shadow-inner">
+                  <Icon className="h-8 w-8 text-emerald-600" />
+                </div>
+
+                {/* Text */}
+                <div className="relative">
+                  <h3 className="mb-3 text-xl font-bold text-gray-900">
+                    {feature.title}
+                  </h3>
+
+                  <p className="leading-relaxed text-gray-600">
+                    {feature.desc}
+                  </p>
+                </div>
+
+                {/* Decorative Corner */}
+                <div className="absolute -right-10 -top-10 h-24 w-24 rounded-full bg-emerald-100/30 blur-2xl" />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
 }
