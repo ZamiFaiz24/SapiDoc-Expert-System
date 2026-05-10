@@ -4,15 +4,13 @@ import { useState, type Dispatch, type SetStateAction } from 'react';
 import { Link } from '@inertiajs/react';
 import {
   AlertCircle,
-  ChevronLeft,
   ChevronRight,
-  ClipboardCheck,
   MapPin,
   Phone,
-  ShieldCheck,
   UserRound,
-  Lightbulb,
-  Loader,
+  CalendarClock,
+  Layers,
+  VenusAndMars,
 } from 'lucide-react';
 import { useFormSubmission } from '../../../../hooks/use-form-submission';
 import { useFcSuggestion } from '../../../../hooks/use-fc-suggestion';
@@ -83,8 +81,10 @@ export default function Step1({
       </div>
 
       <div className="space-y-5">
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
-          <h3 className="mb-4 font-semibold text-gray-900">👤 Data Peternak</h3>
+        <div className="rounded-2xl bg-white border border-gray-100 shadow-sm p-4">
+          <h3 className="mb-4 flex items-center gap-2 font-semibold text-gray-900">
+              Data Peternak
+          </h3>
           <div className="space-y-3">
             <div>
               <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
@@ -96,7 +96,7 @@ export default function Step1({
                 value={formData.nama_user}
                 onChange={(e) => handleChange('nama_user', e.target.value)}
                 placeholder="Nama Anda"
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
+                className="w-full h-11 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
               />
             </div>
             <div>
@@ -109,7 +109,7 @@ export default function Step1({
                 value={formData.no_hp_user}
                 onChange={(e) => handleChange('no_hp_user', e.target.value)}
                 placeholder="08xx xxxx xxxx"
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
+                className="w-full h-11 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
               />
             </div>
             <div>
@@ -122,23 +122,26 @@ export default function Step1({
                 value={formData.alamat_user}
                 onChange={(e) => handleChange('alamat_user', e.target.value)}
                 placeholder="Alamat Anda"
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
+                className="w-full h-11 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
               />
             </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
-          <h3 className="mb-4 font-semibold text-gray-900">🐄 Data Sapi</h3>
+        <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-4">
+          <h3 className="mb-4 flex items-center gap-2 font-semibold text-gray-900">
+              Data Sapi
+          </h3>
           <div className="space-y-3">
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+                <Layers size={16} className="text-emerald-600" />
                 Jenis Sapi <span className="text-red-500">*</span>
               </label>
               <select
                 value={formData.jenis_sapi}
                 onChange={(e) => handleChange('jenis_sapi', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                className="w-full h-11 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
               >
                 <option value="">-- Pilih --</option>
                 {Object.entries(jenisSapi).map(([key, label]) => (
@@ -149,13 +152,14 @@ export default function Step1({
               </select>
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+                <VenusAndMars size={16} className="text-emerald-600" />
                 Jenis Kelamin <span className="text-red-500">*</span>
               </label>
               <select
                 value={formData.jenis_kelamin}
                 onChange={(e) => handleChange('jenis_kelamin', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                className="w-full h-11 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
               >
                 <option value="">-- Pilih --</option>
                 {Object.entries(jenisKelamin).map(([key, label]) => (
@@ -166,13 +170,14 @@ export default function Step1({
               </select>
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+                <CalendarClock size={16} className="text-emerald-600" />
                 Kategori Umur <span className="text-red-500">*</span>
               </label>
               <select
                 value={formData.umur_kategori}
                 onChange={(e) => handleChange('umur_kategori', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                className="w-full h-11 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
               >
                 <option value="">-- Pilih --</option>
                 {Object.entries(umurKategori).map(([key, label]) => (

@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, type Dispatch, type SetStateAction } from 'react';
-import { Link } from '@inertiajs/react';
+import { useState, useEffect , type Dispatch, type SetStateAction } from 'react';
 import {
   AlertCircle,
   ChevronLeft,
@@ -9,7 +8,6 @@ import {
   Lightbulb,
   Loader,
 } from 'lucide-react';
-import { useFormSubmission } from '../../../../hooks/use-form-submission';
 import { useFcSuggestion } from '../../../../hooks/use-fc-suggestion';
 
 import { 
@@ -18,15 +16,9 @@ import {
   SelectedGejala, 
   SuggestedGejala } from '../../../../types/diagnosis';
 
-const CF_OPTIONS = [
-  { value: 0, label: 'Tidak Tahu / Tidak Ada' },
-  { value: 0.4, label: 'Mungkin' },
-  { value: 0.6, label: 'Cukup Yakin' },
-  { value: 0.8, label: 'Yakin' },
-  { value: 1, label: 'Sangat Yakin' },
-];
+import {CF_OPTIONS} from '../constants/cf-options';
 
-interface Step4Props {
+interface Step3Props {
   onNext: () => void;
   onBack: () => void;
   selectedGejala: SelectedGejala[];
@@ -37,7 +29,7 @@ interface Step4Props {
   error: string | null;
 }
 
-export default function Step4({ onNext, onBack, selectedGejala, setSelectedGejala, gejalas, formData, isLoading, error }: Step4Props) {
+export default function Step3({ onNext, onBack, selectedGejala, setSelectedGejala, gejalas, formData, isLoading, error }: Step3Props) {
   const { getSuggestedGejala, suggestions, isLoading: suggestLoading } = useFcSuggestion();
   const [loaded, setLoaded] = useState(false);
 
@@ -48,14 +40,18 @@ export default function Step4({ onNext, onBack, selectedGejala, setSelectedGejal
     return true;
   });
 
-  if (!loaded && selectedGejala.length > 0) {
-    setLoaded(true);
-    const gejalaDenganCf = selectedGejala.map((g) => ({
-      gejala_id: g.id,
-      cf_user: g.cf_user,
-    }));
-    getSuggestedGejala(gejalaDenganCf);
-  }
+  useEffect(() => {
+    if (!loaded && selectedGejala.length > 0) {
+      setLoaded(true);
+
+      const gejalaDenganCf = selectedGejala.map((g) => ({
+        gejala_id: g.id,
+        cf_user: g.cf_user,
+      }));
+
+      getSuggestedGejala(gejalaDenganCf);
+    }
+  }, [loaded, selectedGejala]);
 
   const toggleGejala = (gejala: Gejala) => {
     setSelectedGejala((prev) => {
@@ -84,10 +80,10 @@ export default function Step4({ onNext, onBack, selectedGejala, setSelectedGejal
         {/* Browse Gejala Spesifik */}
         <div className="md:col-span-2">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-gray-900">📋 Gejala Spesifik ({spesifikCount}/{spesifikGejalas.length})</h3>
+            <h3 className="text-sm font-semibold text-gray-900">Gejala Spesifik ({spesifikCount}/{spesifikGejalas.length})</h3>
           </div>
 
-          <div className="max-h-[400px] space-y-2 overflow-y-auto rounded-lg border border-gray-200 p-3">
+          <div className="max-h-[500px] space-y-2 overflow-y-auto rounded-lg border border-gray-200 p-3">
             {spesifikGejalas.map((gejala) => {
               const selectedItem = selectedGejala.find((g) => g.id === gejala.id);
               const isSelected = Boolean(selectedItem);
@@ -95,7 +91,7 @@ export default function Step4({ onNext, onBack, selectedGejala, setSelectedGejal
               return (
                 <div
                   key={gejala.id}
-                  className={`rounded border p-2 transition ${
+                  className={`rounded-2xl border border-gray-200 p-4 transition ${
                     isSelected ? 'border-emerald-300 bg-emerald-50' : 'border-gray-200 bg-white hover:border-emerald-200'
                   }`}
                 >
@@ -137,8 +133,17 @@ export default function Step4({ onNext, onBack, selectedGejala, setSelectedGejal
         {/* Suggested Gejala */}
         <div>
           <div className="mb-3 flex items-center gap-2">
-            <Lightbulb size={16} className="text-yellow-500" />
-            <h3 className="text-sm font-semibold text-gray-900">Disarankan</h3>
+            <Lightbulb size={18} className="text-amber-500" />
+            
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900">
+                Rekomendasi Sistem
+              </h3>
+
+              <p className="text-xs text-gray-500">
+                Berdasarkan gejala sebelumnya
+              </p>
+            </div>
           </div>
 
           <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3">

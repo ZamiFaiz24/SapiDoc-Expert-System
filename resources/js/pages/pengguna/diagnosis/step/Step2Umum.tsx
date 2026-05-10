@@ -10,16 +10,9 @@ import {
   Gejala, 
   SelectedGejala } from '../../../../types/diagnosis';
 
+import { CF_OPTIONS } from '../constants/cf-options';
 
-const CF_OPTIONS = [
-  { value: 0, label: 'Tidak Tahu / Tidak Ada' },
-  { value: 0.4, label: 'Mungkin' },
-  { value: 0.6, label: 'Cukup Yakin' },
-  { value: 0.8, label: 'Yakin' },
-  { value: 1, label: 'Sangat Yakin' },
-];
-
-interface Step3Props {
+interface Step2Props {
   onNext: () => void;
   onBack: () => void;
   selectedGejala: SelectedGejala[];
@@ -27,7 +20,7 @@ interface Step3Props {
   gejalas: Gejala[];
 }
 
-export default function Step3({ onNext, onBack, selectedGejala, setSelectedGejala, gejalas }: Step3Props) {
+export default function Step2({ onNext, onBack, selectedGejala, setSelectedGejala, gejalas }: Step2Props) {
   const umumGejalas = gejalas.filter((g) => g.kategori === 'Gejala Umum');
 
   const toggleGejala = (gejala: Gejala) => {
@@ -51,14 +44,14 @@ export default function Step3({ onNext, onBack, selectedGejala, setSelectedGejal
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Gejala Umum</h2>
-          <p className="mt-1 text-sm text-gray-500">Pilih gejala umum yang terlihat pada sapi Anda.</p>
+          <p className="mt-1 text-sm text-gray-500">Pilih gejala umum yang terlihat pada sapi Anda dan tentukan tingkat keparahannya.</p>
         </div>
         <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700">
           {umumCount}/{umumGejalas.length}
         </div>
       </div>
 
-      <div className="max-h-[350px] space-y-2 overflow-y-auto pr-1 mb-6">
+      <div className="max-h-[420px] space-y-2 overflow-y-auto pr-1 mb-6">
         {umumGejalas.map((gejala) => {
           const selectedItem = selectedGejala.find((g) => g.id === gejala.id);
           const isSelected = Boolean(selectedItem);
@@ -66,7 +59,7 @@ export default function Step3({ onNext, onBack, selectedGejala, setSelectedGejal
           return (
             <div
               key={gejala.id}
-              className={`rounded-lg border p-3 transition ${
+              className={`rounded-2xl border p-4 transition ${
                 isSelected ? 'border-emerald-300 bg-emerald-50/50' : 'border-gray-200 bg-white hover:border-emerald-200'
               }`}
             >
@@ -107,7 +100,7 @@ export default function Step3({ onNext, onBack, selectedGejala, setSelectedGejal
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
         <button
           onClick={onBack}
-          className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 shadow-sm hover:shadow-md"
         >
           <ChevronLeft size={18} /> Kembali
         </button>
