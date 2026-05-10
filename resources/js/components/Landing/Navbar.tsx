@@ -40,7 +40,7 @@ export default function Navbar() {
                             ['features', 'Keunggulan'],
                             ['cara-kerja', 'Cara Kerja'],
                             ['penyakit', 'Penyakit'],
-                            ['contact', 'Kontak'],
+                            ['about', 'Tentang'],
                         ].map(([id, label]) => (
                             <button
                                 key={id}
@@ -77,7 +77,7 @@ export default function Navbar() {
                             ['features', 'Keunggulan'],
                             ['cara-kerja', 'Cara Kerja'],
                             ['penyakit', 'Penyakit'],
-                            ['contact', 'Kontak'],
+                            ['about', 'Tentang'],
                         ].map(([id, label]) => (
                             <button
                                 key={id}
