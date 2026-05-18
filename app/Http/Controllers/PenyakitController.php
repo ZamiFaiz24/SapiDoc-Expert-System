@@ -8,14 +8,34 @@ use Illuminate\Http\Request;
 class PenyakitController extends Controller
 {
     /**
-     * Get all penyakit - API endpoint
+     * Get all penyakit - API endpoint with search & pagination
      */
-    public function index()
+    public function index(Request $request)
     {
-        $penyakits = Penyakit::orderBy('kode_penyakit')->get();
+        $search = $request->query('search', '');
+        $page = $request->query('page', 1);
+        $perPage = 10;
+
+        $query = Penyakit::orderBy('kode_penyakit');
+
+        // Search by nama_penyakit or kode_penyakit
+        if ($search) {
+            $query->where('nama_penyakit', 'like', "%{$search}%")
+                ->orWhere('kode_penyakit', 'like', "%{$search}%");
+        }
+
+        $penyakits = $query->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json([
-            'data' => $penyakits,
+            'data' => $penyakits->items(),
+            'pagination' => [
+                'total' => $penyakits->total(),
+                'per_page' => $penyakits->perPage(),
+                'current_page' => $penyakits->currentPage(),
+                'last_page' => $penyakits->lastPage(),
+                'from' => $penyakits->firstItem(),
+                'to' => $penyakits->lastItem(),
+            ],
         ]);
     }
 

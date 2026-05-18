@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, Edit, Trash2, X } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Table from '@/components/Table';
 
@@ -13,6 +13,15 @@ interface Aturan {
   nilai_mb: number;
   nilai_md: number;
   catatan_pakar?: string;
+}
+
+interface Pagination {
+  total: number;
+  per_page: number;
+  current_page: number;
+  last_page: number;
+  from: number;
+  to: number;
 }
 
 interface FormData {
@@ -33,11 +42,15 @@ export default function AturanPage() {
   const [aturanData, setAturanData] = useState<Aturan[]>([]);
   const [penyakits, setPenyakits] = useState<Option[]>([]);
   const [gejalas, setGejalas] = useState<Option[]>([]);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [search, setSearch] = useState('');
+  const [penyakitFilter, setPenyakitFilter] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     penyakit_id: '',
     gejala_id: '',
@@ -47,13 +60,18 @@ export default function AturanPage() {
   });
 
   // Fetch aturan data and options
-  const fetchAturanData = async () => {
+  const fetchAturanData = async (page: number = 1, searchTerm: string = '', penyakitId: string = '') => {
     try {
       setIsLoading(true);
       setError(null);
 
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('search', searchTerm);
+      if (penyakitId) params.append('penyakit_id', penyakitId);
+      params.append('page', page.toString());
+
       const [aturanRes, optionsRes] = await Promise.all([
-        fetch('/admin/api/aturan'),
+        fetch(`/admin/api/aturan?${params.toString()}`),
         fetch('/admin/api/aturan/options'),
       ]);
 
@@ -65,6 +83,8 @@ export default function AturanPage() {
       const optionsResult = await optionsRes.json();
 
       setAturanData(aturanResult.data);
+      setPagination(aturanResult.pagination);
+      setCurrentPage(aturanResult.pagination.current_page);
       setPenyakits(optionsResult.penyakits);
       setGejalas(optionsResult.gejalas);
     } catch (err) {
@@ -76,8 +96,27 @@ export default function AturanPage() {
   };
 
   useEffect(() => {
-    fetchAturanData();
+    fetchAturanData(1, search, penyakitFilter);
   }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchAturanData(1, search, penyakitFilter);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearch(value);
+    if (value === '') {
+      fetchAturanData(1, '', penyakitFilter);
+    }
+  };
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setPenyakitFilter(value);
+    fetchAturanData(1, search, value);
+  };
 
   const handleTambah = () => {
     setEditingId(null);
@@ -121,7 +160,7 @@ export default function AturanPage() {
       }
 
       // Refresh data
-      fetchAturanData();
+      fetchAturanData(currentPage, search, penyakitFilter);
     } catch (err) {
       console.error('Error deleting aturan:', err);
       alert(err instanceof Error ? err.message : 'Gagal menghapus aturan');
@@ -174,7 +213,7 @@ export default function AturanPage() {
       }
 
       // Refresh data dan close modal
-      fetchAturanData();
+      fetchAturanData(currentPage, search, penyakitFilter);
       setShowModal(false);
     } catch (err) {
       console.error('Error saving aturan:', err);
@@ -199,7 +238,7 @@ export default function AturanPage() {
     },
   ];
 
-  if (isLoading) {
+  if (isLoading && aturanData.length === 0) {
     return (
       <div className="space-y-6">
         <div className="bg-gray-100 h-10 rounded-lg animate-pulse"></div>
@@ -224,6 +263,41 @@ export default function AturanPage() {
 
   return (
     <div className="space-y-6">
+      {/* Search & Filter Bar */}
+      <div className="space-y-4">
+        <form onSubmit={handleSearch} className="flex gap-2">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+            <input
+              type="text"
+              value={search}
+              onChange={handleSearchChange}
+              placeholder="Cari penyakit atau gejala..."
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors font-medium"
+          >
+            Cari
+          </button>
+        </form>
+
+        <select
+          value={penyakitFilter}
+          onChange={handleFilterChange}
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 w-full md:w-auto"
+        >
+          <option value="">Semua Penyakit</option>
+          {penyakits.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.nama_penyakit}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="flex justify-end">
         <button
           onClick={handleTambah}
@@ -237,28 +311,72 @@ export default function AturanPage() {
       <div className="bg-white p-6 rounded-lg border border-gray-200">
         <h3 className="text-lg font-bold text-gray-800 mb-4">Data Aturan (Basis Pengetahuan)</h3>
         {aturanData.length > 0 ? (
-          <Table
-            columns={columns}
-            data={aturanData}
-            actions={(row) => (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleEdit(row as Aturan)}
-                  className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  title="Edit"
-                >
-                  <Edit size={18} />
-                </button>
-                <button
-                  onClick={() => handleDelete(row.id)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  title="Hapus"
-                >
-                  <Trash2 size={18} />
-                </button>
+          <>
+            <Table
+              columns={columns}
+              data={aturanData}
+              actions={(row) => (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleEdit(row as Aturan)}
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    title="Edit"
+                  >
+                    <Edit size={18} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(row.id)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Hapus"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              )}
+            />
+
+            {/* Pagination */}
+            {pagination && pagination.last_page > 1 && (
+              <div className="mt-6 flex items-center justify-between">
+                <p className="text-sm text-gray-600">
+                  Menampilkan {pagination.from} - {pagination.to} dari {pagination.total} data
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => fetchAturanData(currentPage - 1, search, penyakitFilter)}
+                    className="flex items-center gap-1 px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronLeft size={18} />
+                    Sebelumnya
+                  </button>
+                  <div className="flex items-center gap-2">
+                    {Array.from({ length: pagination.last_page }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => fetchAturanData(page, search, penyakitFilter)}
+                        className={`px-3 py-1 rounded-lg ${
+                          currentPage === page
+                            ? 'bg-emerald-500 text-white'
+                            : 'border border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    disabled={currentPage === pagination.last_page}
+                    onClick={() => fetchAturanData(currentPage + 1, search, penyakitFilter)}
+                    className="flex items-center gap-1 px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Selanjutnya
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
               </div>
             )}
-          />
+          </>
         ) : (
           <p className="text-gray-500">Tidak ada data aturan</p>
         )}

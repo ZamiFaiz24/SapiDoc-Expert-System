@@ -8,14 +8,40 @@ use Illuminate\Http\Request;
 class GejalaController extends Controller
 {
     /**
-     * Get all gejala - API endpoint
+     * Get all gejala - API endpoint with search & filter & pagination
      */
-    public function index()
+    public function index(Request $request)
     {
-        $gejalas = Gejala::orderBy('kode_gejala')->get();
+        $search = $request->query('search', '');
+        $kategori = $request->query('kategori', '');
+        $page = $request->query('page', 1);
+        $perPage = 10;
+
+        $query = Gejala::orderBy('kode_gejala');
+
+        // Search by nama_gejala or kode_gejala
+        if ($search) {
+            $query->where('nama_gejala', 'like', "%{$search}%")
+                ->orWhere('kode_gejala', 'like', "%{$search}%");
+        }
+
+        // Filter by kategori
+        if ($kategori) {
+            $query->where('kategori', $kategori);
+        }
+
+        $gejalas = $query->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json([
-            'data' => $gejalas,
+            'data' => $gejalas->items(),
+            'pagination' => [
+                'total' => $gejalas->total(),
+                'per_page' => $gejalas->perPage(),
+                'current_page' => $gejalas->currentPage(),
+                'last_page' => $gejalas->lastPage(),
+                'from' => $gejalas->firstItem(),
+                'to' => $gejalas->lastItem(),
+            ],
         ]);
     }
 

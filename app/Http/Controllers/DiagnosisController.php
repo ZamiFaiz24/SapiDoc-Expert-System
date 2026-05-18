@@ -231,33 +231,80 @@ class DiagnosisController extends Controller
     }
 
     /**
-     * API: Get all diagnoses for admin history page
+     * API: Get all diagnoses for admin history page with search & filter & pagination
      */
-    public function getAllDiagnoses()
+    public function getAllDiagnoses(Request $request)
     {
-        $diagnoses = Diagnosis::with('penyakit')
-            ->latest()
-            ->get()
-            ->map(function ($diagnosis) {
-                return [
-                    'id' => $diagnosis->id,
-                    'tanggal' => $diagnosis->created_at->format('Y-m-d'),
-                    'user' => $diagnosis->nama_user,
-                    'gejala' => count($diagnosis->gejala_input ?? []),
-                    'hasil' => $diagnosis->nama_penyakit_snap,
-                    'cf' => round($diagnosis->cf_final * 100),
-                    'alamat' => $diagnosis->alamat_user,
-                    'no_hp' => $diagnosis->no_hp_user,
-                    'jenis_sapi' => $diagnosis->jenis_sapi,
-                    'jenis_kelamin' => $diagnosis->jenis_kelamin,
-                    'umur_kategori' => $diagnosis->umur_kategori,
-                    'gejala_input' => $diagnosis->gejala_input ?? [],
-                    'diagnosis_banding' => $diagnosis->diagnosis_banding ?? [],
-                ];
-            });
+        $search = $request->query('search', '');
+        $jenisSapi = $request->query('jenis_sapi', '');
+        $dateFrom = $request->query('date_from', '');
+        $dateTo = $request->query('date_to', '');
+        $cfMin = $request->query('cf_min', '');
+        $cfMax = $request->query('cf_max', '');
+        $page = $request->query('page', 1);
+        $perPage = 10;
+
+        $query = Diagnosis::with('penyakit')
+            ->latest();
+
+        // Search by nama_user or alamat_user
+        if ($search) {
+            $query->where('nama_user', 'like', "%{$search}%")
+                ->orWhere('alamat_user', 'like', "%{$search}%")
+                ->orWhere('no_hp_user', 'like', "%{$search}%");
+        }
+
+        // Filter by jenis_sapi
+        if ($jenisSapi) {
+            $query->where('jenis_sapi', $jenisSapi);
+        }
+
+        // Filter by date range
+        if ($dateFrom) {
+            $query->whereDate('created_at', '>=', $dateFrom);
+        }
+        if ($dateTo) {
+            $query->whereDate('created_at', '<=', $dateTo);
+        }
+
+        // Filter by CF range
+        if ($cfMin !== '') {
+            $query->where('cf_final', '>=', floatval($cfMin));
+        }
+        if ($cfMax !== '') {
+            $query->where('cf_final', '<=', floatval($cfMax));
+        }
+
+        $diagnoses = $query->paginate($perPage, ['*'], 'page', $page);
+
+        $formattedData = array_map(function ($diagnosis) {
+            return [
+                'id' => $diagnosis->id,
+                'tanggal' => $diagnosis->created_at->format('Y-m-d'),
+                'user' => $diagnosis->nama_user,
+                'gejala' => count($diagnosis->gejala_input ?? []),
+                'hasil' => $diagnosis->nama_penyakit_snap,
+                'cf' => round($diagnosis->cf_final * 100),
+                'alamat' => $diagnosis->alamat_user,
+                'no_hp' => $diagnosis->no_hp_user,
+                'jenis_sapi' => $diagnosis->jenis_sapi,
+                'jenis_kelamin' => $diagnosis->jenis_kelamin,
+                'umur_kategori' => $diagnosis->umur_kategori,
+                'gejala_input' => $diagnosis->gejala_input ?? [],
+                'diagnosis_banding' => $diagnosis->diagnosis_banding ?? [],
+            ];
+        }, $diagnoses->items());
 
         return response()->json([
-            'data' => $diagnoses,
+            'data' => $formattedData,
+            'pagination' => [
+                'total' => $diagnoses->total(),
+                'per_page' => $diagnoses->perPage(),
+                'current_page' => $diagnoses->currentPage(),
+                'last_page' => $diagnoses->lastPage(),
+                'from' => $diagnoses->firstItem(),
+                'to' => $diagnoses->lastItem(),
+            ],
         ]);
     }
 }

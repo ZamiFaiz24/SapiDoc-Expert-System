@@ -10,28 +10,58 @@ use Illuminate\Http\Request;
 class AturanController extends Controller
 {
     /**
-     * Get all aturan - API endpoint
+     * Get all aturan - API endpoint with search & filter & pagination
      */
-    public function index()
+    public function index(Request $request)
     {
-        $aturans = Aturan::with(['penyakit', 'gejala'])
-            ->orderBy('penyakit_id')
-            ->get()
-            ->map(function ($aturan) {
-                return [
-                    'id' => $aturan->id,
-                    'penyakit_id' => $aturan->penyakit_id,
-                    'gejala_id' => $aturan->gejala_id,
-                    'penyakit' => $aturan->penyakit->nama_penyakit ?? 'N/A',
-                    'gejala' => $aturan->gejala->nama_gejala ?? 'N/A',
-                    'nilai_mb' => $aturan->nilai_mb,
-                    'nilai_md' => $aturan->nilai_md,
-                    'catatan_pakar' => $aturan->catatan_pakar,
-                ];
+        $search = $request->query('search', '');
+        $penyakitId = $request->query('penyakit_id', '');
+        $page = $request->query('page', 1);
+        $perPage = 10;
+
+        $query = Aturan::with(['penyakit', 'gejala'])
+            ->orderBy('penyakit_id');
+
+        // Search by nama penyakit or nama gejala
+        if ($search) {
+            $query->whereHas('penyakit', function ($q) use ($search) {
+                $q->where('nama_penyakit', 'like', "%{$search}%");
+            })->orWhereHas('gejala', function ($q) use ($search) {
+                $q->where('nama_gejala', 'like', "%{$search}%");
             });
+        }
+
+        // Filter by penyakit_id
+        if ($penyakitId) {
+            $query->where('penyakit_id', $penyakitId);
+        }
+
+        $aturans = $query->paginate($perPage, ['*'], 'page', $page);
+
+        $formattedData = $aturans->items();
+        $formattedData = array_map(function ($aturan) {
+            return [
+                'id' => $aturan->id,
+                'penyakit_id' => $aturan->penyakit_id,
+                'gejala_id' => $aturan->gejala_id,
+                'penyakit' => $aturan->penyakit->nama_penyakit ?? 'N/A',
+                'gejala' => $aturan->gejala->nama_gejala ?? 'N/A',
+                'nilai_mb' => $aturan->nilai_mb,
+                'nilai_md' => $aturan->nilai_md,
+                'catatan_pakar' => $aturan->catatan_pakar,
+            ];
+        }, $formattedData);
 
         return response()->json([
-            'data' => $aturans,
+            'data' => $formattedData,
+            'pagination' => [
+                'total' => $aturans->total(),
+                'per_page' => $aturans->perPage(),
+                'current_page' => $aturans->currentPage(),
+                'last_page' => $aturans->lastPage(),
+                'from' => $aturans->firstItem(),
+                'to' => $aturans->lastItem(),
+            ],
         ]);
     }
 

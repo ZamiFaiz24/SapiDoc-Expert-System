@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, Edit, Trash2, X } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Table from '@/components/Table';
 
@@ -11,6 +11,15 @@ interface Penyakit {
   deskripsi: string;
 }
 
+interface Pagination {
+  total: number;
+  per_page: number;
+  current_page: number;
+  last_page: number;
+  from: number;
+  to: number;
+}
+
 interface FormData {
   kode_penyakit: string;
   nama_penyakit: string;
@@ -19,11 +28,14 @@ interface FormData {
 
 export default function PenyakitPage() {
   const [penyakitData, setPenyakitData] = useState<Penyakit[]>([]);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [search, setSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     kode_penyakit: '',
     nama_penyakit: '',
@@ -31,11 +43,15 @@ export default function PenyakitPage() {
   });
 
   // Fetch penyakit data
-  const fetchPenyakit = async () => {
+  const fetchPenyakit = async (page: number = 1, searchTerm: string = '') => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await fetch('/admin/api/penyakit');
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('search', searchTerm);
+      params.append('page', page.toString());
+
+      const response = await fetch(`/admin/api/penyakit?${params.toString()}`);
 
       if (!response.ok) {
         throw new Error('Gagal mengambil data penyakit');
@@ -43,6 +59,8 @@ export default function PenyakitPage() {
 
       const result = await response.json();
       setPenyakitData(result.data);
+      setPagination(result.pagination);
+      setCurrentPage(result.pagination.current_page);
     } catch (err) {
       console.error('Error fetching penyakit:', err);
       setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
@@ -52,8 +70,21 @@ export default function PenyakitPage() {
   };
 
   useEffect(() => {
-    fetchPenyakit();
+    fetchPenyakit(1, search);
   }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchPenyakit(1, search);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearch(value);
+    if (value === '') {
+      fetchPenyakit(1, '');
+    }
+  };
 
   const handleTambah = () => {
     setEditingId(null);
@@ -93,7 +124,7 @@ export default function PenyakitPage() {
       }
 
       // Refresh data
-      fetchPenyakit();
+      fetchPenyakit(currentPage, search);
     } catch (err) {
       console.error('Error deleting penyakit:', err);
       alert(err instanceof Error ? err.message : 'Gagal menghapus penyakit');
@@ -132,7 +163,7 @@ export default function PenyakitPage() {
       }
 
       // Refresh data dan close modal
-      fetchPenyakit();
+      fetchPenyakit(currentPage, search);
       setShowModal(false);
     } catch (err) {
       console.error('Error saving penyakit:', err);
@@ -148,7 +179,7 @@ export default function PenyakitPage() {
     { key: 'deskripsi', label: 'Deskripsi' },
   ];
 
-  if (isLoading) {
+  if (isLoading && penyakitData.length === 0) {
     return (
       <div className="space-y-6">
         <div className="bg-gray-100 h-10 rounded-lg animate-pulse"></div>
@@ -173,6 +204,26 @@ export default function PenyakitPage() {
 
   return (
     <div className="space-y-6">
+      {/* Search Bar */}
+      <form onSubmit={handleSearch} className="flex gap-2">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+          <input
+            type="text"
+            value={search}
+            onChange={handleSearchChange}
+            placeholder="Cari penyakit..."
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+        </div>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors font-medium"
+        >
+          Cari
+        </button>
+      </form>
+
       <div className="flex justify-end">
         <button
           onClick={handleTambah}
@@ -186,28 +237,72 @@ export default function PenyakitPage() {
       <div className="bg-white p-6 rounded-lg border border-gray-200">
         <h3 className="text-lg font-bold text-gray-800 mb-4">Data Penyakit</h3>
         {penyakitData.length > 0 ? (
-          <Table
-            columns={columns}
-            data={penyakitData}
-            actions={(row) => (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleEdit(row as Penyakit)}
-                  className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  title="Edit"
-                >
-                  <Edit size={18} />
-                </button>
-                <button
-                  onClick={() => handleDelete(row.id)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  title="Hapus"
-                >
-                  <Trash2 size={18} />
-                </button>
+          <>
+            <Table
+              columns={columns}
+              data={penyakitData}
+              actions={(row) => (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleEdit(row as Penyakit)}
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    title="Edit"
+                  >
+                    <Edit size={18} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(row.id)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Hapus"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              )}
+            />
+            
+            {/* Pagination */}
+            {pagination && pagination.last_page > 1 && (
+              <div className="mt-6 flex items-center justify-between">
+                <p className="text-sm text-gray-600">
+                  Menampilkan {pagination.from} - {pagination.to} dari {pagination.total} data
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => fetchPenyakit(currentPage - 1, search)}
+                    className="flex items-center gap-1 px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronLeft size={18} />
+                    Sebelumnya
+                  </button>
+                  <div className="flex items-center gap-2">
+                    {Array.from({ length: pagination.last_page }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => fetchPenyakit(page, search)}
+                        className={`px-3 py-1 rounded-lg ${
+                          currentPage === page
+                            ? 'bg-emerald-500 text-white'
+                            : 'border border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    disabled={currentPage === pagination.last_page}
+                    onClick={() => fetchPenyakit(currentPage + 1, search)}
+                    className="flex items-center gap-1 px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Selanjutnya
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
               </div>
             )}
-          />
+          </>
         ) : (
           <p className="text-gray-500">Tidak ada data penyakit</p>
         )}
