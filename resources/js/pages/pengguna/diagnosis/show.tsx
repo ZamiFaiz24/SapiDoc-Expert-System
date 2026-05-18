@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { Link } from '@inertiajs/react';
-import { AlertCircle, ChevronLeft, Download, RefreshCw, ClipboardCheck } from 'lucide-react';
+import { AlertCircle, ChevronLeft, Download, RefreshCw, ClipboardCheck, UserRound, FileText, Stethoscope } from 'lucide-react';
 
 interface Diagnosis {
   id: number;
@@ -46,12 +46,35 @@ function getInterpretasiColor(cf: number): string {
   return 'bg-red-50 border-red-200 text-red-900';
 }
 
-function getInterpretasiIcon(cf: number): string {
-  if (cf < 0.25) return '❓';
-  if (cf < 0.5) return '⚠️';
-  if (cf < 0.75) return '⚠️';
-  if (cf < 0.9) return '🚨';
-  return '🔴';
+function getSeverityLabel(cf: number) {
+  if (cf < 0.25)
+    return {
+      text: 'Keyakinan Rendah',
+      className: 'bg-blue-100 text-blue-700',
+    };
+
+  if (cf < 0.5)
+    return {
+      text: 'Perlu Perhatian',
+      className: 'bg-cyan-100 text-cyan-700',
+    };
+
+  if (cf < 0.75)
+    return {
+      text: 'Kemungkinan Sedang',
+      className: 'bg-yellow-100 text-yellow-700',
+    };
+
+  if (cf < 0.9)
+    return {
+      text: 'Kemungkinan Tinggi',
+      className: 'bg-orange-100 text-orange-700',
+    };
+
+  return {
+    text: 'Sangat Tinggi',
+    className: 'bg-red-100 text-red-700',
+  };
 }
 
 function getJenisSapiLabel(code: string): string {
@@ -68,8 +91,8 @@ function getJenisSapiLabel(code: string): string {
 
 function getJenisKelaminLabel(code: string): string {
   const map: Record<string, string> = {
-    jantan: '🐂 Jantan',
-    betina: '🐄 Betina',
+    jantan: 'Jantan',
+    betina: 'Betina',
   };
   return map[code] || code;
 }
@@ -94,7 +117,7 @@ export default function DiagnosisShowPage({
 
   const cfPercent = Math.round((diagnosis.cf_final || 0) * 100);
   const colorClass = getInterpretasiColor(diagnosis.cf_final || 0);
-  const icon = getInterpretasiIcon(diagnosis.cf_final || 0);
+  const severity = getSeverityLabel(diagnosis.cf_final || 0);
 
   const handlePrint = () => window.print();
 
@@ -112,22 +135,24 @@ export default function DiagnosisShowPage({
         <div className="mb-6 rounded-2xl border border-white/70 bg-white/80 p-5 shadow-lg backdrop-blur print:hidden">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <ClipboardCheck className="h-8 w-8 text-emerald-600" />
-              <div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100">
+                <ClipboardCheck className="h-6 w-6 text-gray-800" />
+              </div>              
+            <div>
                 <h1 className="text-xl font-bold text-gray-900 md:text-2xl">Hasil Diagnosis</h1>
-                <p className="text-sm text-gray-600">ID Diagnosis: #{diagnosis.id}</p>
+                <p className="text-sm text-gray-600">ID Diagnosis: {diagnosis.id}</p>
               </div>
             </div>
             <div className="flex gap-2">
                <Link
                 href="/diagnosis/create"
-                className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
+                className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
               >
                 <ChevronLeft size={16} /> Kembali
               </Link>
               <button
                 onClick={handlePrint}
-                className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700"
+                className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700"
               >
                 <Download size={16} /> Cetak
               </button>
@@ -138,9 +163,15 @@ export default function DiagnosisShowPage({
         <div className="mx-auto max-w-4xl space-y-6">
           {/* --- INFORMASI PETERNAK & SAPI --- */}
           <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-xl backdrop-blur md:p-8">
-            <h2 className="mb-6 text-lg font-bold text-gray-900 flex items-center gap-2">
-               👤 Informasi Peternak & Sapi
-            </h2>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100">
+                <UserRound className="h-5 w-5 text-gray-800" />
+              </div>
+
+              <h3 className="text-lg font-bold text-gray-900">
+                Informasi Peternak & Sapi
+              </h3>
+            </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {[
                 { label: 'Nama Peternak', value: diagnosis.nama_user },
@@ -160,7 +191,13 @@ export default function DiagnosisShowPage({
 
           {/* --- CARD HASIL UTAMA --- */}
           <div className={`rounded-3xl border-2 p-8 text-center shadow-xl backdrop-blur-sm transition-all ${colorClass}`}>
-            <div className="mb-4 text-6xl animate-bounce-slow">{icon}</div>
+            <div className="mb-4">
+              <span
+                className={`inline-flex rounded-full px-4 py-1 text-sm font-semibold ${severity.className}`}
+              >
+                {severity.text}
+              </span>
+            </div>
             <h2 className="mb-2 text-3xl font-black md:text-4xl">
               {penyakit?.nama_penyakit || diagnosis.nama_penyakit_snap || 'Tidak Teridentifikasi'}
             </h2>
@@ -185,16 +222,24 @@ export default function DiagnosisShowPage({
           {/* --- DETAIL EDUKASI --- */}
           {penyakit ? (
             <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-xl backdrop-blur md:p-8">
-              <h3 className="mb-6 text-lg font-bold text-emerald-700">📋 Detail Penyakit & Penanganan</h3>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100">
+                  <FileText className="h-5 w-5 text-gray-800" />
+                </div>
+
+                <h3 className="text-lg font-bold text-gray-900">
+                  Informasi Detail Penyakit
+                </h3>
+              </div>
               <div className="space-y-6">
                 <div className="rounded-2xl bg-gray-50 p-5 border border-gray-100">
                   <h4 className="mb-2 font-bold text-gray-900">Deskripsi Penyakit</h4>
                   <p className="text-gray-700 leading-relaxed text-sm">{penyakit.deskripsi}</p>
                 </div>
-                <div className="rounded-2xl bg-blue-50 p-5 border border-blue-100">
+                {/* <div className="rounded-2xl bg-blue-50 p-5 border border-blue-100">
                   <h4 className="mb-2 font-bold text-blue-900">Langkah Penanganan</h4>
                   <p className="text-gray-700 leading-relaxed text-sm">{penyakit.cara_penanganan}</p>
-                </div>
+                </div> */}
               </div>
             </div>
           ) : (
@@ -207,7 +252,15 @@ export default function DiagnosisShowPage({
           {/* --- DIAGNOSIS BANDING --- */}
           {diagnosis_banding && diagnosis_banding.length > 0 && (
           <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-xl backdrop-blur print:break-inside-avoid">
-              <h3 className="mb-4 text-lg font-bold text-gray-900">🔍 Diagnosis Banding Lainnya</h3>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100">
+                  <Stethoscope className="h-5 w-5 text-gray-800" />
+                </div>
+
+                <h3 className="text-lg font-bold text-gray-900">
+                  Diagnosis Banding Lainnya
+                </h3>
+              </div>
               <div className="grid gap-3 sm:grid-cols-2">
               {diagnosis_banding.map((item: any, idx: number) => (
                   <div key={idx} className="flex items-center justify-between rounded-xl   border border-gray-100 bg-gray-50/50 p-4 transition hover:bg-white">
