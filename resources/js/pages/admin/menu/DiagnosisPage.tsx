@@ -167,8 +167,10 @@ export default function DiagnosisPage() {
               className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
             >
               <option value="">Semua Jenis Sapi</option>
-              <option value="perah">Sapi Perah</option>
-              <option value="potong">Sapi Potong</option>
+              <option value="Sapi PO">Sapi PO (Peranakan Ongole)</option>
+              <option value="Sapi Simental">Sapi Simental / Metal</option>
+              <option value="Sapi Limousin">Sapi Limousin</option>
+              <option value="Sapi Jawa">Sapi Jawa / Lokal Potong</option>
             </select>
 
             {/* Date From */}
@@ -328,7 +330,7 @@ export default function DiagnosisPage() {
               <div>
                 <p className="text-gray-500 mb-1">Jenis Sapi</p>
                 <p className="font-semibold text-gray-800">
-                  {selectedDetail.jenis_sapi === 'perah' ? 'Sapi Perah' : 'Sapi Potong'}
+                  {selectedDetail.jenis_sapi === 'Sapi PO' ? 'Sapi PO (Peranakan Ongole)' : selectedDetail.jenis_sapi === 'Sapi Simental' ? 'Sapi Simental / Metal' : selectedDetail.jenis_sapi === 'Sapi Limousin' ? 'Sapi Limousin' : 'Sapi Jawa / Lokal Potong'}
                 </p>
               </div>
               <div>

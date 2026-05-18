@@ -307,4 +307,84 @@ class DiagnosisController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Get top 5 diseases for donut chart
+     */
+    public function getTopPenyakit()
+    {
+        $topPenyakit = Diagnosis::select('nama_penyakit_snap')
+            ->whereNotNull('nama_penyakit_snap')
+            ->groupBy('nama_penyakit_snap')
+            ->selectRaw('nama_penyakit_snap, COUNT(*) as count')
+            ->orderByRaw('COUNT(*) DESC')
+            ->limit(5)
+            ->get();
+
+        $data = $topPenyakit->map(fn($item) => [
+            'name' => $item->nama_penyakit_snap ?? 'Unknown',
+            'value' => $item->count,
+        ])->toArray();
+
+        return response()->json([
+            'data' => $data,
+            'total' => array_sum(array_column($data, 'value')),
+        ]);
+    }
+
+    /**
+     * Get diagnosis count by jenis sapi for bar chart
+     */
+    public function getDiagnosisByJenisSapi()
+    {
+        $byJenisSapi = Diagnosis::select('jenis_sapi')
+            ->whereNotNull('jenis_sapi')
+            ->groupBy('jenis_sapi')
+            ->selectRaw('jenis_sapi, COUNT(*) as count')
+            ->orderByRaw('COUNT(*) DESC')
+            ->get();
+
+        $data = $byJenisSapi->map(fn($item) => [
+            'name' => $item->jenis_sapi ?? 'Unknown',
+            'value' => $item->count,
+        ])->toArray();
+
+        return response()->json([
+            'data' => $data,
+            'total' => array_sum(array_column($data, 'value')),
+        ]);
+    }
+
+    /**
+     * Get trend diagnosis data (last 30 days) for line chart
+     */
+    public function getTrendDiagnosis()
+    {
+        $startDate = now()->subDays(30)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        $trendData = Diagnosis::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupByRaw('DATE(created_at)')
+            ->orderBy('date')
+            ->get();
+
+        // Create full date range (fill gaps with 0)
+        $dateRange = collect();
+        for ($i = 0; $i < 30; $i++) {
+            $dateRange->push(now()->subDays(29 - $i)->format('Y-m-d'));
+        }
+
+        $data = $dateRange->map(function ($date) use ($trendData) {
+            $record = $trendData->firstWhere('date', $date);
+            return [
+                'date' => $date,
+                'count' => $record->count ?? 0,
+            ];
+        })->toArray();
+
+        return response()->json([
+            'data' => $data,
+        ]);
+    }
 }

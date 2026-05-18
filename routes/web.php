@@ -59,6 +59,11 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/api/dashboard/diagnoses', [DiagnosisController::class, 'getRecentDiagnoses']);
     Route::get('/api/diagnosis/all', [DiagnosisController::class, 'getAllDiagnoses']);
 
+    // Chart data API endpoints
+    Route::get('/api/chart/top-penyakit', [DiagnosisController::class, 'getTopPenyakit']);
+    Route::get('/api/chart/diagnosis-by-sapi', [DiagnosisController::class, 'getDiagnosisByJenisSapi']);
+    Route::get('/api/chart/trend-diagnosis', [DiagnosisController::class, 'getTrendDiagnosis']);
+
     // Penyakit API endpoints
     Route::get('/api/penyakit', [PenyakitController::class, 'index']);
     Route::post('/api/penyakit', [PenyakitController::class, 'store']);

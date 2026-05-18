@@ -34,8 +34,10 @@ class Diagnosis extends Model
     public static function getJenisSapi(): array
     {
         return [
-            'perah' => 'Sapi Perah',
-            'potong' => 'Sapi Potong',
+            'Sapi PO' => 'Sapi PO (Peranakan Ongole)',
+            'Sapi Simental' => 'Sapi Simental / Metal',
+            'Sapi Limousin' => 'Sapi Limousin',
+            'Sapi Jawa' => 'Sapi Jawa / Lokal Potong',
         ];
     }
 
