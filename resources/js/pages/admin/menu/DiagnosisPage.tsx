@@ -1,120 +1,73 @@
 'use client';
 
 import { Eye } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Table from '@/components/Table';
 import Modal from '@/components/Modal';
+
+interface DiagnosisItem {
+  id: number;
+  tanggal: string;
+  user: string;
+  gejala: number;
+  hasil: string;
+  cf: number;
+}
 
 interface DiagnosisDetail {
   id: number;
   tanggal: string;
   user: string;
-  gejala: string[];
+  gejala: number;
   hasil: string;
   cf: number;
+  alamat: string;
+  no_hp: string;
+  jenis_sapi: string;
+  jenis_kelamin: string;
+  umur_kategori: string;
+  gejala_input: Array<{ gejala_id: number; cf_user: number }>;
+  diagnosis_banding: Array<{ penyakit_id: number; nama_penyakit: string; cf_score: number }>;
 }
 
 export default function DiagnosisPage() {
-  const [diagnosisData] = useState([
-    {
-      id: 1,
-      tanggal: '2024-01-15',
-      user: 'Petani Ahmad',
-      gejala: 3,
-      hasil: 'Mastitis',
-      cf: 85,
-    },
-    {
-      id: 2,
-      tanggal: '2024-01-14',
-      user: 'Petani Budi',
-      gejala: 4,
-      hasil: 'Diare',
-      cf: 92,
-    },
-    {
-      id: 3,
-      tanggal: '2024-01-13',
-      user: 'Petani Citra',
-      gejala: 2,
-      hasil: 'Radang Ambing',
-      cf: 78,
-    },
-    {
-      id: 4,
-      tanggal: '2024-01-12',
-      user: 'Petani Dedi',
-      gejala: 5,
-      hasil: 'Pneumonia',
-      cf: 88,
-    },
-    {
-      id: 5,
-      tanggal: '2024-01-11',
-      user: 'Petani Eka',
-      gejala: 3,
-      hasil: 'Foot and Mouth',
-      cf: 81,
-    },
-  ]);
-
-  const detailData: Record<number, DiagnosisDetail> = {
-    1: {
-      id: 1,
-      tanggal: '2024-01-15',
-      user: 'Petani Ahmad',
-      gejala: ['Pembengkakan Ambing', 'Suhu Tubuh Tinggi', 'Cairan Berwarna'],
-      hasil: 'Mastitis',
-      cf: 85,
-    },
-    2: {
-      id: 2,
-      tanggal: '2024-01-14',
-      user: 'Petani Budi',
-      gejala: ['Feses Encer', 'Nafsu Makan Berkurang', 'Dehidrasi', 'Letargi'],
-      hasil: 'Diare',
-      cf: 92,
-    },
-    3: {
-      id: 3,
-      tanggal: '2024-01-13',
-      user: 'Petani Citra',
-      gejala: ['Pembengkakan Ambing', 'Kemerahan'],
-      hasil: 'Radang Ambing',
-      cf: 78,
-    },
-    4: {
-      id: 4,
-      tanggal: '2024-01-12',
-      user: 'Petani Dedi',
-      gejala: [
-        'Kesulitan Bernapas',
-        'Cairan Dari Hidung',
-        'Batuk',
-        'Suhu Tinggi',
-        'Lemas',
-      ],
-      hasil: 'Pneumonia',
-      cf: 88,
-    },
-    5: {
-      id: 5,
-      tanggal: '2024-01-11',
-      user: 'Petani Eka',
-      gejala: ['Luka Pada Mulut', 'Pincang', 'Aliran Air Liur Berlebih'],
-      hasil: 'Foot and Mouth',
-      cf: 81,
-    },
-  };
-
-  const [selectedDetail, setSelectedDetail] = useState<DiagnosisDetail | null>(
-    null
-  );
+  const [diagnosisData, setDiagnosisData] = useState<DiagnosisItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedDetail, setSelectedDetail] = useState<DiagnosisDetail | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Fetch diagnosis data
+  const fetchDiagnosis = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await fetch('/admin/api/diagnosis/all');
+
+      if (!response.ok) {
+        throw new Error('Gagal mengambil data diagnosis');
+      }
+
+      const result = await response.json();
+      setDiagnosisData(result.data);
+    } catch (err) {
+      console.error('Error fetching diagnosis:', err);
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDiagnosis();
+  }, []);
+
   const handleDetail = (id: number) => {
-    setSelectedDetail(detailData[id]);
-    setIsModalOpen(true);
+    const detail = diagnosisData.find(d => d.id === id) as unknown as DiagnosisDetail;
+    if (detail) {
+      setSelectedDetail(detail);
+      setIsModalOpen(true);
+    }
   };
 
   const columns = [
@@ -129,23 +82,47 @@ export default function DiagnosisPage() {
     },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <div className="space-y-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-12 bg-gray-100 rounded animate-pulse"></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 p-6 rounded-lg">
+        <p className="text-red-800">Error: {error}</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="bg-white p-6 rounded-lg border border-gray-200">
         <h3 className="text-lg font-bold text-gray-800 mb-4">Riwayat Diagnosis</h3>
-        <Table
-          columns={columns}
-          data={diagnosisData}
-          actions={(row) => (
-            <button
-              onClick={() => handleDetail(row.id)}
-              className="flex items-center gap-2 px-3 py-1 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors text-sm font-medium"
-            >
-              <Eye size={16} />
-              Detail
-            </button>
-          )}
-        />
+        {diagnosisData.length > 0 ? (
+          <Table
+            columns={columns}
+            data={diagnosisData}
+            actions={(row) => (
+              <button
+                onClick={() => handleDetail(row.id)}
+                className="flex items-center gap-2 px-3 py-1 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors text-sm font-medium"
+              >
+                <Eye size={16} />
+                Detail
+              </button>
+            )}
+          />
+        ) : (
+          <p className="text-gray-500">Tidak ada data diagnosis</p>
+        )}
       </div>
 
       <Modal
@@ -169,35 +146,67 @@ export default function DiagnosisPage() {
               </div>
             </div>
 
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-gray-500 mb-1">Alamat</p>
+                <p className="font-semibold text-gray-800">{selectedDetail.alamat}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 mb-1">No. HP</p>
+                <p className="font-semibold text-gray-800">{selectedDetail.no_hp}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 mb-1">Jenis Sapi</p>
+                <p className="font-semibold text-gray-800">
+                  {selectedDetail.jenis_sapi === 'perah' ? 'Sapi Perah' : 'Sapi Potong'}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500 mb-1">Jenis Kelamin</p>
+                <p className="font-semibold text-gray-800 capitalize">{selectedDetail.jenis_kelamin}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 mb-1">Umur Kategori</p>
+                <p className="font-semibold text-gray-800">{selectedDetail.umur_kategori}</p>
+              </div>
+            </div>
+
             <div>
               <p className="text-sm font-semibold text-gray-700 mb-2">
-                Gejala yang Dipilih:
+                Gejala yang Dipilih ({selectedDetail.gejala} gejala):
               </p>
-              <ul className="space-y-2">
-                {selectedDetail.gejala.map((g, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-center gap-2 text-gray-700"
-                  >
-                    <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                    {g}
-                  </li>
-                ))}
-              </ul>
+              <div className="bg-gray-50 p-3 rounded-lg text-sm text-gray-600">
+                <p>Total gejala input: {selectedDetail.gejala_input.length}</p>
+              </div>
             </div>
 
             <div className="bg-emerald-50 p-4 rounded-lg">
-              <p className="text-sm text-gray-500 mb-1">Hasil Diagnosis</p>
-              <p className="text-xl font-bold text-emerald-600">
-                {selectedDetail.hasil}
-              </p>
+              <p className="text-sm text-gray-500 mb-1">Hasil Diagnosis Utama</p>
+              <p className="text-2xl font-bold text-emerald-600">{selectedDetail.hasil}</p>
               <p className="text-sm text-gray-600 mt-2">
                 Nilai CF: {selectedDetail.cf}% ({(selectedDetail.cf / 100).toFixed(2)})
               </p>
             </div>
+
+            {selectedDetail.diagnosis_banding && selectedDetail.diagnosis_banding.length > 0 && (
+              <div>
+                <p className="text-sm font-semibold text-gray-700 mb-2">Diagnosis Banding:</p>
+                <div className="space-y-2">
+                  {selectedDetail.diagnosis_banding.map((diag, idx) => (
+                    <div key={idx} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                      <span className="text-gray-700">{diag.nama_penyakit}</span>
+                      <span className="text-sm font-semibold text-gray-600">
+                        {(diag.cf_score * 100).toFixed(0)}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </Modal>
     </>
   );
 }
+

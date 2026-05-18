@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\DiagnosisController;
+use App\Http\Controllers\PenyakitController;
+use App\Http\Controllers\GejalaController;
+use App\Http\Controllers\AturanController;
 
 Route::get('/', function () {
     return Inertia::render('pengguna/LandingPage');
@@ -50,4 +53,28 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/', function () {
         return Inertia::render('admin/dashboard/page');
     })->name('admin.dashboard');
+
+    // Admin API endpoints
+    Route::get('/api/dashboard/stats', [DiagnosisController::class, 'getDashboardStats']);
+    Route::get('/api/dashboard/diagnoses', [DiagnosisController::class, 'getRecentDiagnoses']);
+    Route::get('/api/diagnosis/all', [DiagnosisController::class, 'getAllDiagnoses']);
+
+    // Penyakit API endpoints
+    Route::get('/api/penyakit', [PenyakitController::class, 'index']);
+    Route::post('/api/penyakit', [PenyakitController::class, 'store']);
+    Route::put('/api/penyakit/{penyakit}', [PenyakitController::class, 'update']);
+    Route::delete('/api/penyakit/{penyakit}', [PenyakitController::class, 'destroy']);
+
+    // Gejala API endpoints
+    Route::get('/api/gejala', [GejalaController::class, 'index']);
+    Route::post('/api/gejala', [GejalaController::class, 'store']);
+    Route::put('/api/gejala/{gejala}', [GejalaController::class, 'update']);
+    Route::delete('/api/gejala/{gejala}', [GejalaController::class, 'destroy']);
+
+    // Aturan API endpoints
+    Route::get('/api/aturan', [AturanController::class, 'index']);
+    Route::get('/api/aturan/options', [AturanController::class, 'getOptions']);
+    Route::post('/api/aturan', [AturanController::class, 'store']);
+    Route::put('/api/aturan/{aturan}', [AturanController::class, 'update']);
+    Route::delete('/api/aturan/{aturan}', [AturanController::class, 'destroy']);
 });

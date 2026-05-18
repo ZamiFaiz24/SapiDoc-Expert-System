@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Gejala;
 use App\Models\Diagnosis;
+use App\Models\Penyakit;
+use App\Models\Aturan;
 use App\Services\InferensiService;
 use Illuminate\Http\Request;
 
@@ -185,6 +187,77 @@ class DiagnosisController extends Controller
 
         return inertia('pengguna/diagnosis/example-create', [
             'diagnoses' => $diagnoses,
+        ]);
+    }
+
+    /**
+     * API: Get dashboard statistics for admin
+     */
+    public function getDashboardStats()
+    {
+        $stats = [
+            'total_penyakit' => Penyakit::count(),
+            'total_gejala' => Gejala::count(),
+            'total_aturan' => Aturan::count(),
+            'total_diagnosis' => Diagnosis::count(),
+        ];
+
+        return response()->json($stats);
+    }
+
+    /**
+     * API: Get recent diagnoses for admin dashboard
+     */
+    public function getRecentDiagnoses()
+    {
+        $diagnoses = Diagnosis::with('penyakit')
+            ->latest()
+            ->limit(5)
+            ->get()
+            ->map(function ($diagnosis) {
+                return [
+                    'id' => $diagnosis->id,
+                    'tanggal' => $diagnosis->created_at->format('Y-m-d'),
+                    'user' => $diagnosis->nama_user,
+                    'gejala' => count($diagnosis->gejala_input ?? []),
+                    'hasil' => $diagnosis->nama_penyakit_snap,
+                    'cf' => round($diagnosis->cf_final * 100) . '%',
+                ];
+            });
+
+        return response()->json([
+            'data' => $diagnoses,
+        ]);
+    }
+
+    /**
+     * API: Get all diagnoses for admin history page
+     */
+    public function getAllDiagnoses()
+    {
+        $diagnoses = Diagnosis::with('penyakit')
+            ->latest()
+            ->get()
+            ->map(function ($diagnosis) {
+                return [
+                    'id' => $diagnosis->id,
+                    'tanggal' => $diagnosis->created_at->format('Y-m-d'),
+                    'user' => $diagnosis->nama_user,
+                    'gejala' => count($diagnosis->gejala_input ?? []),
+                    'hasil' => $diagnosis->nama_penyakit_snap,
+                    'cf' => round($diagnosis->cf_final * 100),
+                    'alamat' => $diagnosis->alamat_user,
+                    'no_hp' => $diagnosis->no_hp_user,
+                    'jenis_sapi' => $diagnosis->jenis_sapi,
+                    'jenis_kelamin' => $diagnosis->jenis_kelamin,
+                    'umur_kategori' => $diagnosis->umur_kategori,
+                    'gejala_input' => $diagnosis->gejala_input ?? [],
+                    'diagnosis_banding' => $diagnosis->diagnosis_banding ?? [],
+                ];
+            });
+
+        return response()->json([
+            'data' => $diagnoses,
         ]);
     }
 }
