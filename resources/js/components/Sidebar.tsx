@@ -23,19 +23,28 @@ export default function Sidebar({ activeMenu, setActiveMenu }: SidebarProps) {
     <>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-40 md:hidden"
+        className="fixed top-4 left-4 z-40 md:hidden p-2 rounded-lg hover:bg-gray-100 transition"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
       <div
-        className={`fixed left-0 top-0 h-full w-64 bg-gray-900 text-white transition-transform duration-300 z-30 md:translate-x-0 ${
+        className={`fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 transition-transform duration-300 z-30 md:translate-x-0 shadow-lg ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="p-6 border-b border-gray-800">
-          <h1 className="text-xl font-bold text-emerald-400">CattleCare</h1>
-          <p className="text-sm text-gray-400">Admin Panel</p>
+        <div className="p-6 bg-gradient-to-r from-emerald-600 to-emerald-400 border-b border-gray-200">
+          <div className="flex items-center gap-3 mb-2">
+            <img
+              src="/images/logo.png"
+              alt="SapiDoc Logo"
+              className="h-15 w-15 rounded-full shadow-sm"
+            />
+            <div>
+              <h1 className="text-lg font-bold text-gray-800 tracking-tight">SapiDoc</h1>
+              <p className="text-sm text-white">Dashboard Admin</p>
+            </div>
+          </div>
         </div>
 
         <nav className="mt-8 space-y-2 px-4">
@@ -49,14 +58,14 @@ export default function Sidebar({ activeMenu, setActiveMenu }: SidebarProps) {
                   setActiveMenu(item.id);
                   setIsOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors font-medium ${
                   isActive
-                    ? 'bg-emerald-500 text-white'
-                    : 'text-gray-300 hover:bg-gray-800'
+                    ? 'bg-emerald-50 text-emerald-600 border-l-4 border-emerald-600'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600'
                 }`}
               >
                 <Icon size={20} />
-                <span className="font-medium">{item.label}</span>
+                <span>{item.label}</span>
               </button>
             );
           })}
