@@ -266,8 +266,7 @@ export default function DiagnosisShowPage({
                   <div key={idx} className="flex items-center justify-between rounded-xl   border border-gray-100 bg-gray-50/50 p-4 transition hover:bg-white">
                   <span className="text-sm font-semibold text-gray-700">{item.nama_penyakit}</span>
                   <span className="rounded-lg bg-emerald-100 px-2 py-1 text-xs font-black text-emerald-700">
-                      {/* Ubah item.cf_score menjadi item.cf sesuai isi JSON database Anda */}
-                      {item.cf ? (item.cf * 100).toFixed(1) : '0'}%
+                      {(item.cf_score * 100).toFixed(1)}%
                   </span>
                   </div>
               ))}
