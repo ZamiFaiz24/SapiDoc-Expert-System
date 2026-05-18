@@ -29,9 +29,8 @@ interface FormData {
 }
 
 const KATEGORI_OPTIONS = [
-  { value: 'fisik', label: 'Fisik' },
-  { value: 'tingkah_laku', label: 'Tingkah Laku' },
-  { value: 'produksi', label: 'Produksi' },
+  { value: 'Gejala Umum', label: 'Gejala Umum' },
+  { value: 'Gejala Spesifik', label: 'Gejala Spesifik' },
 ];
 
 export default function GejalaPage() {
@@ -224,48 +223,50 @@ export default function GejalaPage() {
 
   return (
     <div className="space-y-6">
-      {/* Search & Filter Bar */}
-      <div className="space-y-4">
-        <form onSubmit={handleSearch} className="flex gap-2">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-3 text-gray-400" size={20} />
-            <input
-              type="text"
-              value={search}
-              onChange={handleSearchChange}
-              placeholder="Cari gejala..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            />
-          </div>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors font-medium"
-          >
-            Cari
-          </button>
-        </form>
+      {/* Search & Filter Section */}
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-5 rounded-lg border border-emerald-200">
+        <div className="space-y-4">
+          <form onSubmit={handleSearch} className="flex gap-3">
+            <div className="flex-1 relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" size={20} />
+              <input
+                type="text"
+                value={search}
+                onChange={handleSearchChange}
+                placeholder="Cari berdasarkan kode atau nama gejala..."
+                className="w-full pl-12 pr-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm"
+              />
+            </div>
+            <button
+              type="submit"
+              className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-semibold shadow-sm whitespace-nowrap"
+            >
+              Cari
+            </button>
+          </form>
 
-        <select
-          value={kategoriFilter}
-          onChange={handleFilterChange}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-        >
-          <option value="">Semua Kategori</option>
-          {KATEGORI_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+          <select
+            value={kategoriFilter}
+            onChange={handleFilterChange}
+            className="w-full px-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm font-medium"
+          >
+            <option value="">Semua Kategori</option>
+            {KATEGORI_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="flex justify-end">
         <button
           onClick={handleTambah}
-          className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors font-medium"
+          className="flex items-center gap-2 px-5 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-semibold shadow-md hover:shadow-lg"
         >
           <Plus size={20} />
-          Tambah Gejala
+          Tambah Gejala Baru
         </button>
       </div>
 
@@ -306,7 +307,7 @@ export default function GejalaPage() {
                   <button
                     disabled={currentPage === 1}
                     onClick={() => fetchGejala(currentPage - 1, search, kategoriFilter)}
-                    className="flex items-center gap-1 px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-1 px-3 py-1 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ChevronLeft size={18} />
                     Sebelumnya
@@ -316,7 +317,7 @@ export default function GejalaPage() {
                       <button
                         key={page}
                         onClick={() => fetchGejala(page, search, kategoriFilter)}
-                        className={`px-3 py-1 rounded-lg ${
+                        className={`px-3 py-1 text-sm text-gray-600 rounded-lg ${
                           currentPage === page
                             ? 'bg-emerald-500 text-white'
                             : 'border border-gray-300 hover:bg-gray-50'
@@ -329,7 +330,7 @@ export default function GejalaPage() {
                   <button
                     disabled={currentPage === pagination.last_page}
                     onClick={() => fetchGejala(currentPage + 1, search, kategoriFilter)}
-                    className="flex items-center gap-1 px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-1 px-3 py-1 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Selanjutnya
                     <ChevronRight size={18} />
@@ -345,104 +346,112 @@ export default function GejalaPage() {
 
       {/* Modal Form */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-gray-800">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl max-w-md w-full shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-5 flex justify-between items-center">
+              <h3 className="text-lg font-bold text-white">
                 {editingId ? 'Edit Gejala' : 'Tambah Gejala Baru'}
               </h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-1 hover:bg-emerald-500 rounded-lg transition-colors text-white"
               >
-                <X size={20} />
+                <X size={22} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Kode Gejala
-                </label>
-                <input
-                  type="text"
-                  value={formData.kode_gejala}
-                  onChange={(e) =>
-                    setFormData({ ...formData, kode_gejala: e.target.value })
-                  }
-                  placeholder="Contoh: G001"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  disabled={editingId !== null}
-                />
-              </div>
+            {/* Modal Body */}
+            <div className="p-6">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">
+                    Kode Gejala <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.kode_gejala}
+                    onChange={(e) =>
+                      setFormData({ ...formData, kode_gejala: e.target.value })
+                    }
+                    placeholder="Contoh: G001"
+                    className="w-full px-4 py-2.5 text-sm text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50 transition-colors"
+                    disabled={editingId !== null}
+                  />
+                  {editingId && (
+                    <p className="text-xs text-gray-500 mt-1">Kode tidak dapat diubah</p>
+                  )}
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nama Gejala
-                </label>
-                <input
-                  type="text"
-                  value={formData.nama_gejala}
-                  onChange={(e) =>
-                    setFormData({ ...formData, nama_gejala: e.target.value })
-                  }
-                  placeholder="Contoh: Pembengkakan Ambing"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">
+                    Nama Gejala <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.nama_gejala}
+                    onChange={(e) =>
+                      setFormData({ ...formData, nama_gejala: e.target.value })
+                    }
+                    placeholder="Contoh: Pembengkakan Ambing"
+                    className="w-full px-4 py-2.5 text-sm text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50 transition-colors"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Kategori
-                </label>
-                <select
-                  value={formData.kategori}
-                  onChange={(e) =>
-                    setFormData({ ...formData, kategori: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="">-- Pilih Kategori --</option>
-                  {KATEGORI_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">
+                    Kategori <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={formData.kategori}
+                    onChange={(e) =>
+                      setFormData({ ...formData, kategori: e.target.value })
+                    }
+                    className="w-full px-4 py-2.5 text-sm text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50 transition-colors"
+                  >
+                    <option value="">-- Pilih Kategori --</option>
+                    {KATEGORI_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Keterangan
-                </label>
-                <textarea
-                  value={formData.keterangan}
-                  onChange={(e) =>
-                    setFormData({ ...formData, keterangan: e.target.value })
-                  }
-                  placeholder="Masukkan keterangan gejala..."
-                  rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">
+                    Keterangan <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    value={formData.keterangan}
+                    onChange={(e) =>
+                      setFormData({ ...formData, keterangan: e.target.value })
+                    }
+                    placeholder="Jelaskan tentang gejala ini..."
+                    rows={4}
+                    className="w-full px-4 py-2.5 text-sm text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50 resize-none transition-colors"
+                  />
+                </div>
 
-              <div className="flex gap-2 justify-end pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSaving}
-                  className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSaving ? 'Menyimpan...' : 'Simpan'}
-                </button>
-              </div>
-            </form>
+                {/* Modal Footer */}
+                <div className="flex gap-3 pt-4 border-t border-gray-200">
+                  <button
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="flex-1 px-4 py-2.5 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSaving ? 'Menyimpan...' : 'Simpan'}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}

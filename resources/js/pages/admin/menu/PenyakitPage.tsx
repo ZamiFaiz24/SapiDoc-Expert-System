@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, Edit, Trash2, X, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Edit, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Table from '@/components/Table';
 
@@ -34,8 +34,6 @@ export default function PenyakitPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [search, setSearch] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     kode_penyakit: '',
     nama_penyakit: '',
@@ -43,15 +41,12 @@ export default function PenyakitPage() {
   });
 
   // Fetch penyakit data
-  const fetchPenyakit = async (page: number = 1, searchTerm: string = '') => {
+  const fetchPenyakit = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      const params = new URLSearchParams();
-      if (searchTerm) params.append('search', searchTerm);
-      params.append('page', page.toString());
 
-      const response = await fetch(`/admin/api/penyakit?${params.toString()}`);
+      const response = await fetch('/admin/api/penyakit');
 
       if (!response.ok) {
         throw new Error('Gagal mengambil data penyakit');
@@ -60,7 +55,6 @@ export default function PenyakitPage() {
       const result = await response.json();
       setPenyakitData(result.data);
       setPagination(result.pagination);
-      setCurrentPage(result.pagination.current_page);
     } catch (err) {
       console.error('Error fetching penyakit:', err);
       setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
@@ -70,21 +64,8 @@ export default function PenyakitPage() {
   };
 
   useEffect(() => {
-    fetchPenyakit(1, search);
+    fetchPenyakit();
   }, []);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchPenyakit(1, search);
-  };
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearch(value);
-    if (value === '') {
-      fetchPenyakit(1, '');
-    }
-  };
 
   const handleTambah = () => {
     setEditingId(null);
@@ -124,7 +105,7 @@ export default function PenyakitPage() {
       }
 
       // Refresh data
-      fetchPenyakit(currentPage, search);
+      fetchPenyakit();
     } catch (err) {
       console.error('Error deleting penyakit:', err);
       alert(err instanceof Error ? err.message : 'Gagal menghapus penyakit');
@@ -163,7 +144,7 @@ export default function PenyakitPage() {
       }
 
       // Refresh data dan close modal
-      fetchPenyakit(currentPage, search);
+      fetchPenyakit();
       setShowModal(false);
     } catch (err) {
       console.error('Error saving penyakit:', err);
@@ -204,33 +185,13 @@ export default function PenyakitPage() {
 
   return (
     <div className="space-y-6">
-      {/* Search Bar */}
-      <form onSubmit={handleSearch} className="flex gap-2">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-3 text-gray-400" size={20} />
-          <input
-            type="text"
-            value={search}
-            onChange={handleSearchChange}
-            placeholder="Cari penyakit..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          />
-        </div>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors font-medium"
-        >
-          Cari
-        </button>
-      </form>
-
       <div className="flex justify-end">
         <button
           onClick={handleTambah}
-          className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors font-medium"
+          className="flex items-center gap-2 px-5 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-semibold shadow-md hover:shadow-lg"
         >
           <Plus size={20} />
-          Tambah Penyakit
+          Tambah Penyakit Baru
         </button>
       </div>
 
@@ -260,48 +221,6 @@ export default function PenyakitPage() {
                 </div>
               )}
             />
-            
-            {/* Pagination */}
-            {pagination && pagination.last_page > 1 && (
-              <div className="mt-6 flex items-center justify-between">
-                <p className="text-sm text-gray-600">
-                  Menampilkan {pagination.from} - {pagination.to} dari {pagination.total} data
-                </p>
-                <div className="flex gap-2">
-                  <button
-                    disabled={currentPage === 1}
-                    onClick={() => fetchPenyakit(currentPage - 1, search)}
-                    className="flex items-center gap-1 px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <ChevronLeft size={18} />
-                    Sebelumnya
-                  </button>
-                  <div className="flex items-center gap-2">
-                    {Array.from({ length: pagination.last_page }, (_, i) => i + 1).map((page) => (
-                      <button
-                        key={page}
-                        onClick={() => fetchPenyakit(page, search)}
-                        className={`px-3 py-1 rounded-lg ${
-                          currentPage === page
-                            ? 'bg-emerald-500 text-white'
-                            : 'border border-gray-300 hover:bg-gray-50'
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    disabled={currentPage === pagination.last_page}
-                    onClick={() => fetchPenyakit(currentPage + 1, search)}
-                    className="flex items-center gap-1 px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Selanjutnya
-                    <ChevronRight size={18} />
-                  </button>
-                </div>
-              </div>
-            )}
           </>
         ) : (
           <p className="text-gray-500">Tidak ada data penyakit</p>
@@ -310,84 +229,92 @@ export default function PenyakitPage() {
 
       {/* Modal Form */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-gray-800">
+        <div className="fixed inset-0 bg-transparent flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl max-w-md w-full shadow-2xl overflow-hidden">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-5 flex justify-between items-center">
+              <h3 className="text-lg font-bold text-white">
                 {editingId ? 'Edit Penyakit' : 'Tambah Penyakit Baru'}
               </h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-1 hover:bg-emerald-500 rounded-lg transition-colors text-white"
               >
-                <X size={20} />
+                <X size={22} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Kode Penyakit
-                </label>
-                <input
-                  type="text"
-                  value={formData.kode_penyakit}
-                  onChange={(e) =>
-                    setFormData({ ...formData, kode_penyakit: e.target.value })
-                  }
-                  placeholder="Contoh: P001"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  disabled={editingId !== null}
-                />
-              </div>
+            {/* Modal Body */}
+            <div className="p-6">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">
+                    Kode Penyakit <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.kode_penyakit}
+                    onChange={(e) =>
+                      setFormData({ ...formData, kode_penyakit: e.target.value })
+                    }
+                    placeholder="Contoh: P001"
+                    className="w-full px-4 py-2.5 text-sm text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50 transition-colors"
+                    disabled={editingId !== null}
+                  />
+                  {editingId && (
+                    <p className="text-xs text-gray-500 mt-1">Kode tidak dapat diubah</p>
+                  )}
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nama Penyakit
-                </label>
-                <input
-                  type="text"
-                  value={formData.nama_penyakit}
-                  onChange={(e) =>
-                    setFormData({ ...formData, nama_penyakit: e.target.value })
-                  }
-                  placeholder="Contoh: Mastitis"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">
+                    Nama Penyakit <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.nama_penyakit}
+                    onChange={(e) =>
+                      setFormData({ ...formData, nama_penyakit: e.target.value })
+                    }
+                    placeholder="Contoh: Mastitis"
+                    className="w-full px-4 py-2.5 text-sm text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50 transition-colors"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Deskripsi
-                </label>
-                <textarea
-                  value={formData.deskripsi}
-                  onChange={(e) =>
-                    setFormData({ ...formData, deskripsi: e.target.value })
-                  }
-                  placeholder="Masukkan deskripsi penyakit..."
-                  rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">
+                    Deskripsi <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    value={formData.deskripsi}
+                    onChange={(e) =>
+                      setFormData({ ...formData, deskripsi: e.target.value })
+                    }
+                    placeholder="Jelaskan tentang penyakit ini..."
+                    rows={4}
+                    className="w-full px-4 py-2.5 text-sm text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50 resize-none transition-colors"
+                  />
+                </div>
 
-              <div className="flex gap-2 justify-end pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSaving}
-                  className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSaving ? 'Menyimpan...' : 'Simpan'}
-                </button>
-              </div>
-            </form>
+                {/* Modal Footer */}
+                <div className="flex gap-3 pt-4 border-t border-gray-200">
+                  <button
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="flex-1 px-4 py-2.5 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSaving ? 'Menyimpan...' : 'Simpan'}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
