@@ -1,9 +1,8 @@
 'use client';
 
-import { Eye, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Eye, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Table from '@/components/Table';
-import Modal from '@/components/Modal';
 
 interface DiagnosisItem {
   id: number;
@@ -138,24 +137,26 @@ export default function DiagnosisPage() {
         <h3 className="text-lg font-bold text-gray-800 mb-4">Riwayat Diagnosis</h3>
 
         {/* Search & Filter Section */}
-        <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="mb-6 bg-gradient-to-r from-emerald-50 to-teal-50 p-5 rounded-lg border border-emerald-200">
           <form onSubmit={handleSearch} className="mb-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-              <input
-                type="text"
-                placeholder="Cari nama user, alamat, atau no HP..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              />
+            <div className="flex gap-3">
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" size={20} />
+                <input
+                  type="text"
+                  placeholder="Cari nama user, alamat, atau no HP..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm"
+                />
+              </div>
+              <button
+                type="submit"
+                className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-semibold shadow-sm whitespace-nowrap"
+              >
+                Cari
+              </button>
             </div>
-            <button
-              type="submit"
-              className="mt-2 w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
-            >
-              Cari
-            </button>
           </form>
 
           {/* Filter Inputs */}
@@ -164,7 +165,7 @@ export default function DiagnosisPage() {
             <select
               value={jenisSapi}
               onChange={(e) => handleFilterChange('jenis_sapi', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+              className="px-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm font-medium"
             >
               <option value="">Semua Jenis Sapi</option>
               <option value="Sapi PO">Sapi PO (Peranakan Ongole)</option>
@@ -178,7 +179,7 @@ export default function DiagnosisPage() {
               type="date"
               value={dateFrom}
               onChange={(e) => handleFilterChange('date_from', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+              className="px-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm font-medium"
             />
 
             {/* Date To */}
@@ -186,7 +187,7 @@ export default function DiagnosisPage() {
               type="date"
               value={dateTo}
               onChange={(e) => handleFilterChange('date_to', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+              className="px-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm font-medium"
             />
 
             {/* CF Min */}
@@ -197,7 +198,7 @@ export default function DiagnosisPage() {
               max="100"
               value={cfMin}
               onChange={(e) => handleFilterChange('cf_min', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+              className="px-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm font-medium"
             />
 
             {/* CF Max */}
@@ -208,7 +209,7 @@ export default function DiagnosisPage() {
               max="100"
               value={cfMax}
               onChange={(e) => handleFilterChange('cf_max', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+              className="px-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm font-medium"
             />
           </div>
         </div>
@@ -297,87 +298,133 @@ export default function DiagnosisPage() {
         )}
       </div>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedDetail(null);
-        }}
-        title="Detail Diagnosis"
-      >
-        {selectedDetail && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+      {/* Modal Detail Diagnosis */}
+      {isModalOpen && selectedDetail && (
+        <div className="fixed inset-0 bg-transparent flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl max-w-2xl w-full shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-5 flex justify-between items-center sticky top-0 z-10">
               <div>
-                <p className="text-sm text-gray-500">Tanggal</p>
-                <p className="font-semibold text-gray-900">{selectedDetail.tanggal}</p>
+                <h3 className="text-xl font-bold text-white">Detail Diagnosis</h3>
+                <p className="text-sm text-emerald-100 mt-1">ID Diagnosis #{selectedDetail.id}</p>
               </div>
-              <div>
-                <p className="text-sm text-gray-500">Nama User</p>
-                <p className="font-semibold text-gray-900">{selectedDetail.user}</p>
-              </div>
+              <button
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setSelectedDetail(null);
+                }}
+                className="p-1 hover:bg-emerald-500 rounded-lg transition-colors text-white"
+              >
+                <X size={22} />
+              </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <p className="text-gray-500 mb-1">Alamat</p>
-                <p className="font-semibold text-gray-800">{selectedDetail.alamat}</p>
-              </div>
-              <div>
-                <p className="text-gray-500 mb-1">No. HP</p>
-                <p className="font-semibold text-gray-800">{selectedDetail.no_hp}</p>
-              </div>
-              <div>
-                <p className="text-gray-500 mb-1">Jenis Sapi</p>
-                <p className="font-semibold text-gray-800">
-                  {selectedDetail.jenis_sapi === 'Sapi PO' ? 'Sapi PO (Peranakan Ongole)' : selectedDetail.jenis_sapi === 'Sapi Simental' ? 'Sapi Simental / Metal' : selectedDetail.jenis_sapi === 'Sapi Limousin' ? 'Sapi Limousin' : 'Sapi Jawa / Lokal Potong'}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-500 mb-1">Jenis Kelamin</p>
-                <p className="font-semibold text-gray-800 capitalize">{selectedDetail.jenis_kelamin}</p>
-              </div>
-              <div>
-                <p className="text-gray-500 mb-1">Umur Kategori</p>
-                <p className="font-semibold text-gray-800">{selectedDetail.umur_kategori}</p>
-              </div>
-            </div>
+            {/* Modal Body */}
+            <div className="p-6 space-y-6">
+              {/* Informasi Utama */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Tanggal</p>
+                  <p className="mt-1 text-sm font-semibold text-gray-800">{selectedDetail.tanggal}</p>
+                </div>
 
-            <div>
-              <p className="text-sm font-semibold text-gray-700 mb-2">
-                Gejala yang Dipilih ({selectedDetail.gejala} gejala):
-              </p>
-              <div className="bg-gray-50 p-3 rounded-lg text-sm text-gray-600">
-                <p>Total gejala input: {selectedDetail.gejala_input.length}</p>
-              </div>
-            </div>
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Nama User</p>
+                  <p className="mt-1 text-sm font-semibold text-gray-800">{selectedDetail.user}</p>
+                </div>
 
-            <div className="bg-emerald-50 p-4 rounded-lg">
-              <p className="text-sm text-gray-500 mb-1">Hasil Diagnosis Utama</p>
-              <p className="text-2xl font-bold text-emerald-600">{selectedDetail.hasil}</p>
-              <p className="text-sm text-gray-600 mt-2">
-                Nilai CF: {selectedDetail.cf}% ({(selectedDetail.cf / 100).toFixed(2)})
-              </p>
-            </div>
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Alamat</p>
+                  <p className="mt-1 text-sm font-semibold text-gray-800">{selectedDetail.alamat}</p>
+                </div>
 
-            {selectedDetail.diagnosis_banding && selectedDetail.diagnosis_banding.length > 0 && (
-              <div>
-                <p className="text-sm font-semibold text-gray-700 mb-2">Diagnosis Banding:</p>
-                <div className="space-y-2">
-                  {selectedDetail.diagnosis_banding.map((diag, idx) => (
-                    <div key={idx} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
-                      <span className="text-gray-700">{diag.nama_penyakit}</span>
-                      <span className="text-sm font-semibold text-gray-600">
-                        {(diag.cf_score * 100).toFixed(0)}%
-                      </span>
-                    </div>
-                  ))}
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">No. HP</p>
+                  <p className="mt-1 text-sm font-semibold text-gray-800">{selectedDetail.no_hp}</p>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Jenis Sapi</p>
+                  <p className="mt-1 text-sm font-semibold text-gray-800">
+                    {selectedDetail.jenis_sapi === 'Sapi PO'
+                      ? 'Sapi PO (Peranakan Ongole)'
+                      : selectedDetail.jenis_sapi === 'Sapi Simental'
+                      ? 'Sapi Simental / Metal'
+                      : selectedDetail.jenis_sapi === 'Sapi Limousin'
+                      ? 'Sapi Limousin'
+                      : 'Sapi Jawa / Lokal Potong'}
+                  </p>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Jenis Kelamin</p>
+                  <p className="mt-1 text-sm font-semibold text-gray-800 capitalize">{selectedDetail.jenis_kelamin}</p>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 md:col-span-2">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Kategori Umur</p>
+                  <p className="mt-1 text-sm font-semibold text-gray-800">{selectedDetail.umur_kategori}</p>
                 </div>
               </div>
-            )}
+
+              {/* Gejala */}
+              <div>
+                <h4 className="text-sm font-semibold text-gray-800 mb-3">Gejala yang Dipilih</h4>
+                <div className="bg-gray-50 border border-gray-100 rounded-lg p-4">
+                  <p className="text-sm text-gray-700">
+                    Total gejala dipilih:
+                    <span className="font-bold text-emerald-600 ml-1">{selectedDetail.gejala_input.length}</span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Hasil Diagnosis */}
+              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-5">
+                <p className="text-xs font-bold uppercase tracking-wide text-emerald-600">Hasil Diagnosis Utama</p>
+                <h3 className="text-2xl font-bold text-emerald-700 mt-2">{selectedDetail.hasil}</h3>
+                <p className="text-sm text-gray-600 mt-3">
+                  Nilai CF:
+                  <span className="font-bold text-gray-800 ml-1">{selectedDetail.cf}%</span>
+                  <span className="text-gray-500 ml-2">({(selectedDetail.cf / 100).toFixed(2)})</span>
+                </p>
+              </div>
+
+              {/* Diagnosis Banding */}
+              {selectedDetail.diagnosis_banding && selectedDetail.diagnosis_banding.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-800 mb-3">Diagnosis Banding</h4>
+                  <div className="space-y-2">
+                    {selectedDetail.diagnosis_banding.map((diag, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 p-4 hover:border-emerald-200 hover:bg-white transition"
+                      >
+                        <span className="text-sm font-medium text-gray-700">{diag.nama_penyakit}</span>
+                        <span className="rounded-lg bg-emerald-100 px-2 py-1 text-xs font-bold text-emerald-700">
+                          {(diag.cf_score * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Modal Footer */}
+              <div className="flex gap-3 pt-4 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setSelectedDetail(null);
+                  }}
+                  className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Tutup
+                </button>
+              </div>
+            </div>
           </div>
-        )}
-      </Modal>
+        </div>
+      )}
     </>
   );
 }

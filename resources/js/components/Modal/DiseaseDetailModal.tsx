@@ -20,80 +20,83 @@ export default function DiseaseDetailModal({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="border-b bg-white text-white p-6 flex justify-between items-center sticky top-0 z-10 backdrop-blur-sm">
-          <h2 className="text-2xl font-bold text-gray-900">{disease.name}</h2>
+        <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-5 flex justify-between items-center sticky top-0 z-10">
+          <h2 className="text-xl font-bold text-white">{disease.name}</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-900 transition"
+            className="p-1 hover:bg-emerald-500 rounded-lg transition-colors text-white"
           >
-            <X size={28} />
+            <X size={22} />
           </button>
         </div>
 
         {/* Modal Content */}
-        <div className="p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Gambar di kiri */}
-            <div className="flex items-start justify-center">
+        <div className="p-6">
+          <div className="space-y-6">
+            {/* Gambar */}
+            <div className="flex justify-center">
               <img
                 src={disease.image}
                 alt={disease.name}
-                className="w-full h-64 object-cover rounded-2xl shadow-md"
+                className="w-full max-w-sm h-48 object-cover rounded-lg shadow-md"
               />
             </div>
 
-            {/* Teks di kanan */}
-            <div className="space-y-6">
-              {/* Deskripsi */}
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">
-                  Deskripsi
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {disease.fullDesc}
-                </p>
-              </div>
-
-              {/* Gejala */}
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-3">
-                  Gejala
-                </h3>
-                <ul className="space-y-2">
-                  {disease.symptoms.map((symptom, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                       <CheckCircle className="text-emerald-600 mt-1" size={20} />
-                      <span className="text-gray-600">{symptom}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            {/* Deskripsi */}
+            <div>
+              <h3 className="text-sm font-semibold text-gray-800 mb-2">
+                Deskripsi
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed bg-gray-50 p-4 rounded-lg">
+                {disease.fullDesc}
+              </p>
             </div>
-          </div>
 
-          {/* Tombol Mulai Diagnosa */}
-          <div className="mt-8 pt-8 border-t">
-            <button className="
-              w-full
-              bg-emerald-600
-              hover:bg-emerald-700
-              text-white
-              py-4
-              rounded-2xl
-              font-semibold
-              transition
-              inline-flex
-              items-center
-              justify-center
-              gap-2
-              shadow-lg shadow-emerald-200
-              ">
-              Mulai Diagnosa
-            </button>
+            {/* Gejala */}
+            <div>
+              <h3 className="text-sm font-semibold text-gray-800 mb-3">
+                Gejala yang Mungkin Timbul
+              </h3>
+              <ul className="space-y-2">
+                {disease.symptoms.map((symptom, index) => (
+                  <li key={index} className="flex items-start gap-3 p-2 hover:bg-emerald-50 rounded-lg transition-colors">
+                    <CheckCircle className="text-emerald-600 flex-shrink-0 mt-0.5" size={18} />
+                    <span className="text-sm text-gray-700">{symptom}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Tombol Mulai Diagnosa */}
+            <div className="flex gap-3 pt-4 border-t border-gray-200">
+              <button
+                onClick={onClose}
+                className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Tutup
+              </button>
+              <button className="
+                flex-1
+                bg-emerald-600
+                hover:bg-emerald-700
+                text-white
+                py-2.5
+                rounded-lg
+                font-semibold
+                transition-colors
+                inline-flex
+                items-center
+                justify-center
+                gap-2
+                ">
+                <ArrowRight size={18} />
+                Mulai Diagnosa
+              </button>
+            </div>
           </div>
         </div>
       </div>
