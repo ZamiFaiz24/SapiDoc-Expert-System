@@ -39,7 +39,7 @@ interface ChartDataPoint {
   value: number;
 }
 
-const COLORS = ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0'];
+const COLORS = ['#2563eb', '#f97316', '#8b5cf6', '#ec4899', '#14b8a6'];
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats>({
@@ -204,7 +204,11 @@ export default function DashboardPage() {
                 <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} tick={{ fontSize: 12 }} />
                 <YAxis />
                 <Tooltip formatter={(value) => `${value} kasus`} />
-                <Bar dataKey="value" fill="#059669" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="value" radius={[8, 8, 0, 0]}>
+                  {diagnosisBySapi.map((entry, index) => (
+                    <Cell key={`bar-cell-${entry.name}-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           ) : (
