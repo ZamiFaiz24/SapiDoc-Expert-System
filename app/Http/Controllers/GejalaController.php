@@ -15,8 +15,7 @@ class GejalaController extends Controller
         $search = $request->query('search', '');
         $kategori = $request->query('kategori', '');
         $page = $request->query('page', 1);
-        $perPage = 10;
-
+        $perPage = $request->query('per_page', 10);
         $query = Gejala::orderBy('kode_gejala');
 
         // Search by nama_gejala or kode_gejala
