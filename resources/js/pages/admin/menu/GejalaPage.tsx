@@ -335,12 +335,12 @@ export default function GejalaPage() {
                 {/* Table Header */}
                 <thead>
                   <tr className="bg-emerald-600 border-b border-gray-200">
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">#</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Kode Gejala</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Nama Gejala</th>
-                    <th className="px-5 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">Kategori</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Keterangan</th>
-                    <th className="px-5 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">Aksi</th>
+                    <th className="px-5 py-5 whitespace-nowrap text-left text-xs font-semibold text-white uppercase tracking-wider">#</th>
+                    <th className="px-5 py-5 whitespace-nowrap text-left text-xs font-semibold text-white uppercase tracking-wider">Kode Gejala</th>
+                    <th className="px-5 py-5 whitespace-nowrap text-left text-xs font-semibold text-white uppercase tracking-wider">Nama Gejala</th>
+                    <th className="px-5 py-5 text-center text-xs font-semibold text-white uppercase tracking-wider">Kategori</th>
+                    <th className="px-5 py-5 whitespace-nowrap text-left text-xs font-semibold text-white uppercase tracking-wider">Keterangan</th>
+                    <th className="px-5 py-5 whitespace-nowrap text-center text-xs font-semibold text-white uppercase tracking-wider">Aksi</th>
                   </tr>
                 </thead>
                 {/* Table Body */}
@@ -350,24 +350,24 @@ export default function GejalaPage() {
                       key={row.id}
                       className={`border-t border-gray-100 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-emerald-50`}
                     >
-                      <td className="px-5 py-3 text-sm text-gray-600 font-medium">
+                      <td className="px-5 py-5 text-sm text-gray-600 font-medium">
                         {pagination?.from && pagination.from + idx}
                       </td>
-                      <td className="px-5 py-3 text-sm font-semibold text-gray-800">{row.kode_gejala}</td>
-                      <td className="px-5 py-3 text-sm text-gray-700">
+                      <td className="px-5 py-5 text-sm font-semibold text-gray-800">{row.kode_gejala}</td>
+                      <td className="px-5 py-5 text-sm text-gray-700">
                         <span className="font-medium">{row.nama_gejala}</span>
                       </td>
-                      <td className="px-5 py-3 text-sm text-center">
+                      <td className="px-5 py-5 text-sm text-center">
                         <span
                           className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${row.kategori === 'Gejala Umum' ? 'bg-emerald-100 text-emerald-700' : 'bg-indigo-100 text-indigo-700'}`}
                         >
                           {row.kategori}
                         </span>
                       </td>
-                      <td className="px-5 py-3 text-sm text-gray-600">
+                      <td className="px-5 py-5 text-sm text-gray-600">
                         <div className="line-clamp-2 max-w-xs">{row.keterangan}</div>
                       </td>
-                      <td className="px-5 py-3 text-center">
+                      <td className="px-5 py-5 text-center">
                         <div className="flex items-center justify-center gap-1">
                           <button
                             onClick={() => handleEdit(row)}
