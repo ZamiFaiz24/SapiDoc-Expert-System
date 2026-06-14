@@ -49,7 +49,11 @@ export default function Step3({ onNext, onBack, selectedGejala, setSelectedGejal
         cf_user: g.cf_user,
       }));
 
-      getSuggestedGejala(gejalaDenganCf);
+      getSuggestedGejala({
+        gejala: gejalaDenganCf,
+        jenis_kelamin: formData.jenis_kelamin,
+        umur_kategori: formData.umur_kategori,
+      });
     }
   }, [loaded, selectedGejala]);
 
@@ -69,12 +73,30 @@ export default function Step3({ onNext, onBack, selectedGejala, setSelectedGejal
 
   const spesifikCount = selectedGejala.filter((g) => spesifikGejalas.some((sg) => sg.id === g.id)).length;
 
+  console.log('Suggestions', suggestions);
+  console.log('Spesifik Gejala', spesifikGejalas);
+
+  console.log(
+  gejalas.find(g => g.id === 14)
+  );
+
+  console.log(
+    gejalas.find(g => g.id === 15)
+  );
+
+  console.log(
+    gejalas.find(g => g.id === 16)
+  );
+
+  console.log('Form Data', formData);
+
   return (
     <div className="w-full max-w-4xl rounded-3xl border border-white/70 bg-white p-6 shadow-xl md:p-8">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Gejala Spesifik</h2>
         <p className="mt-1 text-sm text-gray-500">Pilih gejala spesifik yang terlihat atau lihat saran sistem.</p>
       </div>
+      
 
       <div className="grid gap-6 md:grid-cols-3">
         {/* Browse Gejala Spesifik */}

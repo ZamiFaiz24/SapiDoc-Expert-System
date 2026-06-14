@@ -120,7 +120,7 @@ class DiagnosisController extends Controller
     /**
      * Tampilkan hasil diagnosis dengan detail breakdown CF
      */
-    public function show($id) // Hapus "Diagnosis" di depan $id
+    public function show($id)
     {
         // Cari data secara manual berdasarkan ID yang ada di URL
         // Kita gunakan with('penyakit') untuk mengambil detail penyakitnya sekalian
@@ -128,6 +128,21 @@ class DiagnosisController extends Controller
 
         // Sekarang kita coba dd lagi, pasti muncul datanya
         // dd($diagnosis->toArray()); 
+        // dd($diagnosis->gejala_input);
+
+        $gejalaDipilih = collect($diagnosis->gejala_input)
+            ->map(function ($item) {
+
+                $gejala = \App\Models\Gejala::find($item['gejala_id']);
+
+                return [
+                    'id' => $item['gejala_id'],
+                    'kode_gejala' => $gejala?->kode_gejala,
+                    'nama_gejala' => $gejala?->nama_gejala,
+                    'cf_user' => $item['cf_user'],
+                ];
+            })
+            ->values();
 
         return inertia('pengguna/diagnosis/show', [
             'diagnosis' => $diagnosis,
@@ -136,6 +151,7 @@ class DiagnosisController extends Controller
                 'deskripsi' => 'Informasi detail tidak tersedia.',
                 'cara_penanganan' => 'Silahkan hubungi dokter hewan terdekat.'
             ],
+            'gejala_dipilih' => $gejalaDipilih,
             'diagnosis_banding' => $diagnosis->diagnosis_banding ?? [],
             'interpretasi' => $this->getInterpretasi($diagnosis->cf_final ?? 0),
         ]);
@@ -166,10 +182,16 @@ class DiagnosisController extends Controller
             'gejala' => 'required|array|min:1',
             'gejala.*.gejala_id' => 'required|integer|exists:gejalas,id',
             'gejala.*.cf_user' => 'required|numeric|min:0|max:1',
+
+            'jenis_kelamin' => 'required|string',
+            'umur_kategori' => 'required|string',
         ]);
 
-        // Run FC partial untuk get suggested gejala
-        $suggestedGejala = $this->inferensiService->suggestGejala($validated['gejala']);
+        $suggestedGejala = $this->inferensiService->suggestGejala(
+            $validated['gejala'],
+            $validated['jenis_kelamin'],
+            $validated['umur_kategori']
+        );
 
         return response()->json([
             'suggestions' => $suggestedGejala,

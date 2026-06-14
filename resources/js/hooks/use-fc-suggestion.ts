@@ -13,12 +13,18 @@ interface SuggestedGejala {
   cf_score: number;
 }
 
+interface SuggestGejalaRequest {
+  gejala: GejalaData[];
+  jenis_kelamin: string;
+  umur_kategori: string;
+}
+
 export function useFcSuggestion() {
   const [suggestions, setSuggestions] = useState<SuggestedGejala[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const getSuggestedGejala = async (selectedGejala: GejalaData[]) => {
+  const getSuggestedGejala = async (selectedGejala: SuggestGejalaRequest) => {
     setIsLoading(true);
     setError(null);
 
@@ -30,7 +36,9 @@ export function useFcSuggestion() {
           'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
         },
         body: JSON.stringify({
-          gejala: selectedGejala,
+          gejala: selectedGejala.gejala,
+          jenis_kelamin: selectedGejala.jenis_kelamin,
+          umur_kategori: selectedGejala.umur_kategori,
         }),
       });
 

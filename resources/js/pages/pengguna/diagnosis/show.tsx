@@ -18,6 +18,13 @@ interface Diagnosis {
   gejala_input?: any[];
 }
 
+interface GejalaDipilih {
+  id: number;
+  kode_gejala: string;
+  nama_gejala: string;
+  cf_user: number;
+}
+
 interface Penyakit {
   id: number;
   nama_penyakit: string;
@@ -36,6 +43,7 @@ interface PageProps {
   penyakit: Penyakit;
   diagnosis_banding: DiagnosisBanding[];
   interpretasi: string;
+  gejala_dipilih: GejalaDipilih[];
 }
 
 function getInterpretasiColor(cf: number): string {
@@ -102,6 +110,7 @@ export default function DiagnosisShowPage({
   penyakit,
   diagnosis_banding = [], // Berikan default array kosong
   interpretasi,
+  gejala_dipilih,
 }: PageProps) {
   
   // 1. Validasi Awal: Jika diagnosis tidak ada, tampilkan pesan error sederhana
@@ -188,6 +197,49 @@ export default function DiagnosisShowPage({
               ))}
             </div>
           </div>
+
+          {/* GEJALA YANG DIPILIH */}
+          {gejala_dipilih.length > 0 && (
+            <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-xl backdrop-blur md:p-8">
+              <div className="mb-6 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100">
+                  <Stethoscope className="h-5 w-5 text-gray-800" />
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    Gejala yang Dipilih
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Total {gejala_dipilih.length} gejala
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-3 md:grid-cols-2">
+                {gejala_dipilih.map((gejala) => (
+                  <div
+                    key={gejala.id}
+                    className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4"
+                  >
+                    <div className="mb-1 flex items-center justify-between">
+                      <span className="text-xs font-bold text-emerald-600">
+                        {gejala.kode_gejala}
+                      </span>
+
+                      <span className="rounded-md bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-700">
+                        {(gejala.cf_user * 100).toFixed(0)}%
+                      </span>
+                    </div>
+
+                    <p className="text-sm font-medium text-gray-800">
+                      {gejala.nama_gejala}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* --- CARD HASIL UTAMA --- */}
           <div className={`rounded-3xl border-2 p-8 text-center shadow-xl backdrop-blur-sm transition-all ${colorClass}`}>

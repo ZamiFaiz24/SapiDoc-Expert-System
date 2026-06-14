@@ -245,7 +245,7 @@ class InferensiService
      * Sugesti gejala berdasarkan gejala yang sudah dipilih (FC partial)
      * Digunakan untuk guided diagnosis - suggest gejala spesifik yang kemungkinan besar cocok
      */
-    public function suggestGejala(array $gejalaDenganCf): array
+    public function suggestGejala(array $gejalaDenganCf, string $jenisKelamin, string $umurKategori): array
     {
         // Run FC partial dengan gejala yang dipilih
         $diagnosisPartial = $this->inferensi($gejalaDenganCf);
@@ -261,33 +261,41 @@ class InferensiService
         // Dapatkan semua gejala yang linked ke top penyakit, exclude yang sudah dipilih
         $suggestedGejalas = Aturan::whereIn('penyakit_id', $topPenyakitIds)
             ->whereNotIn('gejala_id', $selectedGejalaIds)
-            ->with(['gejala'])
+            ->whereHas('gejala', function ($query) use ($jenisKelamin, $umurKategori) {
+
+                $query->where('kategori', 'Gejala Spesifik');
+
+                $query->where(function ($q) use ($jenisKelamin) {
+                    $q->where('jenis_kelamin', 'all')
+                        ->orWhere('jenis_kelamin', $jenisKelamin);
+                });
+
+                $query->where(function ($q) use ($umurKategori) {
+                    $q->where('umur_kategori', 'all')
+                        ->orWhere('umur_kategori', $umurKategori);
+                });
+            })
+            ->with('gejala')
             ->get()
             ->groupBy('gejala_id')
             ->map(function ($aturanGroup) {
-                // Filter hanya gejala spesifik
-                $gejala = $aturanGroup->first()->gejala;
-                if ($gejala->kategori !== 'Gejala Spesifik') {
-                    return null;
-                }
 
-                // Hitung rata-rata CF expert untuk gejala ini
+                $gejala = $aturanGroup->first()->gejala;
+
                 $avgMb = $aturanGroup->avg('nilai_mb');
                 $avgMd = $aturanGroup->avg('nilai_md');
-                $cfExpert = round($avgMb - $avgMd, 4);
 
                 return [
                     'id' => $gejala->id,
                     'kode_gejala' => $gejala->kode_gejala,
                     'nama_gejala' => $gejala->nama_gejala,
                     'kategori' => $gejala->kategori,
-                    'cf_score' => $cfExpert, // Expert confidence (MB - MD)
+                    'cf_score' => round($avgMb - $avgMd, 4),
                 ];
             })
-            ->filter() // Remove null values
             ->sortByDesc('cf_score')
             ->values()
-            ->take(5) // Max 5 suggestions
+            ->take(5)
             ->toArray();
 
         return $suggestedGejalas;
