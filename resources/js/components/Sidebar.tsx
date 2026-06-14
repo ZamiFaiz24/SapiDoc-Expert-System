@@ -38,11 +38,13 @@ export default function Sidebar({ activeMenu, setActiveMenu }: SidebarProps) {
             <img
               src="/images/logo.png"
               alt="SapiDoc Logo"
-              className="h-15 w-15 rounded-full shadow-sm"
+              className="h-14 w-14 rounded-full shadow-sm"
             />
             <div>
-              <h1 className="text-lg font-bold text-gray-800 tracking-tight">SapiDoc</h1>
-              <p className="text-sm text-white">Dashboard Admin</p>
+              <h1 className="text-xl font-bold text-white tracking-tight">SapiDoc</h1>
+              <p className="text-xs text-emerald-100">
+                Sistem Pakar Penyakit Sapi
+              </p>
             </div>
           </div>
         </div>
@@ -60,7 +62,7 @@ export default function Sidebar({ activeMenu, setActiveMenu }: SidebarProps) {
                 }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors font-medium ${
                   isActive
-                    ? 'bg-emerald-50 text-emerald-600 border-l-4 border-emerald-600'
+                    ? 'bg-emerald-50 text-emerald-600 border-l-4 border-emerald-600 font-semibold shadow-sm'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600'
                 }`}
               >
@@ -69,6 +71,14 @@ export default function Sidebar({ activeMenu, setActiveMenu }: SidebarProps) {
               </button>
             );
           })}
+          <div className="absolute bottom-0 w-full p-4 border-t border-gray-200">
+            <p className="text-sm font-semibold text-gray-700">
+              Administrator
+            </p>
+            <p className="text-xs text-gray-500">
+              Sistem Pakar CF
+            </p>
+          </div>
         </nav>
       </div>
 

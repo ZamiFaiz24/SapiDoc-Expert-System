@@ -1,8 +1,7 @@
 'use client';
 
-import { X, Eye, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Eye, Search, ChevronLeft, ChevronRight, AlertCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import Table from '@/components/Table';
 
 interface DiagnosisItem {
   id: number;
@@ -133,169 +132,196 @@ export default function DiagnosisPage() {
 
   return (
     <>
-      <div className="bg-white p-6 rounded-lg border border-gray-200">
-        <h3 className="text-lg font-bold text-gray-800 mb-4">Riwayat Diagnosis</h3>
-
+      <div className="space-y-6">
         {/* Search & Filter Section */}
-        <div className="mb-6 bg-gradient-to-r from-emerald-50 to-teal-50 p-5 rounded-lg border border-emerald-200">
-          <form onSubmit={handleSearch} className="mb-4">
-            <div className="flex gap-3">
+        <div className="bg-white p-5 rounded-lg border border-gray-200">
+          <div className="space-y-4">
+            <form onSubmit={handleSearch} className="flex gap-3">
               <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" size={20} />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <input
                   type="text"
                   placeholder="Cari nama user, alamat, atau no HP..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm"
+                  className="w-full pl-12 pr-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 />
               </div>
               <button
                 type="submit"
-                className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-semibold shadow-sm whitespace-nowrap"
+                className="px-6 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-semibold text-sm whitespace-nowrap"
               >
                 Cari
               </button>
+            </form>
+
+            {/* Filter Inputs */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+              {/* Jenis Sapi Filter */}
+              <select
+                value={jenisSapi}
+                onChange={(e) => handleFilterChange('jenis_sapi', e.target.value)}
+                className="px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-medium"
+              >
+                <option value="">Semua Jenis Sapi</option>
+                <option value="Sapi PO">Sapi PO (Peranakan Ongole)</option>
+                <option value="Sapi Simental">Sapi Simental / Metal</option>
+                <option value="Sapi Limousin">Sapi Limousin</option>
+                <option value="Sapi Jawa">Sapi Jawa / Lokal Potong</option>
+              </select>
+
+              {/* Date From */}
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => handleFilterChange('date_from', e.target.value)}
+                className="px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-medium"
+              />
+
+              {/* Date To */}
+              <input
+                type="date"
+                value={dateTo}
+                onChange={(e) => handleFilterChange('date_to', e.target.value)}
+                className="px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-medium"
+              />
+
+              {/* CF Min */}
+              <input
+                type="number"
+                placeholder="CF Min"
+                min="0"
+                max="100"
+                value={cfMin}
+                onChange={(e) => handleFilterChange('cf_min', e.target.value)}
+                className="px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-medium"
+              />
+
+              {/* CF Max */}
+              <input
+                type="number"
+                placeholder="CF Max"
+                min="0"
+                max="100"
+                value={cfMax}
+                onChange={(e) => handleFilterChange('cf_max', e.target.value)}
+                className="px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-medium"
+              />
             </div>
-          </form>
-
-          {/* Filter Inputs */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
-            {/* Jenis Sapi Filter */}
-            <select
-              value={jenisSapi}
-              onChange={(e) => handleFilterChange('jenis_sapi', e.target.value)}
-              className="px-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm font-medium"
-            >
-              <option value="">Semua Jenis Sapi</option>
-              <option value="Sapi PO">Sapi PO (Peranakan Ongole)</option>
-              <option value="Sapi Simental">Sapi Simental / Metal</option>
-              <option value="Sapi Limousin">Sapi Limousin</option>
-              <option value="Sapi Jawa">Sapi Jawa / Lokal Potong</option>
-            </select>
-
-            {/* Date From */}
-            <input
-              type="date"
-              value={dateFrom}
-              onChange={(e) => handleFilterChange('date_from', e.target.value)}
-              className="px-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm font-medium"
-            />
-
-            {/* Date To */}
-            <input
-              type="date"
-              value={dateTo}
-              onChange={(e) => handleFilterChange('date_to', e.target.value)}
-              className="px-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm font-medium"
-            />
-
-            {/* CF Min */}
-            <input
-              type="number"
-              placeholder="CF Min"
-              min="0"
-              max="100"
-              value={cfMin}
-              onChange={(e) => handleFilterChange('cf_min', e.target.value)}
-              className="px-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm font-medium"
-            />
-
-            {/* CF Max */}
-            <input
-              type="number"
-              placeholder="CF Max"
-              min="0"
-              max="100"
-              value={cfMax}
-              onChange={(e) => handleFilterChange('cf_max', e.target.value)}
-              className="px-4 py-3 text-sm text-gray-800 bg-white border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm font-medium"
-            />
           </div>
         </div>
 
-        {isLoading ? (
-          <div className="space-y-4">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-12 bg-gray-100 rounded animate-pulse"></div>
-            ))}
-          </div>
-        ) : error ? (
-          <div className="bg-red-50 border border-red-200 p-6 rounded-lg">
-            <p className="text-red-800">Error: {error}</p>
-          </div>
-        ) : diagnosisData.length > 0 ? (
-          <>
-            <Table
-              columns={[
-                { key: 'tanggal', label: 'Tanggal' },
-                { key: 'user', label: 'Nama User' },
-                { key: 'gejala', label: 'Jumlah Gejala' },
-                { key: 'hasil', label: 'Hasil Penyakit' },
-                {
-                  key: 'cf',
-                  label: 'CF / Persentase',
-                  render: (value: number) => `${value}%`,
-                },
-              ]}
-              data={diagnosisData}
-              actions={(row) => (
-                <button
-                  onClick={() => handleDetail(row.id)}
-                  className="flex items-center gap-2 px-3 py-1 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors text-sm font-medium"
-                >
-                  <Eye size={16} />
-                  Detail
-                </button>
-              )}
-            />
+        {/* Riwayat Diagnosis Header */}
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold text-gray-800">Riwayat Diagnosis</h3>
+        </div>
 
-            {/* Pagination */}
-            {pagination && pagination.last_page > 1 && (
-              <div className="mt-6 flex flex-col items-center gap-4">
-                <p className="text-sm text-gray-600">
-                  Menampilkan {pagination.from} - {pagination.to} dari {pagination.total} data
-                </p>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="p-2 border text-gray-800 border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <ChevronLeft size={18} />
-                  </button>
+        {/* Table Container */}
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-md">
 
-                  {[...Array(pagination.last_page)].map((_, index) => {
-                    const pageNum = index + 1;
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => handlePageChange(pageNum)}
-                        className={`px-3 py-1 rounded-lg transition-colors ${
-                          currentPage === pageNum
-                            ? 'bg-emerald-600 text-white'
-                            : 'border border-gray-300 hover:bg-gray-100'
-                        }`}
+          {isLoading ? (
+            <div className="space-y-4 p-6">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="h-12 bg-gray-100 rounded animate-pulse"></div>
+              ))}
+            </div>
+          ) : error ? (
+            <div className="bg-red-50 border border-red-200 p-6 rounded-lg">
+              <p className="text-red-800">Error: {error}</p>
+            </div>
+          ) : diagnosisData.length > 0 ? (
+            <>
+              {/* Table */}
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  {/* Table Header */}
+                  <thead>
+                    <tr className="bg-emerald-600 border-b border-gray-200">
+                      <th className="px-5 py-5 whitespace-nowrap text-left text-xs font-semibold text-white uppercase tracking-wider">#</th>
+                      <th className="px-5 py-5 text-left text-xs font-semibold text-white uppercase tracking-wider">Tanggal</th>
+                      <th className="px-5 py-5 text-left text-xs font-semibold text-white uppercase tracking-wider">Nama User</th>
+                      <th className="px-5 py-5 whitespace-nowrap text-center text-xs font-semibold text-white uppercase tracking-wider">Jumlah Gejala</th>
+                      <th className="px-5 py-5 text-left text-xs font-semibold text-white uppercase tracking-wider">Hasil Penyakit</th>
+                      <th className="px-5 py-5 whitespace-nowrap text-center text-xs font-semibold text-white uppercase tracking-wider">CF %</th>
+                      <th className="px-5 py-5 whitespace-nowrap text-center text-xs font-semibold text-white uppercase tracking-wider">Aksi</th>
+                    </tr>
+                  </thead>
+                  {/* Table Body */}
+                  <tbody>
+                    {diagnosisData.map((row, idx) => (
+                      <tr
+                        key={row.id}
+                        className={`border-t border-gray-100 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-emerald-50`}
                       >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
-
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === pagination.last_page}
-                    className="p-2 border text-gray-800 border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <ChevronRight size={18} />
-                  </button>
-                </div>
+                        <td className="px-5 py-5 text-sm text-gray-600 font-medium">
+                          {pagination?.from && pagination.from + idx}
+                        </td>
+                        <td className="px-5 py-5 text-sm font-semibold text-gray-800">{row.tanggal}</td>
+                        <td className="px-5 py-5 text-sm text-gray-700">{row.user}</td>
+                        <td className="px-5 py-5 text-sm text-center text-gray-800">{row.gejala}</td>
+                        <td className="px-5 py-5 text-sm text-gray-700 font-medium">{row.hasil}</td>
+                        <td className="px-5 py-5 text-sm text-center font-semibold text-emerald-600">{row.cf}%</td>
+                        <td className="px-5 py-5 text-center">
+                          <button
+                            onClick={() => handleDetail(row.id)}
+                            className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-emerald-600 hover:bg-emerald-50 rounded transition-colors border border-emerald-200 mx-auto"
+                          >
+                            <Eye size={14} />
+                            Detail
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            )}
-          </>
-        ) : (
-          <p className="text-gray-500">Tidak ada data diagnosis</p>
-        )}
+
+              {/* Pagination */}
+              {pagination && pagination.last_page > 1 && (
+                <div className="p-5 border-t border-gray-200 flex items-center justify-between">
+                  <p className="text-xs text-gray-600">
+                    Menampilkan {pagination.from} - {pagination.to} dari {pagination.total} data
+                  </p>
+                  <div className="flex gap-1">
+                    <button
+                      disabled={currentPage === 1}
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      className="flex items-center gap-0.5 px-2.5 py-1.5 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <ChevronLeft size={16} />
+                      Sebelumnya
+                    </button>
+                    <div className="flex items-center gap-0.5">
+                      {Array.from({ length: pagination.last_page }, (_, i) => i + 1).map((page) => (
+                        <button
+                          key={page}
+                          onClick={() => handlePageChange(page)}
+                          className={`px-2.5 py-1.5 text-xs rounded transition-colors ${currentPage === page ? 'bg-emerald-500 text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-50'}`}
+                        >
+                          {page}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      disabled={currentPage === pagination.last_page}
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      className="flex items-center gap-0.5 px-2.5 py-1.5 text-xs text-gray-600 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Selanjutnya
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="p-12 text-center">
+              <AlertCircle size={40} className="mx-auto text-gray-300 mb-3" />
+              <p className="text-gray-500 text-base font-medium">Tidak ada data diagnosis</p>
+              <p className="text-gray-400 text-sm mt-1">Coba gunakan filter berbeda atau lakukan diagnosis baru</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Modal Detail Diagnosis */}
@@ -303,24 +329,21 @@ export default function DiagnosisPage() {
         <div className="fixed inset-0 bg-transparent flex items-center justify-center p-4 z-50 backdrop-blur-sm">
           <div className="bg-white rounded-xl max-w-2xl w-full shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-5 flex justify-between items-center sticky top-0 z-10">
-              <div>
-                <h3 className="text-xl font-bold text-white">Detail Diagnosis</h3>
-                <p className="text-sm text-emerald-100 mt-1">ID Diagnosis #{selectedDetail.id}</p>
-              </div>
+            <div className="bg-emerald-600 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
+              <h3 className="text-base font-bold text-white">Detail Diagnosis #{selectedDetail.id}</h3>
               <button
                 onClick={() => {
                   setIsModalOpen(false);
                   setSelectedDetail(null);
                 }}
-                className="p-1 hover:bg-emerald-500 rounded-lg transition-colors text-white"
+                className="p-1 hover:bg-emerald-500 rounded transition-colors text-white"
               >
-                <X size={22} />
+                <X size={20} />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 space-y-6">
+            <div className="p-5 space-y-5">
               {/* Informasi Utama */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
@@ -416,7 +439,7 @@ export default function DiagnosisPage() {
                     setIsModalOpen(false);
                     setSelectedDetail(null);
                   }}
-                  className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors text-sm"
                 >
                   Tutup
                 </button>

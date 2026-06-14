@@ -269,10 +269,11 @@ class DiagnosisController extends Controller
 
         // Filter by CF range
         if ($cfMin !== '') {
-            $query->where('cf_final', '>=', floatval($cfMin));
+            $query->where('cf_final', '>=', floatval($cfMin) / 100);
         }
+
         if ($cfMax !== '') {
-            $query->where('cf_final', '<=', floatval($cfMax));
+            $query->where('cf_final', '<=', floatval($cfMax) / 100);
         }
 
         $diagnoses = $query->paginate($perPage, ['*'], 'page', $page);
