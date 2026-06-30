@@ -7,6 +7,8 @@ import { ClipboardCheck, ChevronLeft } from 'lucide-react';
 
 import { useFormSubmission } from '../../../hooks/use-form-submission';
 
+import Navbar from './NavbarDiagnosis';
+import SeverityGuideModal from './SeverityGuideModal';
 import LandingSection from './LandingSection';
 import StepIndicator from './StepIndicator';
 import Step1 from './step/Step1Data';
@@ -32,6 +34,8 @@ export default function DiagnosisPage({
   // =========================
 
   const [currentStep, setCurrentStep] = useState(0);
+
+  const [openGuide, setOpenGuide] = useState(false);
 
   const [formData, setFormData] = useState<FormData>({
     nama_user: '',
@@ -83,7 +87,7 @@ export default function DiagnosisPage({
   // =========================
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#f4fbf7] px-4 py-8">
+    <div className="relative min-h-screen bg-white">
 
       {/* Background Blur */}
       <div className="pointer-events-none absolute inset-0">
@@ -92,36 +96,12 @@ export default function DiagnosisPage({
         <div className="absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto w-full max-w-5xl">
-
-        {/* Header */}
-        <div className="mb-6 rounded-2xl border border-white/70 bg-white/80 p-5 shadow-lg backdrop-blur">
-          <div className="flex items-center gap-3">
-
-            <ClipboardCheck className="h-8 w-8 text-emerald-600" />
-
-            <div>
-              <h1 className="text-xl font-bold text-gray-900 md:text-2xl">
-                Diagnosis Penyakit Sapi
-              </h1>
-
-              <p className="text-sm text-gray-600">
-                Sistem pakar berbasis Certainty Factor
-              </p>
-            </div>
-
-            <div className="ml-auto">
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
-              >
-                <ChevronLeft size={16} />
-                Beranda
-              </Link>
-            </div>
-
-          </div>
-        </div>
+      {/* Navbar */}
+        <Navbar
+            onOpenGuide={() => setOpenGuide(true)}
+        />
+      
+      <div className="relative mx-auto w-full max-w-5xl mt-6">
 
         {/* Landing */}
         {currentStep === 0 ? (
@@ -175,6 +155,10 @@ export default function DiagnosisPage({
         )}
 
       </div>
+      <SeverityGuideModal
+          open={openGuide}
+          onClose={() => setOpenGuide(false)}
+      />
     </div>
   );
 }

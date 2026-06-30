@@ -1,10 +1,14 @@
 import { ClipboardCheck, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import SeverityGuideModal from './SeverityGuideModal';
 
 interface LandingSectionProps {
   onStart: () => void;
 }
 
 export default function LandingSection({ onStart }: LandingSectionProps) {
+  const [isSeverityGuideOpen, setIsSeverityGuideOpen] = useState(false);
+
   return (
     <div className="mx-auto w-full max-w-2xl">
 
@@ -69,6 +73,21 @@ export default function LandingSection({ onStart }: LandingSectionProps) {
           </div>
         </div>
 
+        <div className="mb-6 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+
+          <p className="text-sm text-gray-700">
+            Belum yakin menentukan tingkat keparahan gejala?
+          </p>
+
+          <button
+            onClick={() => setIsSeverityGuideOpen(true)}
+            className="mt-2 font-medium text-emerald-600 hover:text-emerald-700"
+          >
+            Lihat Panduan
+          </button>
+
+        </div>
+
         {/* CTA */}
         <button
           onClick={onStart}
@@ -82,6 +101,10 @@ export default function LandingSection({ onStart }: LandingSectionProps) {
         </button>
 
       </div>
+      <SeverityGuideModal
+        open={isSeverityGuideOpen}
+        onClose={() => setIsSeverityGuideOpen(false)}
+      />
     </div>
   );
 }
