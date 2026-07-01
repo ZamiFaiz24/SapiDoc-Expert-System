@@ -1,5 +1,6 @@
 import { X, CheckCircle, ArrowRight } from 'lucide-react';
 import { Disease } from '@/types/disease';
+import { Link } from '@inertiajs/react';
 
 interface DiseaseDetailModalProps {
   isOpen: boolean;
@@ -13,6 +14,9 @@ export default function DiseaseDetailModal({
   onClose,
 }: DiseaseDetailModalProps) {
   if (!isOpen || !disease) return null;
+
+  const hasImage = Boolean(disease.image);
+  const hasSymptoms = Boolean(disease.symptoms?.length);
 
   return (
     <div
@@ -39,11 +43,17 @@ export default function DiseaseDetailModal({
           <div className="space-y-6">
             {/* Gambar */}
             <div className="flex justify-center">
-              <img
-                src={disease.image}
-                alt={disease.name}
-                className="w-full max-w-sm h-48 object-cover rounded-lg shadow-md"
-              />
+              {hasImage ? (
+                <img
+                  src={disease.image}
+                  alt={disease.name}
+                  className="w-full max-w-sm h-48 object-cover rounded-lg shadow-md"
+                />
+              ) : (
+                <div className="flex h-48 w-full max-w-sm items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-center text-sm text-gray-500">
+                  Gambar penyakit belum diisi
+                </div>
+              )}
             </div>
 
             {/* Deskripsi */}
@@ -52,7 +62,7 @@ export default function DiseaseDetailModal({
                 Deskripsi
               </h3>
               <p className="text-sm text-gray-600 leading-relaxed bg-gray-50 p-4 rounded-lg">
-                {disease.fullDesc}
+                {disease.fullDesc || 'Deskripsi penyakit belum tersedia.'}
               </p>
             </div>
 
@@ -61,14 +71,20 @@ export default function DiseaseDetailModal({
               <h3 className="text-sm font-semibold text-gray-800 mb-3">
                 Gejala yang Mungkin Timbul
               </h3>
-              <ul className="space-y-2">
-                {disease.symptoms.map((symptom, index) => (
-                  <li key={index} className="flex items-start gap-3 p-2 hover:bg-emerald-50 rounded-lg transition-colors">
-                    <CheckCircle className="text-emerald-600 flex-shrink-0 mt-0.5" size={18} />
-                    <span className="text-sm text-gray-700">{symptom}</span>
-                  </li>
-                ))}
-              </ul>
+              {hasSymptoms ? (
+                <ul className="space-y-2">
+                  {disease.symptoms.map((symptom, index) => (
+                    <li key={index} className="flex items-start gap-3 p-2 hover:bg-emerald-50 rounded-lg transition-colors">
+                      <CheckCircle className="text-emerald-600 flex-shrink-0 mt-0.5" size={18} />
+                      <span className="text-sm text-gray-700">{symptom}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-500">
+                  Gejala untuk penyakit ini belum diisi.
+                </p>
+              )}
             </div>
 
             {/* Tombol Mulai Diagnosa */}
@@ -79,23 +95,13 @@ export default function DiseaseDetailModal({
               >
                 Tutup
               </button>
-              <button className="
-                flex-1
-                bg-emerald-600
-                hover:bg-emerald-700
-                text-white
-                py-2.5
-                rounded-lg
-                font-semibold
-                transition-colors
-                inline-flex
-                items-center
-                justify-center
-                gap-2
-                ">
+              <Link
+                href="/diagnosis"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition hover:-translate-y-1 hover:bg-emerald-700 hover:shadow-xl"
+              >
                 <ArrowRight size={18} />
                 Mulai Diagnosa
-              </button>
+              </Link>
             </div>
           </div>
         </div>

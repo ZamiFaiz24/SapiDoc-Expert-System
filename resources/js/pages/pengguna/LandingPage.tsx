@@ -16,11 +16,35 @@ import DiseaseDetailModal from '@/components/Modal/DiseaseDetailModal';
 
 import type { Disease } from '@/types/disease';
 
-export default function LandingPage() {
+interface PenyakitRecord {
+  id: number;
+  kode_penyakit: string;
+  nama_penyakit: string;
+  deskripsi: string | null;
+}
+
+interface LandingPageProps {
+  penyakits: PenyakitRecord[];
+}
+
+export default function LandingPage({ penyakits }: LandingPageProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [selectedDisease, setSelectedDisease] =
     useState<Disease | null>(null);
+
+  const diseases: Disease[] = penyakits.map((penyakit) => ({
+    id: penyakit.kode_penyakit,
+    name: penyakit.nama_penyakit,
+    shortDesc: penyakit.deskripsi
+      ? penyakit.deskripsi.length > 110
+        ? `${penyakit.deskripsi.slice(0, 110).trimEnd()}...`
+        : penyakit.deskripsi
+      : 'Deskripsi belum tersedia.',
+    image: '',
+    fullDesc: penyakit.deskripsi || 'Deskripsi belum tersedia.',
+    symptoms: [],
+  }));
 
   const openDiseaseModal = (disease: Disease) => {
     setSelectedDisease(disease);
@@ -43,6 +67,7 @@ export default function LandingPage() {
       <WorkSection />
 
       <InformationSection
+        diseases={diseases}
         openDiseaseModal={openDiseaseModal}
       />
 

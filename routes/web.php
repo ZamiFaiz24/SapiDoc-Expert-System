@@ -6,9 +6,15 @@ use App\Http\Controllers\DiagnosisController;
 use App\Http\Controllers\PenyakitController;
 use App\Http\Controllers\GejalaController;
 use App\Http\Controllers\AturanController;
+use App\Models\Penyakit;
 
 Route::get('/', function () {
-    return Inertia::render('pengguna/LandingPage');
+    return Inertia::render('pengguna/LandingPage', [
+        'penyakits' => Penyakit::query()
+            ->orderBy('kode_penyakit')
+            ->take(10)
+            ->get(['id', 'kode_penyakit', 'nama_penyakit', 'deskripsi']),
+    ]);
 })->name('home');
 
 // Diagnosis routes
