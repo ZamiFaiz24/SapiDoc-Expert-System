@@ -31,13 +31,12 @@ export default function HeroSection() {
               <span className="block text-emerald-600">
                 Sapi Lebih Cepat
               </span>
-              dan Akurat
+              dan Tepat
             </h1>
 
             <p className="max-w-xl text-lg leading-relaxed text-gray-600">
-              SapiDoc membantu peternak melakukan diagnosis awal penyakit sapi
-              menggunakan metode <span className="font-semibold text-emerald-700">Certainty Factor</span>
-              untuk mendukung pengambilan keputusan kesehatan ternak secara cepat dan efisien.
+              SapiDoc membantu peternak melakukan diagnosis awal penyakit sapi menggunakan metode <span className="font-semibold text-emerald-700">Certainty Factor </span>
+              berdasarkan gejala yang diamati, sehingga penanganan dapat dilakukan lebih cepat.
             </p>
           </div>
 
@@ -62,17 +61,17 @@ export default function HeroSection() {
           <div className="flex flex-wrap gap-8 pt-4">
             <div>
               <h3 className="text-2xl font-bold text-gray-900">10+</h3>
-              <p className="text-sm text-gray-600">Penyakit Terdeteksi</p>
+              <p className="text-sm text-gray-600">Penyakit Didukung</p>
             </div>
 
             <div>
               <h3 className="text-2xl font-bold text-gray-900">CF</h3>
-              <p className="text-sm text-gray-600">Metode Certainty Factor</p>
+              <p className="text-sm text-gray-600">Metode Diagnosis</p>
             </div>
 
             <div>
               <h3 className="text-2xl font-bold text-gray-900">Online</h3>
-              <p className="text-sm text-gray-600">Akses Dimana Saja</p>
+              <p className="text-sm text-gray-600">Akses Kapan Saja</p>
             </div>
           </div>
         </div>

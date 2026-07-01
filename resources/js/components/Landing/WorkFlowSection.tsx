@@ -9,20 +9,20 @@ import {
 const steps = [
   {
     number: '01',
-    title: 'Pilih Gejala',
-    desc: 'Pilih gejala yang dialami sapi berdasarkan kondisi di lapangan.',
+    title: 'Masukkan Data & Pilih Gejala',
+    desc: 'Masukkan data sapi dan pilih gejala yang sesuai dengan kondisi yang diamati.',
     icon: Stethoscope,
   },
   {
     number: '02',
     title: 'Analisis Certainty Factor',
-    desc: 'Sistem menghitung tingkat keyakinan penyakit menggunakan metode CF.',
+    desc: 'Sistem menganalisis gejala untuk menghitung tingkat keyakinan setiap kemungkinan penyakit.',
     icon: BrainCircuit,
   },
   {
     number: '03',
     title: 'Hasil Diagnosis',
-    desc: 'Dapatkan hasil diagnosis awal beserta tingkat kemungkinan penyakit.',
+    desc: 'Dapatkan hasil diagnosis awal beserta tingkat kemungkinan penyakit dan rekomendasi penanganan awal.',
     icon: FileCheck,
   },
 ];
@@ -46,15 +46,14 @@ export default function WorkFlowSection() {
           </div>
 
           <h2 className="text-4xl font-black text-gray-900 md:text-5xl">
-            Diagnosis Dalam
+            Diagnosis Awal
             <span className="mt-4 block text-emerald-600">
               3 Langkah Mudah
             </span>
           </h2>
 
           <p className="mt-6 text-lg leading-relaxed text-gray-600">
-            Sistem SapiDoc membantu peternak melakukan diagnosis awal
-            penyakit sapi secara cepat dan efisien.
+            Proses diagnosis dirancang sederhana agar peternak dapat melakukan diagnosis awal penyakit sapi dengan mudah melalui tiga tahapan.
           </p>
         </div>
 
@@ -152,9 +151,7 @@ export default function WorkFlowSection() {
                 </h4>
 
                 <p className="font-bold text-gray-600 text-sm leading-relaxed">
-                  Hasil diagnosis dari sistem SapiDoc merupakan diagnosis awal
-                  untuk membantu pengambilan keputusan. Untuk pemeriksaan lebih
-                  lanjut, tetap disarankan berkonsultasi dengan dokter hewan.
+                  Hasil diagnosis yang diberikan oleh SapiDoc merupakan diagnosis awal berdasarkan gejala yang dipilih pengguna. Untuk memastikan kondisi kesehatan sapi, disarankan tetap berkonsultasi dengan dokter hewan.
                 </p>
               </div>
             </div>

@@ -1,28 +1,28 @@
-import { CheckCircle, Globe, Heart, Zap } from 'lucide-react';
+import { Brain, Gauge, LaptopMinimal, Zap } from 'lucide-react';
 
 const features = [
   {
     icon: Zap,
     title: 'Diagnosis Cepat',
-    desc: 'Dapatkan hasil diagnosis dalam hitungan menit tanpa perlu menunggu lama.',
+    desc: 'Membantu peternak memperoleh hasil diagnosis awal dalam waktu singkat berdasarkan gejala yang dipilih.',
     color: 'emerald',
   },
   {
-    icon: CheckCircle,
-    title: 'Hasil Akurat',
-    desc: 'Menggunakan metode Certainty Factor untuk memberikan hasil diagnosis terpercaya.',
+    icon: Brain,
+    title: 'Berbasis Pengetahuan Pakar',
+    desc: 'Basis pengetahuan disusun dari hasil akuisisi pengetahuan pakar dan aturan diagnosis yang telah ditentukan.',
     color: 'blue',
   },
   {
-    icon: Heart,
-    title: 'Mudah Digunakan',
-    desc: 'Interface intuitif yang mudah digunakan oleh peternak tanpa keahlian teknis.',
+    icon: Gauge,
+    title: 'Tingkat Keyakinan Diagnosis',
+    desc: 'Memberikan tingkat keyakinan terhadap setiap diagnosis yang diberikan.',
     color: 'red',
   },
   {
-    icon: Globe,
-    title: 'Akses Dimana Saja',
-    desc: 'Bisa diakses melalui smartphone maupun komputer secara fleksibel.',
+    icon: LaptopMinimal,
+    title: 'Akses Kapan Saja',
+    desc: 'Dapat digunakan melalui berbagai perangkat tanpa instalasi aplikasi tambahan.',
     color: 'cyan',
   },
 ];
@@ -53,8 +53,7 @@ export default function FeaturesSection() {
           </h2>
 
           <p className="mt-6 text-lg leading-relaxed text-gray-600">
-            Solusi diagnosis awal penyakit sapi yang cepat, modern,
-            dan mudah digunakan oleh peternak.
+            SapiDoc dirancang untuk membantu peternak melakukan diagnosis awal penyakit sapi secara lebih cepat, praktis, dan mudah dipahami melalui sistem pakar berbasis Certainty Factor.
           </p>
         </div>
 
