@@ -3,7 +3,6 @@
 import {Link} from '@inertiajs/react';
 import { useState, useRef, useEffect } from 'react';
 import {
-  Bell,
   LogOut,
   Settings,
   User,
@@ -51,12 +50,6 @@ export default function Topbar({ title }: TopbarProps) {
 
         {/* Right Side */}
         <div className="flex items-center gap-4">
-          {/* Notification */}
-          <button className="relative rounded-xl p-2 text-gray-600 transition hover:bg-gray-100">
-            <Bell size={20} />
-
-            <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-red-500" />
-          </button>
 
           {/* Profile Dropdown */}
           <div
