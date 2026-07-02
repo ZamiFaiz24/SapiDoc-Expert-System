@@ -157,37 +157,52 @@ export default function DashboardPage() {
         <div className="bg-white p-6 rounded-lg border border-gray-200">
           <h3 className="text-lg font-bold text-gray-800 mb-6">Top 5 Penyakit</h3>
           {topPenyakit.length > 0 ? (
-            <div className="flex flex-col items-center">
-              <ResponsiveContainer width="100%" height={320}>
-                <PieChart>
-                  <Pie
-                    data={topPenyakit}
-                    cx="50%"
-                    cy="45%"
-                    innerRadius={70}
-                    outerRadius={110}
-                    paddingAngle={3}
-                    dataKey="value"
-                  >
-                    {topPenyakit.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => `${value} kasus`} />
-                  <Legend 
-                    verticalAlign="bottom" 
-                    height={60}
-                    wrapperStyle={{ 
-                      paddingTop: '30px',
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      justifyContent: 'center',
-                      gap: '20px'
-                    }}
-                    formatter={(value) => <span style={{ fontSize: '13px', color: '#374151' }}>{value}</span>}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              {/* Chart */}
+              <div className="w-full md:w-1/2">
+                <ResponsiveContainer width="100%" height={260}>
+                  <PieChart>
+                    <Pie
+                      data={topPenyakit}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={65}
+                      outerRadius={100}
+                      paddingAngle={3}
+                      dataKey="value"
+                    >
+                      {topPenyakit.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value) => `${value} kasus`} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Custom Legend */}
+              <div className="w-full md:w-1/2 flex flex-col gap-3">
+                {(() => {
+                  const total = topPenyakit.reduce((sum, d) => sum + d.value, 0);
+                  return topPenyakit.map((entry, index) => {
+                    const percent = ((entry.value / total) * 100).toFixed(0);
+                    return (
+                      <div key={index} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span
+                            className="w-3 h-3 rounded-sm flex-shrink-0"
+                            style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                          />
+                          <span className="text-sm text-gray-700 truncate">{entry.name}</span>
+                        </div>
+                        <span className="text-sm font-semibold text-gray-800 flex-shrink-0 ml-2">
+                          {entry.value} <span className="text-gray-400 font-normal">({percent}%)</span>
+                        </span>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
             </div>
           ) : (
             <p className="text-gray-500 text-center py-8">Tidak ada data penyakit</p>

@@ -12,6 +12,23 @@ interface DiagnosisItem {
   cf: number;
 }
 
+interface Penyakit {
+  id: number;
+  kode_penyakit: string;
+  kategori_penyakit: string;
+  gambar: string;
+  nama_penyakit: string;
+  deskripsi: string;
+  penanganan_awal: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface PenyakitFilterItem {
+  id: number;
+  nama_penyakit: string;
+}
+
 interface DiagnosisDetail {
   id: number;
   tanggal: string;
@@ -46,14 +63,23 @@ export default function DiagnosisPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [jenisSapi, setJenisSapi] = useState('');
+  const [hasilPenyakit, setHasilPenyakit] = useState('');
+  const [periode, setPeriode] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
-  const [cfMin, setCfMin] = useState('');
-  const [cfMax, setCfMax] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [daftarPenyakit, setDaftarPenyakit] = useState<PenyakitFilterItem[]>([]);
 
   // Fetch diagnosis data
-  const fetchDiagnosis = async (page: number = 1, searchTerm: string = '', sapi: string = '', dFrom: string = '', dTo: string = '', cMin: string = '', cMax: string = '') => {
+  const fetchDiagnosis = async (
+    page: number = 1,
+    searchTerm: string = '',
+    sapi: string = '',
+    penyakit: string = '',
+    periodeVal: string = '',
+    dFrom: string = '',
+    dTo: string = ''
+  ) => {
     try {
       setIsLoading(true);
       setError(null);
@@ -61,10 +87,10 @@ export default function DiagnosisPage() {
       const params = new URLSearchParams();
       if (searchTerm) params.append('search', searchTerm);
       if (sapi) params.append('jenis_sapi', sapi);
+      if (penyakit) params.append('hasil_penyakit', penyakit);
+      if (periodeVal) params.append('periode', periodeVal);
       if (dFrom) params.append('date_from', dFrom);
       if (dTo) params.append('date_to', dTo);
-      if (cMin) params.append('cf_min', cMin);
-      if (cMax) params.append('cf_max', cMax);
       params.append('page', page.toString());
 
       const response = await fetch(`/admin/api/diagnosis/all?${params.toString()}`);
@@ -85,10 +111,22 @@ export default function DiagnosisPage() {
     }
   };
 
-  useEffect(() => {
-    fetchDiagnosis(1, search, jenisSapi, dateFrom, dateTo, cfMin, cfMax);
-  }, []);
+  // Fetch daftar penyakit untuk dropdown filter
+  const fetchDaftarPenyakit = async () => {
+    try {
+      const response = await fetch('/admin/api/penyakit');
+      if (!response.ok) throw new Error('Gagal mengambil daftar penyakit');
+      const result = await response.json();
+      setDaftarPenyakit(result.data ?? result);
+    } catch (err) {
+      console.error('Error fetching daftar penyakit:', err);
+    }
+  };
 
+  useEffect(() => {
+    fetchDiagnosis(1, search, jenisSapi, hasilPenyakit, periode, dateFrom, dateTo);
+    fetchDaftarPenyakit();
+  }, []);
 
   const handleDetail = (id: number) => {
     const detail = diagnosisData.find(d => d.id === id) as unknown as DiagnosisDetail;
@@ -101,33 +139,33 @@ export default function DiagnosisPage() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
-    fetchDiagnosis(1, search, jenisSapi, dateFrom, dateTo, cfMin, cfMax);
+    fetchDiagnosis(1, search, jenisSapi, hasilPenyakit, periode, dateFrom, dateTo);
   };
 
   const handleFilterChange = (filterName: string, value: string) => {
     setCurrentPage(1);
-    
+
     if (filterName === 'jenis_sapi') {
       setJenisSapi(value);
-      fetchDiagnosis(1, search, value, dateFrom, dateTo, cfMin, cfMax);
+      fetchDiagnosis(1, search, value, hasilPenyakit, periode, dateFrom, dateTo);
+    } else if (filterName === 'hasil_penyakit') {
+      setHasilPenyakit(value);
+      fetchDiagnosis(1, search, jenisSapi, value, periode, dateFrom, dateTo);
+    } else if (filterName === 'periode') {
+      setPeriode(value);
+      fetchDiagnosis(1, search, jenisSapi, hasilPenyakit, value, dateFrom, dateTo);
     } else if (filterName === 'date_from') {
       setDateFrom(value);
-      fetchDiagnosis(1, search, jenisSapi, value, dateTo, cfMin, cfMax);
+      fetchDiagnosis(1, search, jenisSapi, hasilPenyakit, periode, value, dateTo);
     } else if (filterName === 'date_to') {
       setDateTo(value);
-      fetchDiagnosis(1, search, jenisSapi, dateFrom, value, cfMin, cfMax);
-    } else if (filterName === 'cf_min') {
-      setCfMin(value);
-      fetchDiagnosis(1, search, jenisSapi, dateFrom, dateTo, value, cfMax);
-    } else if (filterName === 'cf_max') {
-      setCfMax(value);
-      fetchDiagnosis(1, search, jenisSapi, dateFrom, dateTo, cfMin, value);
+      fetchDiagnosis(1, search, jenisSapi, hasilPenyakit, periode, dateFrom, value);
     }
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    fetchDiagnosis(page, search, jenisSapi, dateFrom, dateTo, cfMin, cfMax);
+    fetchDiagnosis(page, search, jenisSapi, hasilPenyakit, periode, dateFrom, dateTo);
   };
 
   return (
@@ -170,6 +208,32 @@ export default function DiagnosisPage() {
                 <option value="Sapi Jawa">Sapi Jawa / Lokal Potong</option>
               </select>
 
+              {/* Hasil Penyakit Filter */}
+              <select
+                value={hasilPenyakit}
+                onChange={(e) => handleFilterChange('hasil_penyakit', e.target.value)}
+                className="px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-medium"
+              >
+                <option value="">Semua Penyakit</option>
+                {daftarPenyakit.map((penyakit) => (
+                  <option key={penyakit.id} value={penyakit.nama_penyakit}>
+                    {penyakit.nama_penyakit}
+                  </option>
+                ))}
+              </select>
+
+              {/* Periode Filter */}
+              <select
+                value={periode}
+                onChange={(e) => handleFilterChange('periode', e.target.value)}
+                className="px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-medium"
+              >
+                <option value="">Semua Waktu</option>
+                <option value="harian">Harian</option>
+                <option value="mingguan">Mingguan</option>
+                <option value="bulanan">Bulanan</option>
+              </select>
+
               {/* Date From */}
               <input
                 type="date"
@@ -183,28 +247,6 @@ export default function DiagnosisPage() {
                 type="date"
                 value={dateTo}
                 onChange={(e) => handleFilterChange('date_to', e.target.value)}
-                className="px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-medium"
-              />
-
-              {/* CF Min */}
-              <input
-                type="number"
-                placeholder="CF Min"
-                min="0"
-                max="100"
-                value={cfMin}
-                onChange={(e) => handleFilterChange('cf_min', e.target.value)}
-                className="px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-medium"
-              />
-
-              {/* CF Max */}
-              <input
-                type="number"
-                placeholder="CF Max"
-                min="0"
-                max="100"
-                value={cfMax}
-                onChange={(e) => handleFilterChange('cf_max', e.target.value)}
                 className="px-4 py-2.5 text-sm text-gray-800 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-medium"
               />
             </div>

@@ -261,21 +261,22 @@ class DiagnosisController extends Controller
     {
         $search = $request->query('search', '');
         $jenisSapi = $request->query('jenis_sapi', '');
+        $hasilPenyakit = $request->query('hasil_penyakit', '');
+        $periode = $request->query('periode', '');
         $dateFrom = $request->query('date_from', '');
         $dateTo = $request->query('date_to', '');
-        $cfMin = $request->query('cf_min', '');
-        $cfMax = $request->query('cf_max', '');
         $page = $request->query('page', 1);
         $perPage = 10;
 
-        $query = Diagnosis::with('penyakit')
-            ->latest();
+        $query = Diagnosis::with('penyakit')->latest();
 
-        // Search by nama_user or alamat_user
+        // Search by nama_user, alamat_user, atau no_hp_user
         if ($search) {
-            $query->where('nama_user', 'like', "%{$search}%")
-                ->orWhere('alamat_user', 'like', "%{$search}%")
-                ->orWhere('no_hp_user', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_user', 'like', "%{$search}%")
+                    ->orWhere('alamat_user', 'like', "%{$search}%")
+                    ->orWhere('no_hp_user', 'like', "%{$search}%");
+            });
         }
 
         // Filter by jenis_sapi
@@ -283,21 +284,33 @@ class DiagnosisController extends Controller
             $query->where('jenis_sapi', $jenisSapi);
         }
 
-        // Filter by date range
+        // Filter by hasil penyakit
+        if ($hasilPenyakit) {
+            $query->where('nama_penyakit_snap', $hasilPenyakit);
+        }
+
+        // Filter by periode (harian/mingguan/bulanan)
+        if ($periode) {
+            $now = now();
+            switch ($periode) {
+                case 'harian':
+                    $query->whereDate('created_at', $now->toDateString());
+                    break;
+                case 'mingguan':
+                    $query->whereBetween('created_at', [$now->copy()->subDays(7)->startOfDay(), $now->copy()->endOfDay()]);
+                    break;
+                case 'bulanan':
+                    $query->whereBetween('created_at', [$now->copy()->subDays(30)->startOfDay(), $now->copy()->endOfDay()]);
+                    break;
+            }
+        }
+
+        // Filter by date range (manual, independen dari periode)
         if ($dateFrom) {
             $query->whereDate('created_at', '>=', $dateFrom);
         }
         if ($dateTo) {
             $query->whereDate('created_at', '<=', $dateTo);
-        }
-
-        // Filter by CF range
-        if ($cfMin !== '') {
-            $query->where('cf_final', '>=', floatval($cfMin) / 100);
-        }
-
-        if ($cfMax !== '') {
-            $query->where('cf_final', '<=', floatval($cfMax) / 100);
         }
 
         $diagnoses = $query->paginate($perPage, ['*'], 'page', $page);
