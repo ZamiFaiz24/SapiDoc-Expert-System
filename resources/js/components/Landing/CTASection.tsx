@@ -13,12 +13,12 @@ export default function CTASection() {
                 
                 {/* Title */}
                 <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight">
-                    Mulai Diagnosis Awal Lebih Cepat & Akurat
+                    Mulai Diagnosis Awal Sekarang
                 </h2>
 
                 {/* Subtitle */}
                 <p className="text-base md:text-lg text-emerald-100 max-w-2xl mx-auto leading-relaxed">
-                    Gunakan SapiDoc untuk membantu mendeteksi potensi gangguan kesehatan sapi sejak dini sebelum menjadi lebih parah.
+                    Gunakan SapiDoc untuk membantu mengenali kemungkinan penyakit sapi berdasarkan gejala yang diamati, sehingga penanganan dapat dilakukan lebih dini.
                 </p>
 
                 {/* CTA Button */}
@@ -37,7 +37,7 @@ export default function CTASection() {
 
                 {/* small note */}
                 <p className="text-xs text-white/70">
-                    Gratis • Cepat • Bisa digunakan kapan saja
+                    ✓ Gratis Digunakan • ✓ Berbasis Web • ✓ Akses Kapan Saja
                 </p>
             </div>
         </section>

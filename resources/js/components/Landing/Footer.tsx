@@ -31,18 +31,17 @@ export default function Footer() {
                                 </h3>
 
                                 <p className="text-sm text-emerald-400">
-                                    Smart Livestock Diagnosis
+                                    Sistem Pakar Diagnosis Penyakit Sapi
                                 </p>
                             </div>
                         </div>
 
                         <p className="text-sm leading-relaxed text-gray-400">
-                            Sistem pakar diagnosis penyakit sapi berbasis
+                            SapiDoc merupakan sistem pakar berbasis web yang membantu peternak melakukan diagnosis awal penyakit sapi menggunakan metode 
                             <span className="text-emerald-400 font-medium">
                                 {' '}Certainty Factor
                             </span>{' '}
-                            untuk membantu peternak melakukan deteksi dini
-                            penyakit ternak secara cepat dan mudah.
+                            sebagai pendukung pengambilan keputusan sebelum pemeriksaan lebih lanjut oleh dokter hewan.
                         </p>
 
                         <Link
@@ -105,7 +104,7 @@ export default function Footer() {
                         {/* System */}
                         <div>
                             <h4 className="text-white font-semibold mb-4">
-                                Sistem
+                                Fitur Sistem
                             </h4>
 
                             <ul className="space-y-3 text-sm">
@@ -114,15 +113,15 @@ export default function Footer() {
                                 </li>
 
                                 <li className="hover:text-emerald-400 transition cursor-default">
-                                    Certainty Factor
+                                    Rekomendasi Penyakit
+                                </li>
+
+                                <li className="hover:text-emerald-400 transition cursor-default">
+                                    Tingkat Keyakinan (CF)
                                 </li>
 
                                 <li className="hover:text-emerald-400 transition cursor-default">
                                     Informasi Penyakit
-                                </li>
-
-                                <li className="hover:text-emerald-400 transition cursor-default">
-                                    Deteksi Gejala
                                 </li>
                             </ul>
                         </div>
@@ -141,7 +140,7 @@ export default function Footer() {
                                     />
 
                                     <span>
-                                        sapidoc@kebumen.id
+                                        -
                                     </span>
                                 </li>
 
@@ -161,14 +160,22 @@ export default function Footer() {
                 </div>
 
                 {/* Bottom */}
-                <div className="border-t border-gray-800 mt-14 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-                    <p className="text-gray-500 text-center md:text-left">
-                        © {new Date().getFullYear()} SapiDoc. All rights reserved.
-                    </p>
+                <div className="mt-14 border-t border-gray-800 pt-6">
+                    <div className="flex flex-col gap-4 text-sm md:flex-row md:items-start md:justify-between md:gap-8">
+                        <div className="space-y-2 text-center md:text-left">
+                            <p className="text-gray-500">
+                                © {new Date().getFullYear()} SapiDoc
+                            </p>
 
-                    <p className="text-gray-600 text-center md:text-right">
-                        Built with Laravel, Inertia & React.
-                    </p>
+                            <p className="text-gray-600 max-w-md">
+                                Mendukung peternak dalam melakukan diagnosis awal penyakit sapi melalui pemanfaatan teknologi sistem pakar.
+                            </p>
+                        </div>
+
+                        <p className="text-gray-500 text-center md:max-w-xs md:text-right">
+                            Dikembangkan menggunakan Laravel • Inertia.js • React
+                        </p>
+                    </div>
                 </div>
             </div>
         </footer>

@@ -24,20 +24,16 @@ export default function AboutSection() {
             </span>
 
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-              Teknologi Diagnosis Awal
-              <span className="text-emerald-600"> untuk Kesehatan Sapi</span>
+              Mendukung Peternak dalam
+              <span className="text-emerald-600"> Deteksi Dini Penyakit Sapi</span>
             </h2>
 
             <p className="text-lg text-gray-600 leading-relaxed">
-              SapiDoc merupakan sistem pakar berbasis web yang membantu
-              peternak melakukan diagnosis awal penyakit sapi menggunakan
-              metode Certainty Factor.
+              SapiDoc dikembangkan sebagai sistem pakar berbasis web untuk membantu peternak mengenali kemungkinan penyakit sapi sejak dini berdasarkan gejala yang diamati. 
             </p>
 
             <p className="text-lg text-gray-600 leading-relaxed">
-              Platform ini dirancang untuk membantu proses identifikasi
-              gejala secara cepat, sehingga peternak dapat mengambil
-              tindakan lebih dini sebelum berkonsultasi dengan dokter hewan.
+              Dengan memanfaatkan metode Certainty Factor, sistem memberikan tingkat keyakinan terhadap hasil diagnosis sebagai bahan pertimbangan sebelum dilakukan pemeriksaan lebih lanjut oleh dokter hewan.
             </p>
 
           </div>
@@ -72,8 +68,7 @@ export default function AboutSection() {
                   </h3>
 
                   <p className="text-gray-600 leading-relaxed">
-                    Sistem menggunakan metode CF untuk menghitung tingkat
-                    keyakinan diagnosis berdasarkan gejala yang dipilih.
+                    Menghitung tingkat keyakinan setiap kemungkinan penyakit berdasarkan gejala yang dipilih pengguna.
                   </p>
                 </div>
               </div>
@@ -102,12 +97,11 @@ export default function AboutSection() {
 
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Diagnosis Cepat & Praktis
+                    Diagnosis Awal yang Praktis
                   </h3>
 
                   <p className="text-gray-600 leading-relaxed">
-                    Membantu peternak mengenali kemungkinan penyakit
-                    secara cepat melalui perangkat smartphone maupun desktop.
+                    Proses diagnosis dapat dilakukan secara cepat melalui smartphone maupun komputer tanpa memerlukan instalasi aplikasi.
                   </p>
                 </div>
               </div>
@@ -136,12 +130,11 @@ export default function AboutSection() {
 
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Pendamping Peternak
+                    Mendukung Pengambilan Keputusan
                   </h3>
 
                   <p className="text-gray-600 leading-relaxed">
-                    SapiDoc dirancang sebagai alat bantu diagnosis awal,
-                    bukan pengganti pemeriksaan dokter hewan profesional.
+                    Hasil diagnosis digunakan sebagai bahan pertimbangan awal dan tidak menggantikan pemeriksaan maupun penanganan oleh dokter hewan.
                   </p>
                 </div>
               </div>

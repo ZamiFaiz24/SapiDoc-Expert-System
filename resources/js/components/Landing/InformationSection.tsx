@@ -29,7 +29,6 @@ export default function InformationSection({
         {/* Heading */}
         <div className="text-center mb-14 space-y-4">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium">
-            <Stethoscope className="w-4 h-4" />
             Informasi Penyakit
           </span>
 
