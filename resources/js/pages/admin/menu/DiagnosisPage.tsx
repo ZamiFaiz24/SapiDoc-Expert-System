@@ -344,6 +344,17 @@ export default function DiagnosisPage() {
 
             {/* Modal Body */}
             <div className="p-5 space-y-5">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">CF Akhir</p>
+                  <p className="mt-1 text-sm font-semibold text-gray-800">{selectedDetail.cf}%</p>
+                </div>
+                <div className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Total Gejala</p>
+                  <p className="mt-1 text-sm font-semibold text-gray-800">{selectedDetail.gejala_input.length}</p>
+                </div>
+              </div>
+
               {/* Informasi Utama */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
@@ -400,6 +411,25 @@ export default function DiagnosisPage() {
                   </p>
                 </div>
               </div>
+
+              {selectedDetail.gejala_input.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-800 mb-3">Rincian Gejala</h4>
+                  <div className="space-y-2">
+                    {selectedDetail.gejala_input.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 p-4 hover:border-emerald-200 hover:bg-white transition"
+                      >
+                        <span className="text-sm font-medium text-gray-700">Gejala #{item.gejala_id}</span>
+                        <span className="rounded-lg bg-emerald-100 px-2 py-1 text-xs font-bold text-emerald-700">
+                          CF User {(item.cf_user * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Hasil Diagnosis */}
               <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-5">

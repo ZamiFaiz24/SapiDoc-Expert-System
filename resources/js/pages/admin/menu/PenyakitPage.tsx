@@ -6,8 +6,11 @@ import { useEffect, useState } from 'react';
 interface Penyakit {
   id: number;
   kode_penyakit: string;
+  kategori_penyakit: string | null;
+  gambar: string | null;
   nama_penyakit: string;
   deskripsi: string;
+  penanganan_awal: string | null;
 }
 
 interface Pagination {
@@ -21,9 +24,21 @@ interface Pagination {
 
 interface FormData {
   kode_penyakit: string;
+  kategori_penyakit: string;
+  gambar: string;
   nama_penyakit: string;
   deskripsi: string;
+  penanganan_awal: string;
 }
+
+const KATEGORI_PENYAKIT_OPTIONS = [
+  'Menular',
+  'Pencernaan',
+  'Ambing',
+  'Kulit',
+  'Reproduksi',
+  'Metabolik',
+];
 
 export default function PenyakitPage() {
   const [penyakitData, setPenyakitData] = useState<Penyakit[]>([]);
@@ -37,8 +52,11 @@ export default function PenyakitPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     kode_penyakit: '',
+    kategori_penyakit: '',
+    gambar: '',
     nama_penyakit: '',
     deskripsi: '',
+    penanganan_awal: '',
   });
 
   // Fetch penyakit data
@@ -89,8 +107,11 @@ export default function PenyakitPage() {
     setEditingId(null);
     setFormData({
       kode_penyakit: '',
+      kategori_penyakit: '',
+      gambar: '',
       nama_penyakit: '',
       deskripsi: '',
+      penanganan_awal: '',
     });
     setShowModal(true);
   };
@@ -99,8 +120,11 @@ export default function PenyakitPage() {
     setEditingId(penyakit.id);
     setFormData({
       kode_penyakit: penyakit.kode_penyakit,
+      kategori_penyakit: penyakit.kategori_penyakit || '',
+      gambar: penyakit.gambar || '',
       nama_penyakit: penyakit.nama_penyakit,
       deskripsi: penyakit.deskripsi,
+      penanganan_awal: penyakit.penanganan_awal || '',
     });
     setShowModal(true);
   };
@@ -133,7 +157,7 @@ export default function PenyakitPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.kode_penyakit || !formData.nama_penyakit || !formData.deskripsi) {
+    if (!formData.kode_penyakit.trim() || !formData.nama_penyakit.trim() || !formData.deskripsi.trim()) {
       alert('Semua field harus diisi');
       return;
     }
@@ -146,6 +170,14 @@ export default function PenyakitPage() {
         : '/admin/api/penyakit';
       
       const method = editingId ? 'PUT' : 'POST';
+      const payload = {
+        kode_penyakit: formData.kode_penyakit.trim(),
+        kategori_penyakit: formData.kategori_penyakit.trim() || null,
+        gambar: formData.gambar.trim() || null,
+        nama_penyakit: formData.nama_penyakit.trim(),
+        deskripsi: formData.deskripsi.trim(),
+        penanganan_awal: formData.penanganan_awal.trim() || null,
+      };
 
       const response = await fetch(url, {
         method,
@@ -153,7 +185,7 @@ export default function PenyakitPage() {
           'Content-Type': 'application/json',
           'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -243,6 +275,7 @@ export default function PenyakitPage() {
                   <tr className="bg-emerald-600 border-b border-gray-200">
                     <th className="px-5 py-5 text-left text-xs font-semibold text-white uppercase tracking-wider">#</th>
                     <th className="px-5 py-5 text-left text-xs font-semibold text-white uppercase tracking-wider">Kode Penyakit</th>
+                    <th className="px-5 py-5 text-left text-xs font-semibold text-white uppercase tracking-wider">Kategori</th>
                     <th className="px-5 py-5 text-left text-xs font-semibold text-white uppercase tracking-wider">Nama Penyakit</th>
                     <th className="px-5 py-5 text-left text-xs font-semibold text-white uppercase tracking-wider">Deskripsi</th>
                     <th className="px-5 py-5 text-center text-xs font-semibold text-white uppercase tracking-wider">Aksi</th>
@@ -259,6 +292,15 @@ export default function PenyakitPage() {
                         {pagination?.from && pagination.from + idx}
                       </td>
                       <td className="px-5 py-5 text-sm font-semibold text-gray-800">{row.kode_penyakit}</td>
+                      <td className="px-5 py-5 text-sm text-gray-700">
+                        {row.kategori_penyakit ? (
+                          <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+                            {row.kategori_penyakit}
+                          </span>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
                       <td className="px-5 py-5 text-sm text-gray-700">
                         <span className="font-medium">{row.nama_penyakit}</span>
                       </td>
@@ -377,6 +419,27 @@ export default function PenyakitPage() {
                   )}
                 </div>
 
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-800 mb-2">
+                        Kategori Penyakit
+                      </label>
+                      <input
+                        type="text"
+                        list="kategori-penyakit-options"
+                        value={formData.kategori_penyakit}
+                        onChange={(e) =>
+                          setFormData({ ...formData, kategori_penyakit: e.target.value })
+                        }
+                        placeholder="Contoh: Menular"
+                        className="w-full px-4 py-2 text-sm text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50 transition-colors"
+                      />
+                      <datalist id="kategori-penyakit-options">
+                        {KATEGORI_PENYAKIT_OPTIONS.map((kategori) => (
+                          <option key={kategori} value={kategori} />
+                        ))}
+                      </datalist>
+                    </div>
+
                 <div>
                   <label className="block text-sm font-semibold text-gray-800 mb-2">
                     Nama Penyakit <span className="text-red-500">*</span>
@@ -392,6 +455,31 @@ export default function PenyakitPage() {
                   />
                 </div>
 
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-800 mb-2">
+                        Gambar Penyakit
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.gambar}
+                        onChange={(e) =>
+                          setFormData({ ...formData, gambar: e.target.value })
+                        }
+                        placeholder="Contoh: /images/penyakit/pmk.jpg"
+                        className="w-full px-4 py-2 text-sm text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50 transition-colors"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Isi dengan path atau URL gambar yang bisa diakses publik.</p>
+                      {formData.gambar.trim() ? (
+                        <div className="mt-3 overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
+                          <img
+                            src={formData.gambar}
+                            alt={formData.nama_penyakit || 'Preview gambar penyakit'}
+                            className="h-40 w-full object-cover"
+                          />
+                        </div>
+                      ) : null}
+                    </div>
+
                 <div>
                   <label className="block text-sm font-semibold text-gray-800 mb-2">
                     Deskripsi <span className="text-red-500">*</span>
@@ -406,6 +494,21 @@ export default function PenyakitPage() {
                     className="w-full px-4 py-2 text-sm text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50 resize-none transition-colors"
                   />
                 </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-800 mb-2">
+                        Penanganan Awal
+                      </label>
+                      <textarea
+                        value={formData.penanganan_awal}
+                        onChange={(e) =>
+                          setFormData({ ...formData, penanganan_awal: e.target.value })
+                        }
+                        placeholder="Jelaskan langkah penanganan awal..."
+                        rows={4}
+                        className="w-full px-4 py-2 text-sm text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50 resize-none transition-colors"
+                      />
+                    </div>
 
                 {/* Modal Footer */}
                 <div className="flex gap-3 pt-4 border-t border-gray-200">
