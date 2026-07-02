@@ -149,7 +149,7 @@ class DiagnosisController extends Controller
             'penyakit' => $diagnosis->penyakit ?? [
                 'nama_penyakit' => $diagnosis->nama_penyakit_snap,
                 'deskripsi' => 'Informasi detail tidak tersedia.',
-                'cara_penanganan' => 'Silahkan hubungi dokter hewan terdekat.'
+                'penanganan_awal' => 'Silahkan hubungi dokter hewan terdekat.'
             ],
             'gejala_dipilih' => $gejalaDipilih,
             'diagnosis_banding' => $diagnosis->diagnosis_banding ?? [],

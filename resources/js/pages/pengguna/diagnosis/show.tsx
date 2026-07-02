@@ -29,7 +29,7 @@ interface Penyakit {
   id: number;
   nama_penyakit: string;
   deskripsi: string;
-  cara_penanganan: string;
+  penanganan_awal: string;
 }
 
 interface DiagnosisBanding {
@@ -287,6 +287,12 @@ export default function DiagnosisShowPage({
                 <div className="rounded-2xl bg-gray-50 p-5 border border-gray-100">
                   <h4 className="mb-2 font-bold text-gray-900">Deskripsi Penyakit</h4>
                   <p className="text-gray-700 leading-relaxed text-sm">{penyakit.deskripsi}</p>
+                </div>
+                <div className="rounded-2xl bg-emerald-50 p-5 border border-emerald-100">
+                  <h4 className="mb-2 font-bold text-emerald-900">Penanganan Awal</h4>
+                  <p className="text-gray-700 leading-relaxed text-sm">
+                    {penyakit.penanganan_awal || 'Informasi penanganan awal belum tersedia.'}
+                  </p>
                 </div>
                 {/* <div className="rounded-2xl bg-blue-50 p-5 border border-blue-100">
                   <h4 className="mb-2 font-bold text-blue-900">Langkah Penanganan</h4>

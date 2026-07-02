@@ -18,10 +18,13 @@ class PenyakitController extends Controller
 
         $query = Penyakit::orderBy('kode_penyakit');
 
-        // Search by nama_penyakit or kode_penyakit
+        // Search by nama_penyakit, kode_penyakit, or kategori_penyakit
         if ($search) {
-            $query->where('nama_penyakit', 'like', "%{$search}%")
-                ->orWhere('kode_penyakit', 'like', "%{$search}%");
+            $query->where(function ($subQuery) use ($search) {
+                $subQuery->where('nama_penyakit', 'like', "%{$search}%")
+                    ->orWhere('kode_penyakit', 'like', "%{$search}%")
+                    ->orWhere('kategori_penyakit', 'like', "%{$search}%");
+            });
         }
 
         $penyakits = $query->paginate($perPage, ['*'], 'page', $page);
@@ -46,8 +49,11 @@ class PenyakitController extends Controller
     {
         $validated = $request->validate([
             'kode_penyakit' => 'required|string|unique:penyakits,kode_penyakit',
+            'kategori_penyakit' => 'nullable|string|max:100',
+            'gambar' => 'nullable|string|max:255',
             'nama_penyakit' => 'required|string|max:100',
             'deskripsi' => 'required|string',
+            'penanganan_awal' => 'nullable|string',
         ]);
 
         $penyakit = Penyakit::create($validated);
@@ -65,8 +71,11 @@ class PenyakitController extends Controller
     {
         $validated = $request->validate([
             'kode_penyakit' => 'required|string|unique:penyakits,kode_penyakit,' . $penyakit->id,
+            'kategori_penyakit' => 'nullable|string|max:100',
+            'gambar' => 'nullable|string|max:255',
             'nama_penyakit' => 'required|string|max:100',
             'deskripsi' => 'required|string',
+            'penanganan_awal' => 'nullable|string',
         ]);
 
         $penyakit->update($validated);

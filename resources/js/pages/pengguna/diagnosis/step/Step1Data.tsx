@@ -44,6 +44,11 @@ export default function Step1({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handlePhoneChange = (value: string) => {
+    const onlyDigits = value.replace(/\D/g, '');
+    handleChange('no_hp_user', onlyDigits);
+  };
+
   const handleNext = () => {
     if (!formData.nama_user.trim()) {
       setError('Nama wajib diisi');
@@ -55,6 +60,14 @@ export default function Step1({
     }
     if (!formData.no_hp_user.trim()) {
       setError('No HP wajib diisi');
+      return;
+    }
+    if (!/^\d+$/.test(formData.no_hp_user)) {
+      setError('No HP harus berupa angka');
+      return;
+    }
+    if (formData.no_hp_user.length < 10) {
+      setError('No HP terlalu pendek');
       return;
     }
     if (!formData.jenis_sapi) {
@@ -105,10 +118,13 @@ export default function Step1({
                 No HP <span className="text-red-500">*</span>
               </label>
               <input
-                type="tel"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 value={formData.no_hp_user}
-                onChange={(e) => handleChange('no_hp_user', e.target.value)}
+                onChange={(e) => handlePhoneChange(e.target.value)}
                 placeholder="08xx xxxx xxxx"
+                maxLength={15}
                 className="w-full h-11 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
               />
             </div>

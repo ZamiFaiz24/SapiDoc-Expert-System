@@ -12,8 +12,11 @@ class Penyakit extends Model
 
     protected $fillable = [
         'kode_penyakit',
+        'kategori_penyakit',
+        'gambar',
         'nama_penyakit',
         'deskripsi',
+        'penanganan_awal',
     ];
 
     public function aturans(): HasMany
