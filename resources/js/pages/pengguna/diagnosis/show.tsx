@@ -107,6 +107,13 @@ function getJenisKelaminLabel(code: string): string {
   return map[code] || code;
 }
 
+function formatPenangananAwal(text: string): string[] {
+  return text
+    .split(/\n|;|•|,\s+/g)
+    .map((item) => item.replace(/^\s*(?:\d+[.)-]|[-*])\s*/, '').replace(/^dan\s+/i, '').trim())
+    .filter(Boolean);
+}
+
 export default function DiagnosisShowPage({
   diagnosis,
   penyakit,
@@ -310,14 +317,33 @@ export default function DiagnosisShowPage({
 
                 <div className="rounded-2xl bg-emerald-50 p-5 border border-emerald-100">
                   <h4 className="mb-2 font-bold text-emerald-900">Penanganan Awal</h4>
-                  <p className="text-gray-700 leading-relaxed text-sm">
-                    {penyakit.penanganan_awal || 'Informasi penanganan awal belum tersedia.'}
-                  </p>
+                  {penyakit.penanganan_awal ? (() => {
+                    const points = formatPenangananAwal(penyakit.penanganan_awal);
+
+                    if (points.length > 1) {
+                      return (
+                        <ul className="space-y-2 text-sm text-gray-700">
+                          {points.map((point, index) => (
+                            <li key={index} className="flex items-start gap-2 leading-relaxed">
+                              <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-emerald-600" />
+                              <span>{point}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      );
+                    }
+
+                    return (
+                      <p className="text-gray-700 leading-relaxed text-sm">
+                        {points[0] || penyakit.penanganan_awal}
+                      </p>
+                    );
+                  })() : (
+                    <p className="text-gray-700 leading-relaxed text-sm">
+                      Informasi penanganan awal belum tersedia.
+                    </p>
+                  )}
                 </div>
-                {/* <div className="rounded-2xl bg-blue-50 p-5 border border-blue-100">
-                  <h4 className="mb-2 font-bold text-blue-900">Langkah Penanganan</h4>
-                  <p className="text-gray-700 leading-relaxed text-sm">{penyakit.cara_penanganan}</p>
-                </div> */}
               </div>
             </div>
           ) : (
