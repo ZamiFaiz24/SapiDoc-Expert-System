@@ -99,6 +99,8 @@ export default function DiagnosisPage({
       {/* Navbar */}
         <Navbar
             onOpenGuide={() => setOpenGuide(true)}
+            showBackAction={currentStep > 0}
+            onBackAction={() => setCurrentStep(0)}
         />
       
       <div className="relative mx-auto w-full max-w-5xl mt-6">
