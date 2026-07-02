@@ -29,6 +29,8 @@ interface Penyakit {
   id: number;
   nama_penyakit: string;
   deskripsi: string;
+  kategori_penyakit?: string | null;
+  gambar?: string | null;
   penanganan_awal: string;
 }
 
@@ -284,10 +286,28 @@ export default function DiagnosisShowPage({
                 </h3>
               </div>
               <div className="space-y-6">
+                {penyakit.gambar ? (
+                  <div className="overflow-hidden rounded-2xl border border-gray-100 bg-gray-50">
+                    <img
+                      src={penyakit.gambar}
+                      alt={penyakit.nama_penyakit}
+                      className="h-56 w-full object-cover"
+                    />
+                  </div>
+                ) : null}
+
                 <div className="rounded-2xl bg-gray-50 p-5 border border-gray-100">
                   <h4 className="mb-2 font-bold text-gray-900">Deskripsi Penyakit</h4>
                   <p className="text-gray-700 leading-relaxed text-sm">{penyakit.deskripsi}</p>
                 </div>
+
+                {penyakit.kategori_penyakit ? (
+                  <div className="rounded-2xl bg-emerald-50 p-5 border border-emerald-100">
+                    <h4 className="mb-2 font-bold text-emerald-900">Kategori Penyakit</h4>
+                    <p className="text-gray-700 leading-relaxed text-sm">{penyakit.kategori_penyakit}</p>
+                  </div>
+                ) : null}
+
                 <div className="rounded-2xl bg-emerald-50 p-5 border border-emerald-100">
                   <h4 className="mb-2 font-bold text-emerald-900">Penanganan Awal</h4>
                   <p className="text-gray-700 leading-relaxed text-sm">

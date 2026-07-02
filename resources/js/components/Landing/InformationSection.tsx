@@ -53,6 +53,16 @@ export default function InformationSection({
                 onClick={() => openDiseaseModal(disease)}
                 className="group w-full text-left rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg"
               >
+                {disease.image ? (
+                  <div className="mb-4 overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
+                    <img
+                      src={disease.image}
+                      alt={disease.name}
+                      className="h-28 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                ) : null}
+
                 <div className="flex items-start gap-3">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-100">
                     <Stethoscope className="h-5 w-5 text-emerald-600" />
@@ -65,6 +75,11 @@ export default function InformationSection({
                     <p className="mt-1 text-xs leading-relaxed text-gray-500 line-clamp-2">
                       {disease.shortDesc}
                     </p>
+                    {disease.kategori_penyakit ? (
+                      <span className="mt-3 inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                        {disease.kategori_penyakit}
+                      </span>
+                    ) : null}
                   </div>
                 </div>
 

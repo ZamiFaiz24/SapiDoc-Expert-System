@@ -66,6 +66,28 @@ export default function DiseaseDetailModal({
               </p>
             </div>
 
+            {disease.kategori_penyakit ? (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-800 mb-2">
+                  Kategori
+                </h3>
+                <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1.5 text-sm font-semibold text-emerald-700">
+                  {disease.kategori_penyakit}
+                </span>
+              </div>
+            ) : null}
+
+            {disease.penanganan_awal ? (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-800 mb-2">
+                  Penanganan Awal
+                </h3>
+                <p className="text-sm text-gray-700 leading-relaxed bg-emerald-50 p-4 rounded-lg border border-emerald-100">
+                  {disease.penanganan_awal}
+                </p>
+              </div>
+            ) : null}
+
             {/* Gejala */}
             <div>
               <h3 className="text-sm font-semibold text-gray-800 mb-3">

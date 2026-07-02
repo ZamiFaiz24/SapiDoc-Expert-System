@@ -19,8 +19,11 @@ import type { Disease } from '@/types/disease';
 interface PenyakitRecord {
   id: number;
   kode_penyakit: string;
+  kategori_penyakit: string | null;
+  gambar: string | null;
   nama_penyakit: string;
   deskripsi: string | null;
+  penanganan_awal: string | null;
 }
 
 interface LandingPageProps {
@@ -36,13 +39,15 @@ export default function LandingPage({ penyakits }: LandingPageProps) {
   const diseases: Disease[] = penyakits.map((penyakit) => ({
     id: penyakit.kode_penyakit,
     name: penyakit.nama_penyakit,
+    kategori_penyakit: penyakit.kategori_penyakit || undefined,
     shortDesc: penyakit.deskripsi
       ? penyakit.deskripsi.length > 110
         ? `${penyakit.deskripsi.slice(0, 110).trimEnd()}...`
         : penyakit.deskripsi
       : 'Deskripsi belum tersedia.',
-    image: '',
+    image: penyakit.gambar || '',
     fullDesc: penyakit.deskripsi || 'Deskripsi belum tersedia.',
+    penanganan_awal: penyakit.penanganan_awal || undefined,
     symptoms: [],
   }));
 
