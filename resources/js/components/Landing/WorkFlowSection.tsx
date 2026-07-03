@@ -31,7 +31,7 @@ export default function WorkFlowSection() {
   return (
     <section
       id="cara-kerja"
-      className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-cyan-50 py-24 md:py-32"
+      className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-cyan-50 pt-20 pb-24 md:pt-24 md:pb-28"
     >
       {/* Background Blur */}
       <div className="absolute top-0 left-0 h-72 w-72 rounded-full bg-emerald-100/50 blur-3xl" />

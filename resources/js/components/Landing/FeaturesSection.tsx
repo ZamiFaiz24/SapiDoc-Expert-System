@@ -31,7 +31,7 @@ export default function FeaturesSection() {
   return (
     <section
       id="features"
-      className="relative overflow-hidden bg-white py-24 md:py-32"
+      className="relative overflow-hidden bg-white pt-20 pb-24 md:pt-24 md:pb-28"
     >
       {/* Background Blur */}
       <div className="absolute left-0 top-20 h-72 w-72 rounded-full bg-emerald-100/40 blur-3xl" />

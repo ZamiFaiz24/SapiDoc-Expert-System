@@ -24,7 +24,7 @@ export default function InformationSection({
   return (
     <section
       id="penyakit"
-      className="bg-gradient-to-b from-gray-50 via-white to-emerald-50/40 py-20 md:py-32"
+      className="relative overflow-hidden bg-gradient-to-b from-gray-50 via-white to-emerald-50/40 pt-20 pb-24 md:pt-24 md:pb-28"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
@@ -52,7 +52,7 @@ export default function InformationSection({
                 key={disease.id}
                 type="button"
                 onClick={() => openDiseaseModal(disease)}
-                className="group w-full text-left rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg"
+                className="group w-full flex flex-col h-full text-left rounded-2xl border border-gray-200 bg-white/90 p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg"
               >
                 {disease.image ? (
                   <div className="mb-4 overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
@@ -65,28 +65,23 @@ export default function InformationSection({
                 ) : null}
 
                 <div className="flex items-start gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-100">
-                    <Stethoscope className="h-5 w-5 text-emerald-600" />
-                  </div>
-
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-semibold text-gray-900 leading-snug">
-                      {disease.name}
+                    <span className="w-fit rounded-full bg-emerald-100 px-2 py-1 text-[11px] font-medium text-emerald-700">
+                        {disease.kategori_penyakit}
+                    </span>
+                    <h3 className="mt-2 text-sm font-bold text-gray-900">
+                        {disease.name}
                     </h3>
                     <p className="mt-1 text-xs leading-relaxed text-gray-500 line-clamp-2">
                       {disease.shortDesc}
                     </p>
-                    {disease.kategori_penyakit ? (
-                      <span className="mt-3 inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
-                        {disease.kategori_penyakit}
-                      </span>
-                    ) : null}
                   </div>
                 </div>
-
-                <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 transition-all group-hover:gap-3">
-                  Lihat Detail
-                  <ArrowRight size={16} />
+                 <div className="mt-auto border-t border-gray-100 pt-3">
+                    <span className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600">
+                        Lihat Detail
+                        <ArrowRight size={16} />
+                    </span>
                 </div>
               </button>
             ))}
