@@ -8,12 +8,9 @@ use App\Http\Controllers\GejalaController;
 use App\Http\Controllers\AturanController;
 use App\Models\Penyakit;
 
-Route::get('/', function () {
+Route::get('/', function (PenyakitController $penyakitController) {
     return Inertia::render('pengguna/LandingPage', [
-        'penyakits' => Penyakit::query()
-            ->orderBy('kode_penyakit')
-            ->take(10)
-            ->get(['id', 'kode_penyakit', 'nama_penyakit', 'deskripsi']),
+        'penyakits' => $penyakitController->forLandingPage(),
     ]);
 })->name('home');
 

@@ -97,4 +97,31 @@ class PenyakitController extends Controller
             'message' => 'Penyakit berhasil dihapus',
         ]);
     }
+
+    public function forLandingPage()
+    {
+        $penyakits = Penyakit::query()
+            ->orderBy('kode_penyakit')
+            ->take(10)
+            ->get(['id', 'kode_penyakit', 'nama_penyakit', 'deskripsi', 'gambar', 'kategori_penyakit', 'penanganan_awal'])
+            ->map(function ($p) {
+                $deskripsi = $p->deskripsi ?: 'Deskripsi belum tersedia.';
+                $shortDesc = strlen($deskripsi) > 110
+                    ? rtrim(substr($deskripsi, 0, 110)) . '...'
+                    : $deskripsi;
+
+                return [
+                    'id' => $p->kode_penyakit,
+                    'name' => $p->nama_penyakit,
+                    'kategori_penyakit' => $p->kategori_penyakit ?: null,
+                    'shortDesc' => $shortDesc,
+                    'fullDesc' => $deskripsi,
+                    'image' => $p->gambar ?: '',
+                    'penanganan_awal' => $p->penanganan_awal ?: null,
+                    'symptoms' => [],
+                ];
+            });
+
+        return $penyakits;
+    }
 }

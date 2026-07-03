@@ -19,7 +19,8 @@ export default function InformationSection({
     : diseases.slice(0, showAllCount);
 
   const canToggle = diseases.length > showAllCount;
-
+  console.log(diseases)
+  console.log(diseases.map(d => d.id));
   return (
     <section
       id="penyakit"

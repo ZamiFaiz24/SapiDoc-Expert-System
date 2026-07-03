@@ -27,29 +27,14 @@ interface PenyakitRecord {
 }
 
 interface LandingPageProps {
-  penyakits: PenyakitRecord[];
+  penyakits: Disease[];
 }
 
 export default function LandingPage({ penyakits }: LandingPageProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDisease, setSelectedDisease] = useState<Disease | null>(null);
 
-  const [selectedDisease, setSelectedDisease] =
-    useState<Disease | null>(null);
-
-  const diseases: Disease[] = penyakits.map((penyakit) => ({
-    id: penyakit.kode_penyakit,
-    name: penyakit.nama_penyakit,
-    kategori_penyakit: penyakit.kategori_penyakit || undefined,
-    shortDesc: penyakit.deskripsi
-      ? penyakit.deskripsi.length > 110
-        ? `${penyakit.deskripsi.slice(0, 110).trimEnd()}...`
-        : penyakit.deskripsi
-      : 'Deskripsi belum tersedia.',
-    image: penyakit.gambar || '',
-    fullDesc: penyakit.deskripsi || 'Deskripsi belum tersedia.',
-    penanganan_awal: penyakit.penanganan_awal || undefined,
-    symptoms: [],
-  }));
+  const diseases: Disease[] = penyakits;
 
   const openDiseaseModal = (disease: Disease) => {
     setSelectedDisease(disease);

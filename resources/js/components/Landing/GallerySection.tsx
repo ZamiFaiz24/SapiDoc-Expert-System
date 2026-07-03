@@ -1,28 +1,29 @@
 const galleryItems = [
   {
     title: 'Kondisi kandang',
-    image: '/images/ternak sapi.jpg',
+    desc: 'Observasi kondisi kandang dan lingkungan peternakan.',
+    image: '/images/landing/kondisi_kandang.jpeg',
   },
   {
-    title: 'Pemeriksaan sapi',
-    image: '/images/ternak sapi2.jpg',
-  },
-  {
-    title: 'Pengamatan gejala',
-    image: '/images/ternak sapi3.jpg',
-  },
-  {
-    title: 'Aktivitas peternak',
-    image: '/images/ternak sapi.jpg',
-  },
-  {
-    title: 'Lingkungan peternakan',
-    image: '/images/ternak sapi2.jpg',
+    title: 'Pemeriksaan kesehatan sapi',
+    desc: 'Pendampingan pemeriksaan dan imunisasi ternak.',
+    image: '/images/landing/pemerikasaan_sapi.jpeg',
   },
   {
     title: 'Pemberian pakan',
-    image: '/images/ternak sapi3.jpg',
+    desc: 'Aktivitas pemberian pakan kepada ternak.',
+    image: '/images/landing/pakan_sapi.jpeg',
   },
+  {
+    title: 'Observasi kondisi ternak',
+    desc: 'Pengamatan kondisi fisik sapi selama proses pengumpulan data.',
+    image: '/images/landing/observasi.jpeg',
+  },
+  {
+    title: 'Pemberian Imunisasi Rutin',
+    desc: 'Pemberian imunisasi rutin untuk mencegah penyakit pada ternak.',
+    image: '/images/landing/imunisasi.jpeg',
+  }
 ];
 
 export default function GallerySection() {
