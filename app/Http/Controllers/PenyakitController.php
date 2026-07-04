@@ -100,7 +100,7 @@ class PenyakitController extends Controller
 
     public function forLandingPage()
     {
-        $penyakits = Penyakit::query()
+        $penyakits = Penyakit::with('gejalas')
             ->orderBy('kode_penyakit')
             ->take(10)
             ->get(['id', 'kode_penyakit', 'nama_penyakit', 'deskripsi', 'gambar', 'kategori_penyakit', 'penanganan_awal'])
@@ -118,7 +118,9 @@ class PenyakitController extends Controller
                     'fullDesc' => $deskripsi,
                     'image' => $p->gambar ?: '',
                     'penanganan_awal' => $p->penanganan_awal ?: null,
-                    'symptoms' => [],
+                    'symptoms' => $p->gejalas
+                        ->pluck('nama_gejala')
+                        ->toArray(),
                 ];
             });
 

@@ -28,4 +28,14 @@ class Penyakit extends Model
     {
         return $this->hasMany(Diagnosis::class, 'penyakit_id');
     }
+
+    public function gejalas()
+    {
+        return $this->belongsToMany(
+            Gejala::class,
+            'basis_pengetahuans',
+            'penyakit_id',
+            'gejala_id'
+        )->distinct();
+    }
 }
