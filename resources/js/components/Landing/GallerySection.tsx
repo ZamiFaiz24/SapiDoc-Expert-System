@@ -15,11 +15,6 @@ const galleryItems = [
     image: '/images/landing/pakan_sapi.jpeg',
   },
   {
-    title: 'Observasi kondisi ternak',
-    desc: 'Pengamatan kondisi fisik sapi selama proses pengumpulan data.',
-    image: '/images/landing/observasi.jpeg',
-  },
-  {
     title: 'Pemberian Imunisasi Rutin',
     desc: 'Pemberian imunisasi rutin untuk mencegah penyakit pada ternak.',
     image: '/images/landing/imunisasi.jpeg',
@@ -48,7 +43,7 @@ export default function GallerySection() {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
           {galleryItems.map((item) => (
             <div
               key={item.title}
@@ -63,8 +58,8 @@ export default function GallerySection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
               <div className="absolute inset-x-0 bottom-0 p-5 opacity-0 translate-y-4 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                <div className="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide text-white backdrop-blur-sm">
-                  📷 {item.title}
+                <div className="inline-flex items-center rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-semibold tracking-wide text-white backdrop-blur-sm">
+                  {item.title}
                 </div>
               </div>
             </div>

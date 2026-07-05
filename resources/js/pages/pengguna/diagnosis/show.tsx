@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { Link } from '@inertiajs/react';
-import { AlertCircle, ChevronLeft, Download, RefreshCw, ClipboardCheck, UserRound, FileText, Stethoscope } from 'lucide-react';
+import { AlertCircle, ChevronLeft, RefreshCw, ClipboardCheck, UserRound, FileText, Stethoscope, Download } from 'lucide-react';
 
 interface Diagnosis {
   id: number;
@@ -46,6 +46,8 @@ interface PageProps {
   diagnosis_banding: DiagnosisBanding[];
   interpretasi: string;
   gejala_dipilih: GejalaDipilih[];
+
+  isPrint:boolean;
 }
 
 function getInterpretasiColor(cf: number): string {
@@ -117,9 +119,10 @@ function formatPenangananAwal(text: string): string[] {
 export default function DiagnosisShowPage({
   diagnosis,
   penyakit,
-  diagnosis_banding = [], // Berikan default array kosong
+  diagnosis_banding = [],
   interpretasi,
   gejala_dipilih,
+  isPrint,
 }: PageProps) {
   
   // 1. Validasi Awal: Jika diagnosis tidak ada, tampilkan pesan error sederhana
@@ -168,12 +171,20 @@ export default function DiagnosisShowPage({
               >
                 <ChevronLeft size={16} /> Kembali
               </Link>
-              <button
+              <Link
+                  href={route('diagnosis.print', diagnosis.id)}
+                  target="_blank"
+                  className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700"
+              >
+                  <Download size={18} />
+                  Cetak
+              </Link>
+              {/* <button
                 onClick={handlePrint}
                 className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700"
               >
                 <Download size={16} /> Cetak
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

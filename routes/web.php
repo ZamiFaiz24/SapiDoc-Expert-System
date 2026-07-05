@@ -21,6 +21,9 @@ Route::get('/diagnosis', function () {
 
 Route::resource('diagnosis', DiagnosisController::class)->only(['create', 'store', 'show']);
 
+Route::get('/diagnosis/{id}/print', [DiagnosisController::class, 'print'])
+    ->name('diagnosis.print');
+
 // 2. Baru taruh route tambahan di bawahnya
 Route::get('/diagnosis', function () {
     return redirect('/diagnosis/create');

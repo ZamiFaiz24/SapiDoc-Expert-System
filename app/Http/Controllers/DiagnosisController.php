@@ -8,6 +8,7 @@ use App\Models\Penyakit;
 use App\Models\Aturan;
 use App\Services\InferensiService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class DiagnosisController extends Controller
 {
@@ -423,6 +424,39 @@ class DiagnosisController extends Controller
 
         return response()->json([
             'data' => $data,
+        ]);
+    }
+    
+    public function print($id)
+    {
+        $diagnosis = Diagnosis::with('penyakit')->findOrFail($id);
+
+        $gejalaDipilih = collect($diagnosis->gejala_input)
+            ->map(function ($item) {
+
+                $gejala = Gejala::find($item['gejala_id']);
+
+                return [
+                    'id' => $item['gejala_id'],
+                    'kode_gejala' => $gejala?->kode_gejala,
+                    'nama_gejala' => $gejala?->nama_gejala,
+                    'cf_user' => $item['cf_user'],
+                ];
+            })
+            ->values();
+
+        return Inertia::render('pengguna/diagnosis/Print', [
+            'diagnosis' => $diagnosis,
+            'penyakit' => $diagnosis->penyakit ?? [
+                'nama_penyakit' => $diagnosis->nama_penyakit_snap,
+                'deskripsi' => 'Informasi detail tidak tersedia.',
+                'kategori_penyakit' => null,
+                'gambar' => null,
+                'penanganan_awal' => 'Silakan hubungi dokter hewan terdekat.',
+            ],
+            'gejala_dipilih' => $gejalaDipilih,
+            'diagnosis_banding' => $diagnosis->diagnosis_banding ?? [],
+            'interpretasi' => $this->getInterpretasi($diagnosis->cf_final ?? 0),
         ]);
     }
 }

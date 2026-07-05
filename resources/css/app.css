@@ -156,3 +156,37 @@
         @apply bg-background text-foreground;
     }
 }
+
+@media print {
+
+    body {
+        background: white !important;
+    }
+
+    @page {
+        size: A4;
+        margin: 18mm;
+    }
+
+    .page-break {
+        page-break-after: always;
+    }
+
+    img {
+        max-width: 100%;
+    }
+
+    table {
+        page-break-inside: auto;
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+
+    h1,
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
