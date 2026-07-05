@@ -13,6 +13,14 @@ interface TopbarProps {
   title: string;
 }
 
+const pageDescriptions: Record<string, string> = {
+  Dashboard: 'Ringkasan statistik dan aktivitas sistem.',
+  'Data Penyakit': 'Kelola data penyakit pada sistem.',
+  'Data Gejala': 'Kelola data gejala untuk diagnosis.',
+  'Data Aturan': 'Kelola aturan relasi penyakit dan gejala.',
+  'Riwayat Diagnosis': 'Lihat riwayat hasil diagnosis pengguna.',
+};
+
 export default function Topbar({ title }: TopbarProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -34,17 +42,19 @@ export default function Topbar({ title }: TopbarProps) {
     };
   }, []);
 
+  console.log(title);
+
   return (
     <header className="sticky top-0 z-20 border-b border-gray-200 bg-white/90 backdrop-blur-sm">
       <div className="flex h-16 items-center justify-between px-6">
         {/* Left Side */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">
+          <h1 className="text-xl font-bold text-gray-800">
             {title}
           </h1>
 
           <p className="text-xs text-gray-500">
-            Kelola data sistem pakar diagnosa penyakit sapi
+            {pageDescriptions[title] ?? ""}
           </p>
         </div>
 

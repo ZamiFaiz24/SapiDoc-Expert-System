@@ -1,6 +1,6 @@
 'use client';
 
-import { Pill, Stethoscope, Zap, FileText } from 'lucide-react';
+import { ShieldAlert, Stethoscope, Waypoints, ClipboardList } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
   PieChart,
@@ -128,7 +128,7 @@ export default function DashboardPage() {
         <StatCard
           title="Total Penyakit"
           value={stats.total_penyakit.toString()}
-          icon={Pill}
+          icon={ShieldAlert}
           color="emerald"
         />
         <StatCard
@@ -140,13 +140,13 @@ export default function DashboardPage() {
         <StatCard
           title="Total Aturan"
           value={stats.total_aturan.toString()}
-          icon={Zap}
+          icon={Waypoints}
           color="purple"
         />
         <StatCard
           title="Total Diagnosis"
           value={stats.total_diagnosis.toString()}
-          icon={FileText}
+          icon={ClipboardList}
           color="orange"
         />
       </div>

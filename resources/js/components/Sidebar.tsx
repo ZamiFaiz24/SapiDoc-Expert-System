@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutDashboard, Pill, Stethoscope, Zap, FileText, Menu, X } from 'lucide-react';
+import { LayoutDashboard, ShieldAlert, Stethoscope, Waypoints, ClipboardList, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface SidebarProps {
@@ -13,10 +13,10 @@ export default function Sidebar({ activeMenu, setActiveMenu }: SidebarProps) {
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'penyakit', label: 'Penyakit', icon: Pill },
+    { id: 'penyakit', label: 'Penyakit', icon: ShieldAlert },
     { id: 'gejala', label: 'Gejala', icon: Stethoscope },
-    { id: 'aturan', label: 'Aturan', icon: Zap },
-    { id: 'diagnosis', label: 'Diagnosis', icon: FileText },
+    { id: 'aturan', label: 'Aturan', icon: Waypoints },
+    { id: 'diagnosis', label: 'Diagnosis', icon: ClipboardList },
   ];
 
   return (
