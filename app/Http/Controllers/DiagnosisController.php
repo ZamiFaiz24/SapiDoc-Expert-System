@@ -459,4 +459,18 @@ class DiagnosisController extends Controller
             'interpretasi' => $this->getInterpretasi($diagnosis->cf_final ?? 0),
         ]);
     }
+
+    public function debugCf($id)
+    {
+        $diagnosis = Diagnosis::findOrFail($id);
+
+        $service = new InferensiService();
+
+        $detail = $service->detailDiagnosis(
+            $diagnosis->gejala_input,
+            $diagnosis->penyakit_id
+        );
+
+        return response()->json($detail);
+    }
 }
