@@ -16,7 +16,7 @@ class GejalaSeeder extends Seeder
         $gejalas = [
             [
                 'kode_gejala' => 'G01',
-                'nama_gejala' => 'Demam tinggi (39,8° – 41°)',
+                'nama_gejala' => 'Demam tinggi (39,8°C – 41°C)',
                 'kategori' => 'Gejala Umum',
                 'keterangan' => 'Peningkatan suhu tubuh sapi melebihi normal (38-39°C)',
                 'jenis_kelamin' => 'all',
@@ -176,9 +176,9 @@ class GejalaSeeder extends Seeder
             ],
             [
                 'kode_gejala' => 'G21',
-                'nama_gejala' => 'Kulit menebal dan tumbuhnya keropeng (di bagian telinga, wajah dan punggung)',
+                'nama_gejala' => 'Kulit menebal dan tumbuhnya keropeng',
                 'kategori' => 'Gejala Spesifik',
-                'keterangan' => 'Kulit mengalami penebalan dan tumbuh keropeng di area tertentu',
+                'keterangan' => 'Kulit mengalami penebalan dan tumbuh keropeng di area di bagian telinga, wajah, dan punggung',
                 'jenis_kelamin' => 'all',
                 'umur_kategori' => 'all',
             ],
@@ -208,22 +208,14 @@ class GejalaSeeder extends Seeder
             ],
             [
                 'kode_gejala' => 'G25',
-                'nama_gejala' => 'Sapi tidak gayemi (memamah biak)',
+                'nama_gejala' => 'Tidak bisa BAB/feses keras',
                 'kategori' => 'Gejala Umum',
-                'keterangan' => 'Sapi tidak melakukan aktivitas memamah biak (mengunyah kembali)',
+                'keterangan' => 'Sapi mengalami sembelit atau feses yang keras',
                 'jenis_kelamin' => 'all',
                 'umur_kategori' => 'all',
             ],
             [
                 'kode_gejala' => 'G26',
-                'nama_gejala' => 'Tidak bisa BAB / fases keras',
-                'kategori' => 'Gejala Umum',
-                'keterangan' => 'Sapi mengalami sembelit atau fases yang keras',
-                'jenis_kelamin' => 'all',
-                'umur_kategori' => 'all',
-            ],
-            [
-                'kode_gejala' => 'G27',
                 'nama_gejala' => 'Pembesaran perut sebelah kiri',
                 'kategori' => 'Gejala Spesifik',
                 'keterangan' => 'Perut sebelah kiri mengalami pembesaran yang signifikan',
@@ -231,39 +223,23 @@ class GejalaSeeder extends Seeder
                 'umur_kategori' => 'all',
             ],
             [
-                'kode_gejala' => 'G28',
-                'nama_gejala' => 'Keluar nanah dari alat kelamin betina/Vulva',
+                'kode_gejala' => 'G27',
+                'nama_gejala' => 'Keluar nanah dari alat kelamin betina',
                 'kategori' => 'Gejala Spesifik',
                 'keterangan' => 'Keluarnya nanah dari organ reproduksi betina',
                 'jenis_kelamin' => 'betina',
                 'umur_kategori' => 'all',
             ],
             [
-                'kode_gejala' => 'G29',
-                'nama_gejala' => 'Penurunan produksi susu',
-                'kategori' => 'Gejala Umum',
-                'keterangan' => 'Terjadi penurunan jumlah susu yang diproduksi',
-                'jenis_kelamin' => 'betina',
-                'umur_kategori' => 'all',
-            ],
-            [
-                'kode_gejala' => 'G30',
-                'nama_gejala' => 'Keluar lendir putih kekuningan dari alat kelamin betina/Vulva',
+                'kode_gejala' => 'G28',
+                'nama_gejala' => 'Keluar lendir putih kekuningan dari alat kelamin betina',
                 'kategori' => 'Gejala Spesifik',
                 'keterangan' => 'Keluarnya lendir berwarna putih kekuningan dari organ reproduksi betina',
                 'jenis_kelamin' => 'betina',
                 'umur_kategori' => 'all',
             ],
             [
-                'kode_gejala' => 'G31',
-                'nama_gejala' => 'Terlihat lemas dan lesu',
-                'kategori' => 'Gejala Umum',
-                'keterangan' => 'Sapi menunjukkan tanda-tanda kelelahan dan kelemahan',
-                'jenis_kelamin' => 'all',
-                'umur_kategori' => 'all',
-            ],
-            [
-                'kode_gejala' => 'G32',
+                'kode_gejala' => 'G29',
                 'nama_gejala' => 'Sapi ambruk (tidak mampu berdiri)',
                 'kategori' => 'Gejala Spesifik',
                 'keterangan' => 'Sapi jatuh dan tidak mampu berdiri',
@@ -271,23 +247,23 @@ class GejalaSeeder extends Seeder
                 'umur_kategori' => 'all',
             ],
             [
-                'kode_gejala' => 'G33',
-                'nama_gejala' => 'Dalam masa bunting / menyusui',
-                'kategori' => 'Kondisi',
+                'kode_gejala' => 'G30',
+                'nama_gejala' => 'Dalam masa bunting/menyusui',
+                'kategori' => 'Gejala Spesifik',
                 'keterangan' => 'Sapi betina dalam kondisi bunting atau menyusui',
                 'jenis_kelamin' => 'betina',
                 'umur_kategori' => 'all',
             ],
             [
-                'kode_gejala' => 'G34',
+                'kode_gejala' => 'G31',
                 'nama_gejala' => 'Sapi sudah beberapa kali melahirkan',
-                'kategori' => 'Kondisi',
+                'kategori' => 'Gejala Spesifik',
                 'keterangan' => 'Sapi betina sudah mengalami beberapa kali proses melahirkan',
                 'jenis_kelamin' => 'betina',
                 'umur_kategori' => 'all',
             ],
             [
-                'kode_gejala' => 'G35',
+                'kode_gejala' => 'G32',
                 'nama_gejala' => 'Bengkak pada area pusar',
                 'kategori' => 'Gejala Spesifik',
                 'keterangan' => 'Terdapat pembengkakan pada area pusar anak sapi',
@@ -295,7 +271,7 @@ class GejalaSeeder extends Seeder
                 'umur_kategori' => 'pedet',
             ],
             [
-                'kode_gejala' => 'G36',
+                'kode_gejala' => 'G33',
                 'nama_gejala' => 'Bagian pusar bernanah',
                 'kategori' => 'Gejala Spesifik',
                 'keterangan' => 'Area pusar mengalami infeksi dan mengeluarkan nanah',
@@ -305,7 +281,10 @@ class GejalaSeeder extends Seeder
         ];
 
         foreach ($gejalas as $gejala) {
-            Gejala::create($gejala);
+            Gejala::updateOrCreate(
+                ['kode_gejala' => $gejala['kode_gejala']],
+                $gejala
+            );
         }
     }
 }

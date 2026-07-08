@@ -26,35 +26,35 @@ class AturanSeeder extends Seeder
                 'gejala_id' => $gejalas['G01'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - demam tinggi pada penyakit ini',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P01'] ?? null,
                 'gejala_id' => $gejalas['G02'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - nafsu makan berkurang',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P01'] ?? null,
                 'gejala_id' => $gejalas['G03'] ?? null,
                 'nilai_mb' => 0.5,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - air liur berlebih identik dengan PMK',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
             [
                 'penyakit_id' => $penyakits['P01'] ?? null,
                 'gejala_id' => $gejalas['G04'] ?? null,
                 'nilai_mb' => 0.9,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala sangat spesifik - luka pada kuku adalah ciri khas PMK',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
             [
                 'penyakit_id' => $penyakits['P01'] ?? null,
                 'gejala_id' => $gejalas['G05'] ?? null,
                 'nilai_mb' => 0.9,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala sangat spesifik - lepuh pada mulut adalah ciri khas PMK',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
 
             // P02 - Cacingan
@@ -63,49 +63,49 @@ class AturanSeeder extends Seeder
                 'gejala_id' => $gejalas['G02'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - nafsu makan berkurang',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P02'] ?? null,
                 'gejala_id' => $gejalas['G06'] ?? null,
                 'nilai_mb' => 0.8,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - diare dengan bau menyengat khas cacingan',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
             [
                 'penyakit_id' => $penyakits['P02'] ?? null,
                 'gejala_id' => $gejalas['G07'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - mata berlendir dapat terjadi pada berbagai penyakit',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P02'] ?? null,
                 'gejala_id' => $gejalas['G08'] ?? null,
                 'nilai_mb' => 0.5,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - penurunan berat badan dari cacing yang mengambil nutrisi',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P02'] ?? null,
                 'gejala_id' => $gejalas['G09'] ?? null,
                 'nilai_mb' => 0.5,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - bulu kusam karena malnutrisi akibat cacingan',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P02'] ?? null,
                 'gejala_id' => $gejalas['G10'] ?? null,
                 'nilai_mb' => 0.5,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - bulu rontok akibat gangguan nutrisi',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P02'] ?? null,
                 'gejala_id' => $gejalas['G11'] ?? null,
                 'nilai_mb' => 0.5,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - perut buncit adalah ciri khas cacingan berat',
+                'catatan_pakar' => 'Gejala Umum',
             ],
 
             // P03 - Mastitis (radang ambing)
@@ -114,49 +114,49 @@ class AturanSeeder extends Seeder
                 'gejala_id' => $gejalas['G01'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - demam tinggi pada inflamasi',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P03'] ?? null,
                 'gejala_id' => $gejalas['G02'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - nafsu makan berkurang',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P03'] ?? null,
                 'gejala_id' => $gejalas['G12'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - terlihat lemas dan lesu',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P03'] ?? null,
                 'gejala_id' => $gejalas['G13'] ?? null,
                 'nilai_mb' => 0.5,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - produksi susu berkurang pada mastitis',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P03'] ?? null,
                 'gejala_id' => $gejalas['G14'] ?? null,
                 'nilai_mb' => 0.9,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala sangat spesifik - pembengkakan ambing adalah ciri utama mastitis',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
             [
                 'penyakit_id' => $penyakits['P03'] ?? null,
                 'gejala_id' => $gejalas['G15'] ?? null,
                 'nilai_mb' => 0.8,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - susu menggumpal menunjukkan infeksi pada ambing',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
             [
                 'penyakit_id' => $penyakits['P03'] ?? null,
                 'gejala_id' => $gejalas['G16'] ?? null,
                 'nilai_mb' => 0.9,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala sangat spesifik - susu bercampur nanah/darah adalah ciri khas mastitis',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
 
             // P04 - Demam Tiga Hari (Bovine Ephemeral Fever)
@@ -165,49 +165,49 @@ class AturanSeeder extends Seeder
                 'gejala_id' => $gejalas['G01'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - demam tinggi adalah ciri awal penyakit',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P04'] ?? null,
                 'gejala_id' => $gejalas['G02'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - nafsu makan berkurang',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P04'] ?? null,
                 'gejala_id' => $gejalas['G12'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - terlihat lemas dan lesu',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P04'] ?? null,
-                'gejala_id' => $gejalas['G17'] ?? null,
+                'gejala_id' => $gejalas['G17'] ?? null, // Sapi tidak gayemi (Sebelumnya G17/G25 duplikat)
                 'nilai_mb' => 0.6,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - tidak gayemi adalah tanda penyakit viral akut',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P04'] ?? null,
                 'gejala_id' => $gejalas['G18'] ?? null,
                 'nilai_mb' => 0.5,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - sapi lebih banyak berbaring saat demam',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P04'] ?? null,
                 'gejala_id' => $gejalas['G19'] ?? null,
                 'nilai_mb' => 0.6,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - kepincangan akibat arthritis transien',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P04'] ?? null,
                 'gejala_id' => $gejalas['G20'] ?? null,
                 'nilai_mb' => 0.6,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - keluar lendir dari hidung/mulut pada penyakit viral',
+                'catatan_pakar' => 'Gejala Umum',
             ],
 
             // P05 - Scabies / Kudis (Gudig)
@@ -216,21 +216,21 @@ class AturanSeeder extends Seeder
                 'gejala_id' => $gejalas['G10'] ?? null,
                 'nilai_mb' => 0.5,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - bulu rontok akibat garukan tungau',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P05'] ?? null,
                 'gejala_id' => $gejalas['G21'] ?? null,
                 'nilai_mb' => 0.9,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala sangat spesifik - kulit menebal dengan keropeng adalah ciri khas scabies',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
             [
                 'penyakit_id' => $penyakits['P05'] ?? null,
                 'gejala_id' => $gejalas['G22'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - gatal-gatal dapat terjadi pada berbagai penyakit kulit',
+                'catatan_pakar' => 'Gejala Umum',
             ],
 
             // P06 - Penyakit Lato-Lato (Lumpy Skin Disease)
@@ -239,35 +239,35 @@ class AturanSeeder extends Seeder
                 'gejala_id' => $gejalas['G01'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - demam tinggi pada awal infeksi',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P06'] ?? null,
                 'gejala_id' => $gejalas['G02'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - nafsu makan berkurang',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P06'] ?? null,
                 'gejala_id' => $gejalas['G12'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - terlihat lemas dan lesu',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P06'] ?? null,
                 'gejala_id' => $gejalas['G23'] ?? null,
                 'nilai_mb' => 0.9,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala sangat spesifik - benjol pada kulit adalah ciri utama Lato-lato',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
             [
                 'penyakit_id' => $penyakits['P06'] ?? null,
                 'gejala_id' => $gejalas['G24'] ?? null,
                 'nilai_mb' => 0.9,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala sangat spesifik - pembengkakan kaki dan limfonodi pada Lumpy Skin Disease',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
 
             // P07 - Perut Kembung (Bloat)
@@ -276,35 +276,35 @@ class AturanSeeder extends Seeder
                 'gejala_id' => $gejalas['G02'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - nafsu makan berkurang',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P07'] ?? null,
                 'gejala_id' => $gejalas['G12'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - terlihat lemas dan lesu',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P07'] ?? null,
-                'gejala_id' => $gejalas['G25'] ?? null,
+                'gejala_id' => $gejalas['G17'] ?? null, // Sapi tidak gayemi
                 'nilai_mb' => 0.6,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - tidak gayemi saat perut kembung',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P07'] ?? null,
-                'gejala_id' => $gejalas['G26'] ?? null,
+                'gejala_id' => $gejalas['G25'] ?? null, // Tidak bisa BAB / feses keras (Sebelumnya G26)
                 'nilai_mb' => 0.8,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - sembelit adalah tanda bloat',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P07'] ?? null,
-                'gejala_id' => $gejalas['G27'] ?? null,
+                'gejala_id' => $gejalas['G26'] ?? null, // Pembesaran perut sebelah kiri (Sebelumnya G27)
                 'nilai_mb' => 0.9,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala sangat spesifik - pembesaran perut sebelah kiri adalah ciri khas bloat',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
 
             // P08 - Endometritis
@@ -313,42 +313,42 @@ class AturanSeeder extends Seeder
                 'gejala_id' => $gejalas['G01'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - demam tinggi pada infeksi',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P08'] ?? null,
                 'gejala_id' => $gejalas['G02'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - nafsu makan berkurang',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P08'] ?? null,
                 'gejala_id' => $gejalas['G12'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - terlihat lemas dan lesu',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P08'] ?? null,
-                'gejala_id' => $gejalas['G28'] ?? null,
-                'nilai_mb' => 0.8,
-                'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - nanah dari vulva menunjukkan endometritis',
-            ],
-            [
-                'penyakit_id' => $penyakits['P08'] ?? null,
-                'gejala_id' => $gejalas['G29'] ?? null,
+                'gejala_id' => $gejalas['G13'] ?? null, // Penurunan produksi susu
                 'nilai_mb' => 0.6,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - penurunan produksi susu pada endometritis',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P08'] ?? null,
-                'gejala_id' => $gejalas['G30'] ?? null,
+                'gejala_id' => $gejalas['G27'] ?? null, // Keluar nanah dari vulva (Sebelumnya G28)
+                'nilai_mb' => 0.8,
+                'nilai_md' => 0,
+                'catatan_pakar' => 'Gejala Spesifik',
+            ],
+            [
+                'penyakit_id' => $penyakits['P08'] ?? null,
+                'gejala_id' => $gejalas['G28'] ?? null, // Keluar lendir putih kekuningan (Sebelumnya G30)
                 'nilai_mb' => 0.9,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala sangat spesifik - lendir putih kekuningan dari vulva adalah ciri khas endometritis',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
 
             // P09 - Hipokalsemia (Milk Fever Disease)
@@ -357,35 +357,35 @@ class AturanSeeder extends Seeder
                 'gejala_id' => $gejalas['G08'] ?? null,
                 'nilai_mb' => 0.4,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - penurunan berat badan pada hipokalsemia',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P09'] ?? null,
-                'gejala_id' => $gejalas['G31'] ?? null,
+                'gejala_id' => $gejalas['G12'] ?? null, // Terlihat lemas dan lesu (Sebelumnya G31 duplikat)
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - lemas dan lesu pada defisiensi mineral',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P09'] ?? null,
-                'gejala_id' => $gejalas['G32'] ?? null,
+                'gejala_id' => $gejalas['G29'] ?? null, // Sapi ambruk (Sebelumnya G32)
                 'nilai_mb' => 0.6,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - ambruk adalah tanda parah hipokalsemia',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
             [
                 'penyakit_id' => $penyakits['P09'] ?? null,
-                'gejala_id' => $gejalas['G33'] ?? null,
+                'gejala_id' => $gejalas['G30'] ?? null, // Dalam masa bunting / menyusui (Sebelumnya G33)
                 'nilai_mb' => 0.8,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Kondisi risiko - hipokalsemia terjadi pada sapi bunting/menyusui',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
             [
                 'penyakit_id' => $penyakits['P09'] ?? null,
-                'gejala_id' => $gejalas['G34'] ?? null,
+                'gejala_id' => $gejalas['G31'] ?? null, // Sapi sudah beberapa kali melahirkan (Sebelumnya G34)
                 'nilai_mb' => 0.6,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Kondisi risiko - sapi multifara lebih rentan hipokalsemia',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
 
             // P10 - Omphalitis (Radang Pusar)
@@ -394,34 +394,40 @@ class AturanSeeder extends Seeder
                 'gejala_id' => $gejalas['G01'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - demam tinggi pada infeksi pusar',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P10'] ?? null,
                 'gejala_id' => $gejalas['G02'] ?? null,
                 'nilai_mb' => 0.2,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala umum - nafsu makan berkurang',
+                'catatan_pakar' => 'Gejala Umum',
             ],
             [
                 'penyakit_id' => $penyakits['P10'] ?? null,
-                'gejala_id' => $gejalas['G35'] ?? null,
+                'gejala_id' => $gejalas['G32'] ?? null, // Bengkak pada area pusar (Sebelumnya G35)
                 'nilai_mb' => 0.8,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - bengkak pada pusar adalah tanda omphalitis',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
             [
                 'penyakit_id' => $penyakits['P10'] ?? null,
-                'gejala_id' => $gejalas['G36'] ?? null,
+                'gejala_id' => $gejalas['G33'] ?? null, // Bagian pusar bernanah (Sebelumnya G36)
                 'nilai_mb' => 0.8,
                 'nilai_md' => 0,
-                'catatan_pakar' => 'Gejala spesifik - nanah pada pusar adalah ciri khas omphalitis',
+                'catatan_pakar' => 'Gejala Spesifik',
             ],
         ];
 
         foreach ($aturans as $aturan) {
             if ($aturan['penyakit_id'] && $aturan['gejala_id']) {
-                Aturan::create($aturan);
+                Aturan::updateOrCreate(
+                    [
+                        'penyakit_id' => $aturan['penyakit_id'],
+                        'gejala_id' => $aturan['gejala_id']
+                    ],
+                    $aturan
+                );
             }
         }
     }
