@@ -48,12 +48,13 @@ class InferensiService
         // Step 3: Urutkan berdasarkan CF tertinggi
         arsort($cfPenyakit);
 
+        $penyakits = Penyakit::whereIn('id', array_keys($cfPenyakit))
+            ->get()
+            ->keyBy('id');
+
         // Step 4: Format hasil dengan detail penyakit
         $hasil = [];
         foreach ($cfPenyakit as $penyakitId => $cf) {
-            $penyakits = Penyakit::whereIn('id', array_keys($cfPenyakit))
-                ->get()
-                ->keyBy('id');
             $penyakit = $penyakits[$penyakitId];
             $hasil[] = [
                 'penyakit_id' => $penyakitId,
@@ -107,36 +108,29 @@ class InferensiService
      */
     private function hitungCFPenyakit($aturanPenyakit, array $gejalaNormalized): float
     {
-        // Mapping CF user: [gejala_id => cf_user]
         $cfUserMap = collect($gejalaNormalized)
             ->pluck('cf_user', 'gejala_id')
             ->toArray();
 
-        $cfCombined = 0.0;
+        // Inisialisasi null untuk menandai gejala pertama yang valid masuk perhitungan
+        $cfCombined = null;
 
         foreach ($aturanPenyakit as $aturanItem) {
-            // CF dari pakar (MB - MD)
             $cfExpert = $aturanItem->nilai_mb - $aturanItem->nilai_md;
-
-            // Ambil CF dari user (default 0 jika tidak ada)
             $cfUser = $cfUserMap[$aturanItem->gejala_id] ?? 0.0;
-
-            // CF untuk gejala ini
             $cfGejala = $cfExpert * $cfUser;
 
-            // Skip kalau tidak ada kontribusi
             if ($cfGejala == 0) {
                 continue;
             }
 
-            // Kombinasi CF (incremental)
-            $cfCombined = ($cfCombined == 0)
+            // Gabungkan nilai CF secara incremental
+            $cfCombined = (is_null($cfCombined))
                 ? $cfGejala
                 : $cfCombined + ($cfGejala * (1 - $cfCombined));
         }
 
-        // Clamp hasil antara 0 - 1
-        return max(0.0, min(1.0, $cfCombined));
+        return is_null($cfCombined) ? 0.0 : max(0.0, min(1.0, $cfCombined));
     }
 
     /**
@@ -165,16 +159,13 @@ class InferensiService
      */
     public function detailDiagnosis(array $gejalaDenganCf, int $penyakitId): array
     {
-        // Normalize input
         $gejalaNormalized = $this->normalizeGejalaInput($gejalaDenganCf);
 
-        // Buat map CF user per gejala
         $cfUserMap = [];
         foreach ($gejalaNormalized as $item) {
             $cfUserMap[$item['gejala_id']] = $item['cf_user'];
         }
 
-        // Ambil aturan untuk penyakit ini
         $gejalanIds = array_column($gejalaNormalized, 'gejala_id');
         $aturanList = Aturan::where('penyakit_id', $penyakitId)
             ->whereIn('gejala_id', $gejalanIds)
@@ -182,24 +173,20 @@ class InferensiService
             ->get();
 
         $detail = [];
-        $cfCombined = 0;
+        $cfCombined = null; // Gunakan null untuk inisialisasi awal yang konsisten
 
         foreach ($aturanList as $aturanItem) {
-            // CF expert
             $cfExpert = $aturanItem->nilai_mb - $aturanItem->nilai_md;
-
-            // CF user
             $cfUser = $cfUserMap[$aturanItem->gejala_id] ?? 0;
-
-            // CF combined (expert × user)
             $cfGejala = $cfExpert * $cfUser;
 
-            // Update combined CF
-            if ($cfCombined == 0) {
-                $cfCombined = $cfGejala;
-            } else {
-                $cfCombined = $cfCombined + $cfGejala * (1 - $cfCombined);
+            if ($cfGejala == 0) {
+                continue;
             }
+
+            $cfCombined = (is_null($cfCombined))
+                ? $cfGejala
+                : $cfCombined + ($cfGejala * (1 - $cfCombined));
 
             $detail[] = [
                 'gejala' => $aturanItem->gejala->nama_gejala,
@@ -216,7 +203,7 @@ class InferensiService
 
         return [
             'total_gejala_cocok' => count($detail),
-            'cf_final' => round($cfCombined, 4),
+            'cf_final' => round($cfCombined ?? 0.0, 4),
             'detail_gejala' => $detail,
         ];
     }

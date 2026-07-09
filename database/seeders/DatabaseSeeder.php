@@ -25,6 +25,10 @@ class DatabaseSeeder extends Seeder
         // Seed aturan/knowledge base data
         $this->call(AturanSeeder::class);
 
+        $this->call([
+            DiagnosisManualSeeder::class,
+        ]);
+
         // Admin account
         User::factory()->create([
             'name' => 'Admin SapiDoc',

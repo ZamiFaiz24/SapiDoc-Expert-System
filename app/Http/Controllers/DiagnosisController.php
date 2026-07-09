@@ -24,7 +24,9 @@ class DiagnosisController extends Controller
      */
     public function create()
     {
-        $gejalas = Gejala::orderBy('kode_gejala')->get();
+        $gejalas = Gejala::select('id', 'kode_gejala', 'nama_gejala')
+            ->orderBy('kode_gejala')
+            ->get();
 
         return inertia('pengguna/diagnosis/page', [
             'gejalas' => $gejalas,
@@ -37,54 +39,29 @@ class DiagnosisController extends Controller
     /**
      * Proses diagnosis - hitung CF dengan user confidence dan cari penyakit
      * 
-     * Request body format:
-     * {
-     *     "gejala": [
-     *         { "gejala_id": 1, "cf_user": 0.8 },
-     *         { "gejala_id": 2, "cf_user": 0.5 }
-     *     ],
-     *     "nama_user": "Petani Budi",
-     *     "alamat_user": "Jl. Raya No. 123",
-     *     "no_hp_user": "08123456789",
-     *     "jenis_sapi": "sapi_potong",
-     *     "jenis_kelamin": "betina",
-     *     "umur_kategori": "produktif"
-     * }
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            // Data Peternak
             'nama_user' => 'required|string|max:100',
             'alamat_user' => 'required|string|max:255',
             'no_hp_user' => 'required|string|max:20',
-
-            // Data Sapi
             'jenis_sapi' => 'required|string|in:' . implode(',', array_keys(Diagnosis::getJenisSapi())),
             'jenis_kelamin' => 'required|string|in:' . implode(',', array_keys(Diagnosis::getJenisKelamin())),
             'umur_kategori' => 'required|string|in:' . implode(',', array_keys(Diagnosis::getUmurKategori())),
-
-            // Data Gejala
             'gejala' => 'required|array|min:1',
             'gejala.*.gejala_id' => 'required|integer|exists:gejalas,id',
             'gejala.*.cf_user' => 'required|numeric|min:0|max:1',
         ]);
 
-        // STEP 1: Jalankan inferensi Forward Chaining dengan CF user
         $hasilInferensi = $this->inferensiService->inferensi($validated['gejala']);
 
         if (empty($hasilInferensi)) {
             return back()->with('error', 'Tidak ada penyakit yang cocok');
         }
 
-        // STEP 2: Ambil diagnosis utama (CF tertinggi)
         $diagnosisUtama = $hasilInferensi[0];
 
-        if (!$diagnosisUtama) {
-            return back()->with('error', 'Tidak ada penyakit yang cocok dengan gejala yang dipilih');
-        }
-
-        // Format diagnosis banding dengan struktur yang jelas
         $diagnosisBanding = array_map(function ($item) {
             return [
                 'penyakit_id' => $item['penyakit_id'],
@@ -107,7 +84,6 @@ class DiagnosisController extends Controller
             'gejala_input' => $validated['gejala'],
         ]);
 
-        // Return JSON for API calls, redirect for form submissions
         if ($request->expectsJson()) {
             return response()->json([
                 'diagnosis_id' => $diagnosis->id,
@@ -117,24 +93,19 @@ class DiagnosisController extends Controller
 
         return redirect()->route('diagnosis.show', $diagnosis->id);
     }
-
     /**
      * Tampilkan hasil diagnosis dengan detail breakdown CF
      */
     public function show($id)
     {
-        // Cari data secara manual berdasarkan ID yang ada di URL
-        // Kita gunakan with('penyakit') untuk mengambil detail penyakitnya sekalian
-        $diagnosis = \App\Models\Diagnosis::with('penyakit')->findOrFail($id);
+        $diagnosis = Diagnosis::with('penyakit')->findOrFail($id);
 
-        // Sekarang kita coba dd lagi, pasti muncul datanya
-        // dd($diagnosis->toArray()); 
-        // dd($diagnosis->gejala_input);
+        $gejalaIds = collect($diagnosis->gejala_input)->pluck('gejala_id')->toArray();
+        $masterGejalas = Gejala::select('id', 'kode_gejala', 'nama_gejala')->whereIn('id', $gejalaIds)->get()->keyBy('id');
 
         $gejalaDipilih = collect($diagnosis->gejala_input)
-            ->map(function ($item) {
-
-                $gejala = \App\Models\Gejala::find($item['gejala_id']);
+            ->map(function ($item) use ($masterGejalas) {
+                $gejala = $masterGejalas[$item['gejala_id']] ?? null;
 
                 return [
                     'id' => $item['gejala_id'],
@@ -426,15 +397,18 @@ class DiagnosisController extends Controller
             'data' => $data,
         ]);
     }
-    
+
     public function print($id)
     {
         $diagnosis = Diagnosis::with('penyakit')->findOrFail($id);
 
-        $gejalaDipilih = collect($diagnosis->gejala_input)
-            ->map(function ($item) {
+        // OPTIMASI: Ambil semua Master Gejala sekaligus untuk menghindari N+1 Query
+        $gejalaIds = collect($diagnosis->gejala_input)->pluck('gejala_id')->toArray();
+        $masterGejalas = Gejala::whereIn('id', $gejalaIds)->get()->keyBy('id');
 
-                $gejala = Gejala::find($item['gejala_id']);
+        $gejalaDipilih = collect($diagnosis->gejala_input)
+            ->map(function ($item) use ($masterGejalas) {
+                $gejala = $masterGejalas[$item['gejala_id']] ?? null;
 
                 return [
                     'id' => $item['gejala_id'],
