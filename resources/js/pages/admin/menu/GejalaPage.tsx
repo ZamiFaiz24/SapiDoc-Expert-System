@@ -43,6 +43,7 @@ export default function GejalaPage() {
   const [search, setSearch] = useState('');
   const [kategoriFilter, setKategoriFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [nextKode, setNextKode] = useState('');
   const [totalStats, setTotalStats] = useState({ total: 0, umum: 0, spesifik: 0 });
   const [formData, setFormData] = useState<FormData>({
     kode_gejala: '',
@@ -92,6 +93,7 @@ export default function GejalaPage() {
       setGejalaData(result.data);
       setPagination(result.pagination);
       setCurrentPage(result.pagination.current_page);
+      setNextKode(result.next_kode);
     } catch (err) {
       console.error('Error fetching gejala:', err);
       setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
@@ -127,7 +129,7 @@ export default function GejalaPage() {
   const handleTambah = () => {
     setEditingId(null);
     setFormData({
-      kode_gejala: '',
+      kode_gejala: nextKode,
       nama_gejala: '',
       kategori: '',
       keterangan: '',
@@ -166,6 +168,7 @@ export default function GejalaPage() {
       // Refresh data and stats
       fetchGejala(currentPage, search, kategoriFilter);
       fetchTotalStats();
+      alert('Gejala berhasil dihapus.');
     } catch (err) {
       console.error('Error deleting gejala:', err);
       alert(err instanceof Error ? err.message : 'Gagal menghapus gejala');
@@ -207,6 +210,11 @@ export default function GejalaPage() {
       fetchGejala(currentPage, search, kategoriFilter);
       fetchTotalStats();
       setShowModal(false);
+      alert(
+      editingId
+          ? 'Data penyakit berhasil diperbarui.'
+          : 'Data penyakit berhasil ditambahkan.'
+      );
     } catch (err) {
       console.error('Error saving gejala:', err);
       alert(err instanceof Error ? err.message : 'Gagal menyimpan gejala');

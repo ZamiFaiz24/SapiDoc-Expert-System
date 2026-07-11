@@ -70,16 +70,18 @@ class AturanController extends Controller
      */
     public function getOptions()
     {
-        $penyakits = Penyakit::orderBy('nama_penyakit')->get()->map(function ($p) {
+        $penyakits = Penyakit::orderBy('kode_penyakit')->get()->map(function ($p) {
             return [
                 'id' => $p->id,
+                'kode_penyakit' => $p->kode_penyakit,
                 'nama_penyakit' => $p->nama_penyakit,
             ];
         });
 
-        $gejalas = Gejala::orderBy('nama_gejala')->get()->map(function ($g) {
+        $gejalas = Gejala::orderBy('kode_gejala')->get()->map(function ($g) {
             return [
                 'id' => $g->id,
+                'kode_gejala' => $g->kode_gejala,
                 'nama_gejala' => $g->nama_gejala,
             ];
         });

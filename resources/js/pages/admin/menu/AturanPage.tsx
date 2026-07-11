@@ -33,7 +33,9 @@ interface FormData {
 
 interface Option {
   id: number;
+  kode_penyakit?: string;
   nama_penyakit?: string;
+  kode_gejala?: string;
   nama_gejala?: string;
 }
 
@@ -222,7 +224,7 @@ export default function AturanPage() {
     }
   };
 
-
+  console.log(penyakits);
 
   if (isLoading && aturanData.length === 0) {
     return (
@@ -437,7 +439,7 @@ export default function AturanPage() {
                     <option value="">-- Pilih Penyakit --</option>
                     {penyakits.map((p) => (
                       <option key={p.id} value={p.id}>
-                        {p.nama_penyakit}
+                        {p.kode_penyakit} - {p.nama_penyakit}
                       </option>
                     ))}
                   </select>
@@ -457,7 +459,7 @@ export default function AturanPage() {
                     <option value="">-- Pilih Gejala --</option>
                     {gejalas.map((g) => (
                       <option key={g.id} value={g.id}>
-                        {g.nama_gejala}
+                        {g.kode_gejala} - {g.nama_gejala}
                       </option>
                     ))}
                   </select>

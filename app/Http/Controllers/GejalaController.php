@@ -31,6 +31,15 @@ class GejalaController extends Controller
 
         $gejalas = $query->paginate($perPage, ['*'], 'page', $page);
 
+        $lastGejala = Gejala::orderByDesc('kode_gejala')->first();
+
+        $nextKode = 'G01';
+
+        if ($lastGejala) {
+            $number = (int) substr($lastGejala->kode_gejala, 1);
+            $nextKode = 'G' . str_pad($number + 1, 2, '0', STR_PAD_LEFT);
+        }
+
         return response()->json([
             'data' => $gejalas->items(),
             'pagination' => [
@@ -41,6 +50,7 @@ class GejalaController extends Controller
                 'from' => $gejalas->firstItem(),
                 'to' => $gejalas->lastItem(),
             ],
+            'next_kode' => $nextKode,
         ]);
     }
 

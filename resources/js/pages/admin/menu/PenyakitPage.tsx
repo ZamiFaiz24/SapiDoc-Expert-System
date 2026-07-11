@@ -90,6 +90,18 @@ export default function PenyakitPage() {
     fetchPenyakit(1, search);
   }, []);
 
+  const generateKodePenyakit = () => {
+    if (penyakitData.length === 0) return 'P01';
+
+    const maxKode = Math.max(
+      ...penyakitData.map((p) =>
+        parseInt(p.kode_penyakit.replace('P', ''), 10)
+      )
+    );
+
+    return `P${String(maxKode + 1).padStart(2, '0')}`;
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     fetchPenyakit(1, search);
@@ -106,7 +118,7 @@ export default function PenyakitPage() {
   const handleTambah = () => {
     setEditingId(null);
     setFormData({
-      kode_penyakit: '',
+      kode_penyakit: generateKodePenyakit(),
       kategori_penyakit: '',
       gambar: '',
       nama_penyakit: '',
@@ -146,8 +158,13 @@ export default function PenyakitPage() {
         throw new Error('Gagal menghapus penyakit');
       }
 
-      // Refresh data and stats
-      fetchPenyakit(currentPage, search);
+      const nextPage =
+        penyakitData.length === 1 && currentPage > 1
+        ? currentPage - 1
+        : currentPage;
+
+    fetchPenyakit(nextPage, search);
+    alert('Penyakit berhasil dihapus.');
     } catch (err) {
       console.error('Error deleting penyakit:', err);
       alert(err instanceof Error ? err.message : 'Gagal menghapus penyakit');
@@ -196,6 +213,11 @@ export default function PenyakitPage() {
       // Refresh data dan close modal
       fetchPenyakit(currentPage, search);
       setShowModal(false);
+      alert(
+        editingId
+          ? 'Data penyakit berhasil diperbarui.'
+          : 'Data penyakit berhasil ditambahkan.'
+      );
     } catch (err) {
       console.error('Error saving penyakit:', err);
       alert(err instanceof Error ? err.message : 'Gagal menyimpan penyakit');
