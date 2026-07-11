@@ -107,19 +107,15 @@ export default function Topbar({ title }: TopbarProps) {
                   </p>
                 </div>
 
-                <button
-                  className="flex w-full items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-50"
-                >
-                  <User size={18} />
-                  Profil
-                </button>
-
-                <button
-                  className="flex w-full items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-50"
-                >
-                  <Settings size={18} />
-                  Pengaturan
-                </button>
+                <div className="flex flex-col gap-1 py-2">
+                  <Link
+                    href={route('admin.profile')}
+                    className="flex w-full items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-50"
+                  >
+                    <User size={18} />
+                    Profil
+                  </Link>
+                </div>
 
                 <div className="border-t border-gray-100">
                   <Link

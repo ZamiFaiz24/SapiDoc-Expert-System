@@ -42,7 +42,6 @@ Route::middleware(['auth'])->group(function () {
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
 
-// Admin auth routes (separate names for admin login)
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 Route::middleware('guest')->prefix('admin')->group(function () {
@@ -57,34 +56,31 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('admin.logout');
 
-    // Admin dashboard
+    Route::get('profile', [AuthenticatedSessionController::class, 'profile'])
+        ->name('admin.profile');
+
     Route::get('/', function () {
         return Inertia::render('admin/dashboard/page');
     })->name('admin.dashboard');
 
-    // Admin API endpoints
     Route::get('/api/dashboard/stats', [DiagnosisController::class, 'getDashboardStats']);
     Route::get('/api/dashboard/diagnoses', [DiagnosisController::class, 'getRecentDiagnoses']);
     Route::get('/api/diagnosis/all', [DiagnosisController::class, 'getAllDiagnoses']);
 
-    // Chart data API endpoints
     Route::get('/api/chart/top-penyakit', [DiagnosisController::class, 'getTopPenyakit']);
     Route::get('/api/chart/diagnosis-by-sapi', [DiagnosisController::class, 'getDiagnosisByJenisSapi']);
     Route::get('/api/chart/trend-diagnosis', [DiagnosisController::class, 'getTrendDiagnosis']);
 
-    // Penyakit API endpoints
     Route::get('/api/penyakit', [PenyakitController::class, 'index']);
     Route::post('/api/penyakit', [PenyakitController::class, 'store']);
     Route::put('/api/penyakit/{penyakit}', [PenyakitController::class, 'update']);
     Route::delete('/api/penyakit/{penyakit}', [PenyakitController::class, 'destroy']);
 
-    // Gejala API endpoints
     Route::get('/api/gejala', [GejalaController::class, 'index']);
     Route::post('/api/gejala', [GejalaController::class, 'store']);
     Route::put('/api/gejala/{gejala}', [GejalaController::class, 'update']);
     Route::delete('/api/gejala/{gejala}', [GejalaController::class, 'destroy']);
 
-    // Aturan API endpoints
     Route::get('/api/aturan', [AturanController::class, 'index']);
     Route::get('/api/aturan/options', [AturanController::class, 'getOptions']);
     Route::post('/api/aturan', [AturanController::class, 'store']);

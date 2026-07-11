@@ -48,4 +48,16 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/admin/login');
     }
+    
+    public function profile(Request $request): Response
+    {
+        $user = $request->user();
+
+        return Inertia::render('admin/menu/ProfilePage', [
+            'user' => [
+                'name' => $request->user()->name,
+                'email' => $request->user()->email,
+            ],
+        ]);
+    }
 }

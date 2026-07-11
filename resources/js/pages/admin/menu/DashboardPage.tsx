@@ -39,7 +39,13 @@ interface ChartDataPoint {
   value: number;
 }
 
-const COLORS = ['#2563eb', '#f97316', '#8b5cf6', '#ec4899', '#14b8a6'];
+const COLORS = [
+  '#059669', // Emerald
+  '#0ea5e9', // Sky
+  '#f59e0b', // Amber
+  '#ef4444', // Red
+  '#8b5cf6', // Violet
+];
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats>({

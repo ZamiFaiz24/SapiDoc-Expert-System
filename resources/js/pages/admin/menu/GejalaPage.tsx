@@ -73,7 +73,6 @@ export default function GejalaPage() {
     }
   };
 
-  // Fetch gejala data
   const fetchGejala = async (page: number = 1, searchTerm: string = '', kategori: string = '') => {
     try {
       setIsLoading(true);
