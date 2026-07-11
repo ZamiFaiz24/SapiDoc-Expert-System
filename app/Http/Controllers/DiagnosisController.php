@@ -24,7 +24,14 @@ class DiagnosisController extends Controller
      */
     public function create()
     {
-        $gejalas = Gejala::select('id', 'kode_gejala', 'nama_gejala')
+        $gejalas = Gejala::select(
+            'id',
+            'kode_gejala',
+            'nama_gejala',
+            'kategori',
+            'jenis_kelamin',
+            'umur_kategori'
+        )
             ->orderBy('kode_gejala')
             ->get();
 

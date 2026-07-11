@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Gejala;
-use App\Models\Penyakit;
 use App\Models\Diagnosis;
 use App\Services\InferensiService;
 use Illuminate\Database\Seeder;
@@ -12,7 +11,6 @@ class DiagnosisManualSeeder extends Seeder
 {
     protected $inferensiService;
 
-    // Kita tetap inject service untuk menghitung hasil SEBELUM disimpan ke DB
     public function __construct(InferensiService $inferensiService)
     {
         $this->inferensiService = $inferensiService;
@@ -23,13 +21,11 @@ class DiagnosisManualSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Definisikan Data Kasus Uji (Nanti tinggal tambah sampai 30 data di sini)
+        // 10 Data Kasus Pengujian Manual
         $dataUjiKasus = [
             [
-                'nama_user' => 'Pengujian Manual P01 (Kasus 1)',
-                'alamat_user' => 'Petanahan',
-                'no_hp_user' => '081234567890',
-                'jenis_sapi' => 'po',
+                'nama_user' => 'Pengujian Manual PMK (Kasus 1)',
+                'jenis_sapi' => 'Sapi PO',
                 'jenis_kelamin' => 'jantan',
                 'umur_kategori' => 'dewasa',
                 'gejala' => [
@@ -40,14 +36,133 @@ class DiagnosisManualSeeder extends Seeder
                     ['kode' => 'G05', 'cf_user' => 1.0],
                 ],
             ],
-            // Kamu bisa tambah array kasus [Kasus 2], [Kasus 3] dst di bawah sini...
+            [
+                'nama_user' => 'Pengujian Manual Cacingan (Kasus 2)',
+                'jenis_sapi' => 'Sapi Jawa',
+                'jenis_kelamin' => 'betina',
+                'umur_kategori' => 'muda',
+                'gejala' => [
+                    ['kode' => 'G02', 'cf_user' => 0.8],
+                    ['kode' => 'G06', 'cf_user' => 0.8],
+                    ['kode' => 'G07', 'cf_user' => 0.6],
+                    ['kode' => 'G08', 'cf_user' => 0.8],
+                    ['kode' => 'G09', 'cf_user' => 0.6],
+                    ['kode' => 'G10', 'cf_user' => 0.6],
+                    ['kode' => 'G11', 'cf_user' => 0.8],
+                ],
+            ],
+            [
+                'nama_user' => 'Pengujian Manual Mastitis (Kasus 3)',
+                'jenis_sapi' => 'Sapi PO',
+                'jenis_kelamin' => 'betina',
+                'umur_kategori' => 'dewasa',
+                'gejala' => [
+                    ['kode' => 'G01', 'cf_user' => 0.6],
+                    ['kode' => 'G02', 'cf_user' => 0.8],
+                    ['kode' => 'G12', 'cf_user' => 0.8],
+                    ['kode' => 'G13', 'cf_user' => 0.8],
+                    ['kode' => 'G14', 'cf_user' => 0.8],
+                    ['kode' => 'G15', 'cf_user' => 0.8],
+                    ['kode' => 'G16', 'cf_user' => 0.8],
+                ],
+            ],
+            [
+                'nama_user' => 'Pengujian Manual BEF (Kasus 4)',
+                'jenis_sapi' => 'Sapi Limousin',
+                'jenis_kelamin' => 'jantan',
+                'umur_kategori' => 'dewasa',
+                'gejala' => [
+                    ['kode' => 'G01', 'cf_user' => 0.8],
+                    ['kode' => 'G02', 'cf_user' => 0.8],
+                    ['kode' => 'G12', 'cf_user' => 0.8],
+                    ['kode' => 'G17', 'cf_user' => 0.8],
+                    ['kode' => 'G18', 'cf_user' => 0.8],
+                    ['kode' => 'G19', 'cf_user' => 0.8],
+                    ['kode' => 'G20', 'cf_user' => 0.6],
+                ],
+            ],
+            [
+                'nama_user' => 'Pengujian Manual Scabies (Kasus 5)',
+                'jenis_sapi' => 'Sapi Jawa',
+                'jenis_kelamin' => 'jantan',
+                'umur_kategori' => 'muda',
+                'gejala' => [
+                    ['kode' => 'G10', 'cf_user' => 0.8],
+                    ['kode' => 'G21', 'cf_user' => 0.8],
+                    ['kode' => 'G22', 'cf_user' => 0.8],
+                ],
+            ],
+            [
+                'nama_user' => 'Pengujian Manual LSD (Kasus 6)',
+                'jenis_sapi' => 'Sapi Simental',
+                'jenis_kelamin' => 'jantan',
+                'umur_kategori' => 'dewasa',
+                'gejala' => [
+                    ['kode' => 'G01', 'cf_user' => 0.6],
+                    ['kode' => 'G02', 'cf_user' => 0.8],
+                    ['kode' => 'G12', 'cf_user' => 0.8],
+                    ['kode' => 'G23', 'cf_user' => 0.8],
+                    ['kode' => 'G24', 'cf_user' => 0.8],
+                ],
+            ],
+            [
+                'nama_user' => 'Pengujian Manual Bloat (Kasus 7)',
+                'jenis_sapi' => 'Sapi Limousin',
+                'jenis_kelamin' => 'jantan',
+                'umur_kategori' => 'dewasa',
+                'gejala' => [
+                    ['kode' => 'G02', 'cf_user' => 0.8],
+                    ['kode' => 'G12', 'cf_user' => 0.6],
+                    ['kode' => 'G17', 'cf_user' => 0.8],
+                    ['kode' => 'G25', 'cf_user' => 0.8],
+                    ['kode' => 'G26', 'cf_user' => 1.0],
+                ],
+            ],
+            [
+                'nama_user' => 'Pengujian Manual Endometritis (Kasus 8)',
+                'jenis_sapi' => 'Sapi PO',
+                'jenis_kelamin' => 'betina',
+                'umur_kategori' => 'dewasa',
+                'gejala' => [
+                    ['kode' => 'G01', 'cf_user' => 0.8],
+                    ['kode' => 'G02', 'cf_user' => 0.8],
+                    ['kode' => 'G12', 'cf_user' => 0.8],
+                    ['kode' => 'G27', 'cf_user' => 0.8],
+                    ['kode' => 'G13', 'cf_user' => 0.6],
+                    ['kode' => 'G28', 'cf_user' => 0.8],
+                ],
+            ],
+            [
+                'nama_user' => 'Pengujian Manual Hipokalsemia (Kasus 9)',
+                'jenis_sapi' => 'Sapi Simental',
+                'jenis_kelamin' => 'betina',
+                'umur_kategori' => 'dewasa',
+                'gejala' => [
+                    ['kode' => 'G08', 'cf_user' => 0.8],
+                    ['kode' => 'G12', 'cf_user' => 0.8],
+                    ['kode' => 'G29', 'cf_user' => 0.8],
+                    ['kode' => 'G30', 'cf_user' => 0.8],
+                    ['kode' => 'G31', 'cf_user' => 0.8],
+                ],
+            ],
+            [
+                'nama_user' => 'Pengujian Manual Omphalitis (Kasus 10)',
+                'jenis_sapi' => 'Sapi PO',
+                'jenis_kelamin' => 'betina',
+                'umur_kategori' => 'pedet',
+                'gejala' => [
+                    ['kode' => 'G01', 'cf_user' => 0.8],
+                    ['kode' => 'G02', 'cf_user' => 0.8],
+                    ['kode' => 'G32', 'cf_user' => 0.8],
+                    ['kode' => 'G33', 'cf_user' => 0.8],
+                ],
+            ],
         ];
 
-        // Ambil mapping kode_gejala ke id master
-        $mapGejala = Gejala::select('id', 'kode_gejala')->pluck('id', 'kode_gejala')->toArray();
+        // Ambil mapping master kode gejala ke ID tabel
+        $mapGejala = Gejala::pluck('id', 'kode_gejala')->toArray();
 
         foreach ($dataUjiKasus as $kasus) {
-            // 2. Format ulang input gejala untuk mesin inferensi
             $gejalaInput = [];
             foreach ($kasus['gejala'] as $g) {
                 $gejalaId = $mapGejala[$g['kode']] ?? null;
@@ -63,7 +178,7 @@ class DiagnosisManualSeeder extends Seeder
                 continue;
             }
 
-            // 3. Hitung diagnosis lewat service agar hasilnya akurat sesuai algoritma sistem
+            // Hitung menggunakan service utama agar hasil diagnosis_banding & cf_final ter-generate otomatis
             $hasilInferensi = $this->inferensiService->inferensi($gejalaInput);
 
             if (empty($hasilInferensi)) {
@@ -79,11 +194,11 @@ class DiagnosisManualSeeder extends Seeder
                 ];
             }, array_slice($hasilInferensi, 1, 5));
 
-            // 4. INSERT KASUS KE DATABASE TABEL DIAGNOSES
-            Diagnosis::create([
+            // Simpan langsung ke database tabel diagnosis
+            Diagnosis::updateOrCreate([
                 'nama_user' => $kasus['nama_user'],
-                'alamat_user' => $kasus['alamat_user'],
-                'no_hp_user' => $kasus['no_hp_user'],
+                'alamat_user' => 'Alamat Pengujian Sistem',
+                'no_hp_user' => '081234567890',
                 'jenis_sapi' => $kasus['jenis_sapi'],
                 'jenis_kelamin' => $kasus['jenis_kelamin'],
                 'umur_kategori' => $kasus['umur_kategori'],
@@ -91,7 +206,7 @@ class DiagnosisManualSeeder extends Seeder
                 'nama_penyakit_snap' => $diagnosisUtama['nama_penyakit'],
                 'cf_final' => $diagnosisUtama['cf'],
                 'diagnosis_banding' => $diagnosisBanding,
-                'gejala_input' => $gejalaInput, // Tersimpan sebagai JSON cast di model
+                'gejala_input' => $gejalaInput,
             ]);
         }
     }

@@ -40,6 +40,8 @@ export default function Step2({ onNext, onBack, selectedGejala, setSelectedGejal
     setSelectedGejala((prev) => prev.map((g) => (g.id === id ? { ...g, cf_user } : g)));
   };
 
+  console.log("Semua gejala:", gejalas);
+
   const umumCount = selectedGejala.filter((g) => umumGejalas.some((ug) => ug.id === g.id)).length;
 
   return (
