@@ -205,7 +205,6 @@ export default function DiagnosisPage() {
                 <option value="Sapi PO">Sapi PO (Peranakan Ongole)</option>
                 <option value="Sapi Simental">Sapi Simental / Metal</option>
                 <option value="Sapi Limousin">Sapi Limousin</option>
-                <option value="Sapi Jawa">Sapi Jawa / Lokal Potong</option>
               </select>
 
               {/* Hasil Penyakit Filter */}
@@ -428,7 +427,7 @@ export default function DiagnosisPage() {
                       ? 'Sapi Simental / Metal'
                       : selectedDetail.jenis_sapi === 'Sapi Limousin'
                       ? 'Sapi Limousin'
-                      : 'Sapi Jawa / Lokal Potong'}
+                      : selectedDetail.jenis_sapi || '-'}
                   </p>
                 </div>
 

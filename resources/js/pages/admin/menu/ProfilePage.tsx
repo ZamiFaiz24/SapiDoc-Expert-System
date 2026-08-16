@@ -26,16 +26,19 @@ interface ProfilePageProps {
 }
 
 export default function ProfilePage({ auth }: ProfilePageProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+ const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState('profil');
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
-
-  // Form handling menggunakan Inertia Helper
-  const { data, setData, put, errors, processing, reset, recentlySuccessful } = useForm({
+  // Form Profile
+  const profileForm = useForm({
     name: auth.user.name,
     email: auth.user.email,
+  });
+
+  // Form Password
+  const passwordForm = useForm({
     current_password: '',
     password: '',
     password_confirmation: '',
@@ -44,7 +47,7 @@ export default function ProfilePage({ auth }: ProfilePageProps) {
   const handleUpdateProfile = (e: React.FormEvent) => {
     e.preventDefault();
 
-    put(route('profile.update'), {
+    profileForm.patch(route('profile.update'), {
         preserveScroll: true,
         onSuccess: () => {
             setIsEditingProfile(false);
@@ -54,10 +57,10 @@ export default function ProfilePage({ auth }: ProfilePageProps) {
 
   const handleUpdatePassword = (e: React.FormEvent) => {
     e.preventDefault();
-    put(route('password.update'), {
+    passwordForm.put(route('password.update'), {
       preserveScroll: true,
       onSuccess: () => {
-        reset();
+        passwordForm.reset();
         setIsChangingPassword(false);
       },
     });
@@ -179,9 +182,6 @@ export default function ProfilePage({ auth }: ProfilePageProps) {
         />
       )}
 
-      {/* ========================================================================= */}
-      {/* 2. KONTEN UTAMA (KANAN)                                                   */}
-      {/* ========================================================================= */}
       <main className="flex-1 md:ml-64 p-6 md:p-8 pt-20 md:pt-8 transition-all duration-300">
         
         {/* Header Halaman */}
@@ -198,119 +198,119 @@ export default function ProfilePage({ auth }: ProfilePageProps) {
             
             {/* Card: Informasi Profil */}
             <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-xl transition-all">
-                  {/* Header Card */}
-                  <div className="mb-4 flex items-center justify-between border-b border-gray-100 pb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="rounded-2xl bg-emerald-100 p-2 text-emerald-600">
-                        <User size={20} />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-gray-900">Profil Akun</h3>
-                        <p className="text-xs text-gray-400">Detail data login administrator</p>
-                      </div>
-                    </div>
+              {/* Header Card */}
+              <div className="mb-4 flex items-center justify-between border-b border-gray-100 pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-2xl bg-emerald-100 p-2 text-emerald-600">
+                    <User size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900">Profil Akun</h3>
+                    <p className="text-xs text-gray-400">Detail data login administrator</p>
+                  </div>
+                </div>
 
-                    {/* Tombol Edit di pojok kanan atas card (Hanya muncul jika sedang TIDAK mengedit) */}
-                    {!isEditingProfile && (
-                      <button
-                        type="button"
-                        onClick={() => setIsEditingProfile(true)}
-                        className="inline-flex items-center gap-1.5 rounded-xl border border-gray-100 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 shadow-sm transition hover:bg-gray-50 hover:text-emerald-600 hover:border-emerald-200"
-                      >
-                        <Edit2 size={14} /> Edit Profil
-                      </button>
-                    )}
+                {/* Tombol Edit di pojok kanan atas card (Hanya muncul jika sedang TIDAK mengedit) */}
+                {!isEditingProfile && (
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingProfile(true)}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-gray-100 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 shadow-sm transition hover:bg-gray-50 hover:text-emerald-600 hover:border-emerald-200"
+                  >
+                    <Edit2 size={14} /> Edit Profil
+                  </button>
+                )}
+              </div>
+
+              {/* Konten Utama Card */}
+              {!isEditingProfile ? (
+                // TAMPILAN READ-ONLY (DEFAULT)
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">Nama Lengkap</label>
+                    <p className="mt-1 font-medium text-gray-800">{auth.user.name}</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">Alamat Email</label>
+                    <p className="mt-1 font-medium text-gray-800">{auth.user.email}</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">Hak Akses</label>
+                    <div className="mt-1">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-100">
+                        <Shield size={12} /> Administrator
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Konten Utama Card */}
-                  {!isEditingProfile ? (
-                    // TAMPILAN READ-ONLY (DEFAULT)
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">Nama Lengkap</label>
-                        <p className="mt-1 font-medium text-gray-800">{auth.user.name}</p>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">Alamat Email</label>
-                        <p className="mt-1 font-medium text-gray-800">{auth.user.email}</p>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">Hak Akses</label>
-                        <div className="mt-1">
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-100">
-                            <Shield size={12} /> Administrator
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Notifikasi Sukses Simpan */}
-                      {recentlySuccessful && (
-                        <div className="flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-sm text-emerald-800 animate-fade-in">
-                          <CheckCircle size={16} className="text-emerald-600 flex-shrink-0" />
-                          <span>Profil berhasil diperbarui!</span>
-                        </div>
-                      )}
+                  {/* Notifikasi Sukses Simpan */}
+                  {profileForm.recentlySuccessful && (
+                    <div className="flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-sm text-emerald-800 animate-fade-in">
+                      <CheckCircle size={16} className="text-emerald-600 flex-shrink-0" />
+                      <span>Profil berhasil diperbarui!</span>
                     </div>
-                  ) : (
-                    // TAMPILAN MODE EDIT FORM
-                    <form onSubmit={handleUpdateProfile} className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                        <input
-                          type="text"
-                          value={data.name}
-                          onChange={(e) => setData('name', e.target.value)}
-                          className="mt-1 block w-full rounded-2xl border-gray-200 bg-gray-50/50 p-2.5 text-sm focus:border-emerald-500 focus:ring-emerald-500 focus:bg-white transition"
-                          required
-                        />
-                        {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">Alamat Email</label>
-                        <input
-                          type="email"
-                          value={data.email}
-                          onChange={(e) => setData('email', e.target.value)}
-                          className="mt-1 block w-full rounded-2xl border-gray-200 bg-gray-50/50 p-2.5 text-sm focus:border-emerald-500 focus:ring-emerald-500 focus:bg-white transition"
-                          required
-                        />
-                        {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">Hak Akses</label>
-                        <div className="mt-1 opacity-60 cursor-not-allowed">
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600 border border-gray-200">
-                            <Shield size={12} /> Administrator (Tidak dapat diubah)
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Tombol Aksi Form */}
-                      <div className="flex items-center gap-2 pt-2">
-                        <button
-                          type="submit"
-                          disabled={processing}
-                          className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-50"
-                        >
-                          {processing ? <RefreshCw className="animate-spin" size={16} /> : null}
-                          Simpan Perubahan
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsEditingProfile(false);
-                            reset(); // Mengembalikan data form ke inputan awal sebelum diubah
-                          }}
-                          className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
-                        >
-                          Batal
-                        </button>
-                      </div>
-                    </form>
                   )}
                 </div>
+              ) : (
+                // TAMPILAN MODE EDIT FORM
+                <form onSubmit={handleUpdateProfile} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                    <input
+                      type="text"
+                      value={profileForm.data.name}
+                      onChange={(e) => profileForm.setData('name', e.target.value)}
+                      className="mt-1 block w-full rounded-2xl border-gray-200 bg-gray-50/50 p-2.5 text-sm focus:border-emerald-500 focus:ring-emerald-500 focus:bg-white transition"
+                      required
+                    />
+                    {profileForm.errors.name && <p className="mt-1 text-xs text-red-600">{profileForm.errors.name}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Alamat Email</label>
+                    <input
+                      type="email"
+                      value={profileForm.data.email}
+                      onChange={(e) => profileForm.setData('email', e.target.value)}
+                      className="mt-1 block w-full rounded-2xl border-gray-200 bg-gray-50/50 p-2.5 text-sm focus:border-emerald-500 focus:ring-emerald-500 focus:bg-white transition"
+                      required
+                    />
+                    {profileForm.errors.email && <p className="mt-1 text-xs text-red-600">{profileForm.errors.email}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400">Hak Akses</label>
+                    <div className="mt-1 opacity-60 cursor-not-allowed">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600 border border-gray-200">
+                        <Shield size={12} /> Administrator (Tidak dapat diubah)
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Tombol Aksi Form */}
+                  <div className="flex items-center gap-2 pt-2">
+                    <button
+                      type="submit"
+                      disabled={profileForm.processing}
+                      className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-50"
+                    >
+                      {profileForm.processing ? <RefreshCw className="animate-spin" size={16} /> : null}
+                      Simpan Perubahan
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsEditingProfile(false);
+                        profileForm.reset();
+                      }}
+                      className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+                    >
+                      Batal
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
 
             {/* Card: Informasi Sistem */}
             <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-xl">
@@ -327,21 +327,20 @@ export default function ProfilePage({ auth }: ProfilePageProps) {
               <div className="space-y-3 text-sm">
                 <div className="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3">
                   <span className="text-gray-500">Nama Sistem</span>
-                  <span className="font-semibold text-gray-800">CattleCare (SapiDoc)</span>
+                  <span className="font-semibold text-gray-800">SapiDoc - Sistem Pakar</span>
                 </div>
                 <div className="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3">
                   <span className="text-gray-500">Versi Aplikasi</span>
-                  <span className="font-semibold text-gray-800">v1.0</span>
+                  <span className="font-semibold text-gray-800">Version 1.0</span>
                 </div>
                 <div className="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3">
                   <span className="text-gray-500">Metode Inferensi</span>
                   <span className="font-medium text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-lg text-xs">
-                    Forward Chaining + CF
+                    Forward Chaining & Certainty Factor
                   </span>
                 </div>
               </div>
             </div>
-
           </div>
 
          {/* SISI KANAN KONTEN: KEAMANAN / UBAH PASSWORD */}
@@ -380,7 +379,7 @@ export default function ProfilePage({ auth }: ProfilePageProps) {
                 </div>
 
                 {/* Notifikasi Sukses Simpan */}
-                {recentlySuccessful && (
+                {passwordForm.recentlySuccessful && (
                   <div className="flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-sm text-emerald-800 animate-fade-in">
                     <CheckCircle size={16} className="text-emerald-600 flex-shrink-0" />
                     <span>Password berhasil diperbarui dengan aman!</span>
@@ -394,53 +393,53 @@ export default function ProfilePage({ auth }: ProfilePageProps) {
                   <label className="block text-sm font-medium text-gray-700">Password Saat Ini</label>
                   <input
                     type="password"
-                    value={data.current_password}
-                    onChange={(e) => setData('current_password', e.target.value)}
+                    value={passwordForm.data.current_password}
+                    onChange={(e) => passwordForm.setData('current_password', e.target.value)}
                     className="mt-1 block w-full rounded-2xl border-gray-200 bg-gray-50/50 p-2.5 text-sm focus:border-emerald-500 focus:ring-emerald-500 focus:bg-white transition"
                     required
                   />
-                  {errors.current_password && <p className="mt-1 text-xs text-red-600">{errors.current_password}</p>}
+                  {passwordForm.errors.current_password && <p className="mt-1 text-xs text-red-600">{passwordForm.errors.current_password}</p>}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Password Baru</label>
                   <input
                     type="password"
-                    value={data.password}
-                    onChange={(e) => setData('password', e.target.value)}
+                    value={passwordForm.data.password}
+                    onChange={(e) => passwordForm.setData('password', e.target.value)}
                     className="mt-1 block w-full rounded-2xl border-gray-200 bg-gray-50/50 p-2.5 text-sm focus:border-emerald-500 focus:ring-emerald-500 focus:bg-white transition"
                     required
                   />
-                  {errors.password && <p className="mt-1 text-xs text-red-600">{errors.password}</p>}
+                  {passwordForm.errors.password && <p className="mt-1 text-xs text-red-600">{passwordForm.errors.password}</p>}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Konfirmasi Password Baru</label>
                   <input
                     type="password"
-                    value={data.password_confirmation}
-                    onChange={(e) => setData('password_confirmation', e.target.value)}
+                    value={passwordForm.data.password_confirmation}
+                    onChange={(e) => passwordForm.setData('password_confirmation', e.target.value)}
                     className="mt-1 block w-full rounded-2xl border-gray-200 bg-gray-50/50 p-2.5 text-sm focus:border-emerald-500 focus:ring-emerald-500 focus:bg-white transition"
                     required
                   />
-                  {errors.password_confirmation && <p className="mt-1 text-xs text-red-600">{errors.password_confirmation}</p>}
+                  {passwordForm.errors.password_confirmation && <p className="mt-1 text-xs text-red-600">{passwordForm.errors.password_confirmation}</p>}
                 </div>
 
                 {/* Tombol Aksi Form */}
                 <div className="flex items-center gap-2 pt-2">
                   <button
                     type="submit"
-                    disabled={processing}
+                    disabled={passwordForm.processing}
                     className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-50"
                   >
-                    {processing ? <RefreshCw className="animate-spin" size={16} /> : null}
+                    {passwordForm.processing ? <RefreshCw className="animate-spin" size={16} /> : null}
                     Simpan Password
                   </button>
                   <button
                     type="button"
                     onClick={() => {
                       setIsChangingPassword(false);
-                      reset();
+                      passwordForm.reset();
                     }}
                     className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
                   >

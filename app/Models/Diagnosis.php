@@ -37,7 +37,6 @@ class Diagnosis extends Model
             'Sapi PO' => 'Sapi PO (Peranakan Ongole)',
             'Sapi Simental' => 'Sapi Simental / Metal',
             'Sapi Limousin' => 'Sapi Limousin',
-            'Sapi Jawa' => 'Sapi Jawa / Lokal Potong',
         ];
     }
 

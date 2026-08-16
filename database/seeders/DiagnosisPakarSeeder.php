@@ -21,6 +21,8 @@ class DiagnosisPakarSeeder extends Seeder
      */
     public function run(): void
     {
+        Diagnosis::query()->delete();
+
         // 30 Data Uji Rekam Medis Pakar dengan Karakteristik Sapi yang Sesuai
         $dataUjiKasus = [
             // === PENYAKIT MULUT DAN KUKU (PMK) ===
@@ -64,7 +66,7 @@ class DiagnosisPakarSeeder extends Seeder
             // === CACINGAN ===
             [
                 'nama_user' => 'Data Uji Pakar Kasus 04 (Cacingan)',
-                'jenis_sapi' => 'Sapi Jawa',
+                'jenis_sapi' => 'Sapi PO',
                 'jenis_kelamin' => 'betina',
                 'umur_kategori' => 'muda',
                 'gejala' => [
@@ -100,7 +102,7 @@ class DiagnosisPakarSeeder extends Seeder
             ],
             [
                 'nama_user' => 'Data Uji Pakar Kasus 07 (Cacingan)',
-                'jenis_sapi' => 'Sapi Jawa',
+                'jenis_sapi' => 'Sapi PO',
                 'jenis_kelamin' => 'jantan',
                 'umur_kategori' => 'muda',
                 'gejala' => [
@@ -137,7 +139,7 @@ class DiagnosisPakarSeeder extends Seeder
             ],
             [
                 'nama_user' => 'Data Uji Pakar Kasus 10 (Mastitis)',
-                'jenis_sapi' => 'Sapi Jawa',
+                'jenis_sapi' => 'Sapi PO',
                 'jenis_kelamin' => 'betina',
                 'umur_kategori' => 'dewasa',
                 'gejala' => [
@@ -200,7 +202,7 @@ class DiagnosisPakarSeeder extends Seeder
             ],
             [
                 'nama_user' => 'Data Uji Pakar Kasus 15 (BEF)',
-                'jenis_sapi' => 'Sapi Jawa',
+                'jenis_sapi' => 'Sapi PO',
                 'jenis_kelamin' => 'jantan',
                 'umur_kategori' => 'dewasa',
                 'gejala' => [
@@ -226,7 +228,7 @@ class DiagnosisPakarSeeder extends Seeder
             ],
             [
                 'nama_user' => 'Data Uji Pakar Kasus 17 (Scabies)',
-                'jenis_sapi' => 'Sapi Jawa',
+                'jenis_sapi' => 'Sapi PO',
                 'jenis_kelamin' => 'betina',
                 'umur_kategori' => 'pedet',
                 'gejala' => [
@@ -277,7 +279,7 @@ class DiagnosisPakarSeeder extends Seeder
             // === BLOAT / KEMBUNG ===
             [
                 'nama_user' => 'Data Uji Pakar Kasus 21 (Bloat)',
-                'jenis_sapi' => 'Sapi Jawa',
+                'jenis_sapi' => 'Sapi PO',
                 'jenis_kelamin' => 'jantan',
                 'umur_kategori' => 'dewasa',
                 'gejala' => [
@@ -326,7 +328,7 @@ class DiagnosisPakarSeeder extends Seeder
             ],
             [
                 'nama_user' => 'Data Uji Pakar Kasus 25 (Endometritis)',
-                'jenis_sapi' => 'Sapi Jawa',
+                'jenis_sapi' => 'Sapi PO',
                 'jenis_kelamin' => 'betina',
                 'umur_kategori' => 'dewasa',
                 'gejala' => [
@@ -364,7 +366,7 @@ class DiagnosisPakarSeeder extends Seeder
             ],
             [
                 'nama_user' => 'Data Uji Pakar Kasus 28 (Hipokalsemia)',
-                'jenis_sapi' => 'Sapi Jawa',
+                'jenis_sapi' => 'Sapi PO',
                 'jenis_kelamin' => 'betina',
                 'umur_kategori' => 'dewasa',
                 'gejala' => [
@@ -389,7 +391,7 @@ class DiagnosisPakarSeeder extends Seeder
             ],
             [
                 'nama_user' => 'Data Uji Pakar Kasus 30 (Omphalitis)',
-                'jenis_sapi' => 'Sapi Jawa',
+                'jenis_sapi' => 'Sapi PO',
                 'jenis_kelamin' => 'betina',
                 'umur_kategori' => 'pedet',
                 'gejala' => [

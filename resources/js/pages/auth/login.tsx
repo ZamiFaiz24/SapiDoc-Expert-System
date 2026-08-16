@@ -72,22 +72,16 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     </div>
 
                     <div className="grid gap-2.5">
-                        <div className="flex items-center justify-between">
-                            <Label htmlFor="password" className="text-gray-800 font-semibold text-sm">
-                                Password
-                            </Label>
-                            {canResetPassword && (
-                                <TextLink
-                                    href={route('password.request')}
-                                    className="text-xs text-emerald-600 hover:text-emerald-700 font-semibold transition-colors"
-                                    tabIndex={5}
-                                >
-                                    Lupa password?
-                                </TextLink>
-                            )}
-                        </div>
+                        <Label
+                            htmlFor="password"
+                            className="text-gray-800 font-semibold text-sm"
+                        >
+                            Password
+                        </Label>
+
                         <div className="relative">
                             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+
                             <Input
                                 id="password"
                                 type="password"
@@ -101,6 +95,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 className="pl-11 py-2.5 text-gray-800 text-sm border-gray-300 bg-gray-50 focus:bg-white focus:border-emerald-500 focus:ring-emerald-500 focus:ring-1 rounded-lg transition-colors"
                             />
                         </div>
+
                         <InputError message={errors.password} />
                     </div>
 
@@ -140,14 +135,20 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     <div className="absolute inset-0 flex items-center">
                         <div className="w-full border-t border-gray-200"></div>
                     </div>
-                    <div className="relative flex justify-center text-sm">
-                        <span className="bg-white px-3 text-gray-500 text-xs font-medium">Informasi</span>
+                    <div className="relative flex justify-center">
+                        <span className="bg-white px-3 text-xs font-semibold text-gray-500">
+                            Keamanan Sistem
+                        </span>
                     </div>
                 </div>
 
-                <div className="text-center text-xs text-gray-600 space-y-1">
-                    <p className="font-medium">Akses ini hanya untuk admin sistem.</p>
-                    <p className="text-gray-500">Hubungi administrator jika Anda tidak memiliki akun.</p>
+                <div className="rounded-lg border border-gray-200 bg-white p-3">
+                    <p className="text-sm font-medium text-gray-800 text-center">
+                        Halaman dapat diakses oleh Admini SapiDoc.
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-gray-500 text-center">
+                        Gunakan email dan password yang telah terdaftar.
+                    </p>
                 </div>
             </form>
         </AuthLayout>

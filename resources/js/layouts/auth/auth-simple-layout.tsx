@@ -10,7 +10,7 @@ interface AuthLayoutProps {
 export default function AuthSimpleLayout({ children, title, description }: AuthLayoutProps) {
     return (
         <div className="min-h-svh bg-gradient-to-br from-emerald-50 via-white to-emerald-50 flex flex-col items-center justify-center gap-8 p-6 md:p-10">
-            <div className="w-full max-w-sm">
+            <div className="w-full max-w-md">
                 <div className="flex flex-col gap-10">
                     <div className="flex flex-col items-center gap-6">
                         <Link href={route('home')} className="flex flex-col items-center gap-4 font-medium group">
@@ -23,12 +23,12 @@ export default function AuthSimpleLayout({ children, title, description }: AuthL
                             </div>
                             <div className="flex flex-col items-center gap-1">
                                 <span className="text-emerald-700 font-bold text-xl">SapiDoc</span>
-                                <span className="text-xs text-emerald-600 font-medium">Sistem Ahli Diagnosa</span>
+                                <span className="text-xs text-emerald-600 font-medium">Dashboard Administrator</span>
                             </div>
                         </Link>
 
                         <div className="space-y-3 text-center">
-                            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">{title}</h1>
+                            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{title}</h1>
                             <p className="text-gray-600 text-sm leading-relaxed max-w-xs">{description}</p>
                         </div>
                     </div>
@@ -40,7 +40,7 @@ export default function AuthSimpleLayout({ children, title, description }: AuthL
             </div>
 
             <div className="text-center text-xs text-gray-500 mt-6">
-                <p>© 2024 SapiDoc • Sistem Ahli Diagnosa Penyakit Ternak</p>
+                <p>© 2026 SapiDoc • Sistem Ahli Diagnosa Penyakit Ternak</p>
             </div>
         </div>
     );
