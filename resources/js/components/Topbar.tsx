@@ -119,7 +119,7 @@ export default function Topbar({ title }: TopbarProps) {
 
                 <div className="border-t border-gray-100">
                   <Link
-                    href={route('admin.logout')}
+                    href={route('logout')}
                     method="post"
                     as="button"
                     className="flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50"

@@ -2,11 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\DiagnosisController;
-use App\Http\Controllers\PenyakitController;
-use App\Http\Controllers\GejalaController;
 use App\Http\Controllers\AturanController;
-use App\Models\Penyakit;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\DiagnosisController;
+use App\Http\Controllers\GejalaController;
+use App\Http\Controllers\PenyakitController;
 
 Route::get('/', function (PenyakitController $penyakitController) {
     return Inertia::render('pengguna/LandingPage', [
@@ -24,13 +24,6 @@ Route::resource('diagnosis', DiagnosisController::class)->only(['create', 'store
 Route::get('/diagnosis/{id}/print', [DiagnosisController::class, 'print'])
     ->name('diagnosis.print');
 
-Route::get('/diagnosis/{id}/debug-cf', [DiagnosisController::class, 'debugCf']);
-
-// 2. Baru taruh route tambahan di bawahnya
-Route::get('/diagnosis', function () {
-    return redirect('/diagnosis/create');
-})->name('diagnosis.index');
-
 Route::post('/diagnosis/suggest-gejala', [DiagnosisController::class, 'suggestGejala']);
 
 Route::middleware(['auth'])->group(function () {
@@ -42,8 +35,6 @@ Route::middleware(['auth'])->group(function () {
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-
 Route::middleware('guest')->prefix('admin')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('admin.login');
@@ -53,9 +44,6 @@ Route::middleware('guest')->prefix('admin')->group(function () {
 });
 
 Route::middleware('auth')->prefix('admin')->group(function () {
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->name('admin.logout');
-
     Route::get('profile', [AuthenticatedSessionController::class, 'profile'])
         ->name('admin.profile');
 
