@@ -1,0 +1,41 @@
+.git
+.github
+.env
+.env.*
+!.env.example
+
+node_modules
+vendor
+
+tests
+.phpunit.cache
+.phpunit.result.cache
+
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+
+npm-debug.log
+.DS_Store
+Thumbs.db
+
+# Local databases
+database/*.sqlite*
+
+# Local Laravel cache
+bootstrap/cache/*.php
+
+# Local frontend build artifacts
+public/build
+public/hot
+public/storage
+
+# Potential credentials and secrets
+auth.json
+.env.backup
+.env.production
+storage/*.key
+
+# Test artifacts
+.phpunit.result.cache
